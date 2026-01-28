@@ -1,0 +1,9 @@
+{
+  "$schema": "https://langchain-ai.github.io/langgraph/schemas/langgraph.json",
+  "graphs": {
+    "research": "./src/elile/agent/graph.py:research_graph"
+  },
+  "env": ".env",
+  "python_version": "3.14",
+  "dependencies": ["."]
+}
