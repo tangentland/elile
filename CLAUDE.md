@@ -19,6 +19,7 @@ Elile is an employee risk assessment platform for organizations with critical ro
 
 ## Core Architecture
 
+- **Modular Monolith**: Single deployable unit with well-defined module boundaries; simpler operations, easier debugging, future extraction path
 - **Multi-Model Integration**: Integrates multiple AI models (Claude, GPT-4, Gemini) for analysis redundancy and specialized tasks
 - **LangGraph Orchestration**: Workflow management with conditional routing and state persistence
 - **Compliance Engine**: Locale-based rules engine that filters permitted checks by jurisdiction and role type
@@ -119,4 +120,22 @@ src/elile/
 
 ## Architecture Document
 
-See `docs/architecture.md` for detailed system design and component specifications.
+See `docs/architecture.md` for detailed system design including:
+
+- **Service Model**: Tiers (Standard/Enhanced), Vigilance (V0-V3), Degrees (D1-D3)
+- **Data Sources**: Core (T1) and Premium (T2) provider categories
+- **Data Persistence**: Entity data lake, caching, freshness, and evolution analytics
+- **Modular Monolith**: Module structure, communication patterns, process model, deployment options
+- **Per-Persona Reports**: HR Summary, Compliance Audit, Security Investigation, Subject Disclosure, Executive Portfolio
+- **User Interfaces**: Screening Portal, Review Dashboard, Monitoring Console, Admin Console, Subject Portal
+
+## Report Types
+
+| Persona | Report | Purpose |
+|---------|--------|---------|
+| HR Manager | Summary Report | Risk level, recommendation, key flags for hiring decisions |
+| Compliance | Audit Report | Data sources, consent, compliance checks for audit trail |
+| Security | Investigation Report | Detailed findings, connections, threat assessment |
+| Investigator | Case File | Complete findings with raw data for deep investigation |
+| Subject | Disclosure Report | FCRA-compliant summary for candidates (adverse action) |
+| Executive | Portfolio Report | Aggregate metrics, trends, organizational risk posture |

@@ -1498,6 +1498,237 @@ Comprehensive logging for compliance.
 ---
 <div style="break-after: page;"></div>
 
+### 6.5 Intelligent Iterative Search Process
+
+The system uses an intelligent search process that proceeds through information types in a deliberate sequence, using a Search-Assess-Refine (SAR) loop for each type. Findings from earlier types actively reshape queries for later types.
+
+#### 6.5.1 Information Type Dependency Graph
+
+Information types are organized into **phases** based on dependencies:
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    INFORMATION TYPE DEPENDENCY GRAPH                     │
+│                                                                          │
+│  PHASE 1: FOUNDATION (Sequential, must complete)                        │
+│  ════════════════════════════════════════════                           │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐              │
+│  │   Identity   │───►│  Employment  │───►│  Education   │              │
+│  │ Verification │    │   History    │    │ Verification │              │
+│  └──────────────┘    └──────────────┘    └──────────────┘              │
+│         │                   │                   │                        │
+│         │ (names, DOB,      │ (employers,       │ (schools,              │
+│         │  addresses,       │  titles, dates,   │  degrees,              │
+│         │  SSN confirmed)   │  colleagues)      │  dates)                │
+│         │                   │                   │                        │
+│         └───────────────────┴───────────────────┘                        │
+│                             │                                            │
+│                             ▼                                            │
+│  PHASE 2: RECORDS (Parallel within phase, uses Phase 1 data)            │
+│  ═══════════════════════════════════════════════════════════            │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                  │
+│  │   Criminal   │  │    Civil     │  │  Financial   │                  │
+│  │   Records    │  │  Litigation  │  │   /Credit    │                  │
+│  └──────────────┘  └──────────────┘  └──────────────┘                  │
+│                                                                          │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                  │
+│  │ Professional │  │  Regulatory  │  │  Sanctions   │                  │
+│  │   Licenses   │  │   Actions    │  │    / PEP     │                  │
+│  └──────────────┘  └──────────────┘  └──────────────┘                  │
+│                             │                                            │
+│                             ▼                                            │
+│  PHASE 3: INTELLIGENCE (Uses all prior phases)                          │
+│  ═════════════════════════════════════════════                          │
+│  ┌──────────────┐  ┌──────────────┐                                    │
+│  │   Adverse    │  │   Digital    │ ◄── Enhanced Tier Only             │
+│  │    Media     │  │  Footprint   │                                    │
+│  └──────────────┘  └──────────────┘                                    │
+│                             │                                            │
+│                             ▼                                            │
+│  PHASE 4: NETWORK (Expands from discovered entities)                    │
+│  ═══════════════════════════════════════════════════                    │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐              │
+│  │ D1: Subject  │───►│ D2: Direct   │───►│ D3: Extended │              │
+│  │   Complete   │    │ Connections  │    │   Network    │              │
+│  └──────────────┘    └──────────────┘    └──────────────┘              │
+│                                                ▲                         │
+│                                                │ Enhanced Tier Only      │
+│                             │                                            │
+│                             ▼                                            │
+│  PHASE 5: RECONCILIATION & DECEPTION ANALYSIS                          │
+│  ════════════════════════════════════════════════════════════           │
+│  ┌──────────────────────────────────────────────────────────┐          │
+│  │  Inconsistencies are RISK SIGNALS, not just data issues: │          │
+│  │  • Analyze inconsistency patterns (single vs. systematic)│          │
+│  │  • Score deception likelihood based on type & pattern    │          │
+│  │  • Cross-reference to attempt resolution                  │          │
+│  │  • Generate RiskFinding for unresolved/suspicious items  │          │
+│  └──────────────────────────────────────────────────────────┘          │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+#### 6.5.2 Search-Assess-Refine (SAR) Loop
+
+Each information type runs through this iterative loop:
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     SEARCH-ASSESS-REFINE LOOP                            │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │                         SEARCH                                   │    │
+│  │                                                                  │    │
+│  │  Generate queries using:                                        │    │
+│  │  • Subject identifiers (name, DOB, SSN, addresses)             │    │
+│  │  • Facts discovered in completed types (employers, schools)    │    │
+│  │  • Gap-filling queries from previous iteration                 │    │
+│  │  • Type-specific query templates                               │    │
+│  │                                                                  │    │
+│  │  Query enrichment examples:                                     │    │
+│  │  • Identity → Employment: Use confirmed name variants          │    │
+│  │  • Employment → Criminal: Use employer addresses for counties  │    │
+│  │  • Education → Licenses: Use degree type for relevant boards   │    │
+│  └──────────────────────────────────────────────────────────────────┘    │
+│                              │                                           │
+│                              ▼                                           │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │                         ASSESS                                   │    │
+│  │                                                                  │    │
+│  │  Analyze results:                                               │    │
+│  │  • Extract structured findings (facts, dates, entities)        │    │
+│  │  • Calculate type confidence score                              │    │
+│  │  • Identify gaps (expected info not found)                     │    │
+│  │  • Detect inconsistencies → queue for Phase 5                  │    │
+│  │  • Discover new entities → queue for network phases            │    │
+│  │  • Track information gain (new facts this iteration)           │    │
+│  │                                                                  │    │
+│  │  Outputs:                                                       │    │
+│  │  • type_confidence: float (0.0 - 1.0)                          │    │
+│  │  • gaps: list[str] (what we expected but didn't find)          │    │
+│  │  • info_gain_rate: float (new facts / total queries)           │    │
+│  └──────────────────────────────────────────────────────────────────┘    │
+│                              │                                           │
+│                              ▼                                           │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │                         REFINE                                   │    │
+│  │                                                                  │    │
+│  │  Decision logic:                                                │    │
+│  │                                                                  │    │
+│  │  IF type_confidence >= CONFIDENCE_THRESHOLD (0.85)             │    │
+│  │     → Mark type COMPLETE, proceed to next type                 │    │
+│  │                                                                  │    │
+│  │  ELSE IF iterations >= MAX_ITERATIONS (3)                      │    │
+│  │     → Mark type COMPLETE (capped), proceed                     │    │
+│  │                                                                  │    │
+│  │  ELSE IF info_gain_rate < MIN_GAIN (0.1)                       │    │
+│  │     → Mark type COMPLETE (diminishing returns)                 │    │
+│  │                                                                  │    │
+│  │  ELSE                                                           │    │
+│  │     → Generate refined queries targeting gaps                  │    │
+│  │     → Loop back to SEARCH                                       │    │
+│  └──────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+#### 6.5.3 Cross-Type Query Enrichment
+
+Facts discovered in earlier types inform queries for later types:
+
+| Source Type | Target Type | Enrichment |
+|-------------|-------------|------------|
+| Identity | All | Confirmed name variants, DOB, addresses |
+| Identity | Criminal | Counties from confirmed addresses |
+| Employment | Criminal | Counties from employer locations |
+| Employment | Civil | Employer names for litigation search |
+| Employment | Regulatory | Industry for relevant regulators |
+| Education | Licenses | Degree type → relevant licensing boards |
+| All | Adverse Media | All confirmed names, employers, schools |
+| All | Network D2 | Discovered colleagues, business partners |
+
+#### 6.5.4 Inconsistency Risk Scoring
+
+Inconsistencies are potential deception indicators, scored by type and pattern:
+
+| Inconsistency Type | Base Score | Risk Implication |
+|-------------------|------------|------------------|
+| Date minor, spelling variant | 0.1 | Common data entry issues |
+| Date significant (months off) | 0.3 | May hide employment gaps |
+| Title/degree mismatch | 0.3-0.5 | Credential inflation |
+| Employment gap hidden | 0.6 | Deliberate concealment |
+| Education inflated | 0.7 | Likely falsification |
+| Employer fabricated | 0.8 | Fabrication |
+| Timeline impossible | 0.7 | Logical impossibility |
+| Multiple identities | 0.9 | Strong fraud signal |
+| Systematic pattern (4+) | 0.95 | Coordinated deception |
+
+**Pattern Modifiers:**
+- 2-3 inconsistencies (same field): ×1.3
+- 2-3 inconsistencies (different fields): ×1.5
+- 4+ inconsistencies: ×2.0
+- Span 3+ information types: ×1.5
+- Directional bias (all inflate credentials): ×1.8
+
+#### 6.5.5 Knowledge Base Structure
+
+Accumulated facts for query enrichment:
+
+```python
+class KnowledgeBase(BaseModel):
+    # Identity facts
+    confirmed_names: list[str]       # Including variants, maiden names
+    confirmed_dob: date | None
+    confirmed_addresses: list[Address]
+
+    # Employment facts
+    employers: list[EmployerRecord]  # Name, dates, title, location
+
+    # Education facts
+    schools: list[EducationRecord]   # Name, degree, dates
+
+    # Professional facts
+    licenses: list[LicenseRecord]    # Type, number, jurisdiction
+
+    # Discovered entities (for network expansion)
+    discovered_people: list[PersonEntity]
+    discovered_orgs: list[OrgEntity]
+
+    # Jurisdictions for targeted searches
+    known_counties: list[str]
+    known_states: list[str]
+```
+
+#### 6.5.6 Configuration Parameters
+
+```python
+class IterativeSearchConfig(BaseModel):
+    # Confidence thresholds
+    confidence_threshold: float = 0.85
+    foundation_confidence_threshold: float = 0.90
+
+    # Iteration limits
+    max_iterations_per_type: int = 3
+    foundation_max_iterations: int = 4
+
+    # Diminishing returns
+    min_gain_threshold: float = 0.1
+
+    # Network phase
+    network_max_entities_per_degree: int = 20
+
+    # Reconciliation
+    max_reconciliation_queries: int = 10
+    auto_resolve_low_severity: bool = True
+
+    # Inconsistency analysis
+    systematic_pattern_threshold: int = 4
+    cross_type_pattern_threshold: int = 3
+```
+
+---
+<div style="break-after: page;"></div>
+
 ## 8. API Design
 
 ### 7.1 Core Endpoints
@@ -1611,50 +1842,435 @@ class ServiceConfiguration(BaseModel):
 | API Framework | FastAPI | Async, OpenAPI, validation |
 | Database | PostgreSQL | ACID, JSON support, mature |
 | Cache | Redis | Session state, rate limiting |
-| Queue | Redis Streams / RabbitMQ | Async job processing |
-| Scheduler | Celery / APScheduler | Vigilance scheduling |
-| Secrets | HashiCorp Vault | Secure credential management |
+| Background Jobs | ARQ / Dramatiq | Async job processing (Redis-backed) |
+| Scheduler | APScheduler | In-process vigilance scheduling |
+| Secrets | Environment / Vault | Secure credential management |
 | Observability | OpenTelemetry + Prometheus | Tracing, metrics |
-| Logging | structlog + ELK | Structured audit logs |
+| Logging | structlog | Structured audit logs |
 
 ---
 <div style="break-after: page;"></div>
 
-## 11. Deployment Architecture
+## 11. Modular Monolith Architecture
+
+### 11.1 Why Modular Monolith?
+
+The platform uses a **modular monolith** architecture rather than microservices:
+
+| Benefit | Description |
+|---------|-------------|
+| **Simplified Operations** | Single deployment unit; no service mesh, discovery, or inter-service networking |
+| **Easier Debugging** | Full stack traces; no distributed tracing required for most issues |
+| **Lower Latency** | In-process function calls vs. network hops between services |
+| **Transactional Integrity** | Database transactions span module boundaries naturally |
+| **Team Efficiency** | Small team can iterate quickly without coordination overhead |
+| **Future Flexibility** | Well-defined module boundaries allow extraction to services later if needed |
+
+### 11.2 Module Structure
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         ELILE MODULAR MONOLITH                           │
+│                                                                          │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                         API LAYER (FastAPI)                         │ │
+│  │   /v1/screenings  /v1/subjects  /v1/reports  /v1/admin  /v1/webhooks│
+│  └────────────────────────────────────────────────────────────────────┘ │
+│                                    │                                     │
+│                                    ▼                                     │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                      APPLICATION SERVICES                           │ │
+│  │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌────────────┐ │ │
+│  │  │  Screening   │ │  Monitoring  │ │   Report     │ │   Admin    │ │ │
+│  │  │   Service    │ │   Service    │ │   Service    │ │  Service   │ │ │
+│  │  └──────────────┘ └──────────────┘ └──────────────┘ └────────────┘ │ │
+│  └────────────────────────────────────────────────────────────────────┘ │
+│                                    │                                     │
+│                                    ▼                                     │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                        DOMAIN MODULES                               │ │
+│  │                                                                      │ │
+│  │  ┌──────────────────────────────────────────────────────────────┐  │ │
+│  │  │ SCREENING MODULE                                              │  │ │
+│  │  │ • ScreeningEngine (LangGraph workflow)                       │  │ │
+│  │  │ • QueryGenerator                                              │  │ │
+│  │  │ • ResultAnalyzer                                              │  │ │
+│  │  └──────────────────────────────────────────────────────────────┘  │ │
+│  │                                                                      │ │
+│  │  ┌──────────────────────────────────────────────────────────────┐  │ │
+│  │  │ COMPLIANCE MODULE                                             │  │ │
+│  │  │ • RuleEngine                                                  │  │ │
+│  │  │ • LocaleResolver                                              │  │ │
+│  │  │ • ConsentValidator                                            │  │ │
+│  │  └──────────────────────────────────────────────────────────────┘  │ │
+│  │                                                                      │ │
+│  │  ┌──────────────────────────────────────────────────────────────┐  │ │
+│  │  │ RISK MODULE                                                   │  │ │
+│  │  │ • RiskAnalyzer                                                │  │ │
+│  │  │ • EvolutionDetector                                           │  │ │
+│  │  │ • ConnectionMapper                                            │  │ │
+│  │  └──────────────────────────────────────────────────────────────┘  │ │
+│  │                                                                      │ │
+│  │  ┌──────────────────────────────────────────────────────────────┐  │ │
+│  │  │ ENTITY MODULE                                                 │  │ │
+│  │  │ • EntityRegistry                                              │  │ │
+│  │  │ • ProfileVersioning                                           │  │ │
+│  │  │ • EntityResolution                                            │  │ │
+│  │  └──────────────────────────────────────────────────────────────┘  │ │
+│  │                                                                      │ │
+│  │  ┌──────────────────────────────────────────────────────────────┐  │ │
+│  │  │ REPORT MODULE                                                 │  │ │
+│  │  │ • ReportGenerator                                             │  │ │
+│  │  │ • PersonaFilter                                               │  │ │
+│  │  │ • PDFRenderer                                                 │  │ │
+│  │  └──────────────────────────────────────────────────────────────┘  │ │
+│  │                                                                      │ │
+│  └────────────────────────────────────────────────────────────────────┘ │
+│                                    │                                     │
+│                                    ▼                                     │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                     INTEGRATION ADAPTERS                            │ │
+│  │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌────────────┐ │ │
+│  │  │   Provider   │ │    HRIS      │ │  AI Model    │ │Notification│ │ │
+│  │  │   Adapters   │ │   Adapters   │ │   Adapters   │ │  Adapters  │ │ │
+│  │  │              │ │              │ │              │ │            │ │ │
+│  │  │ • Sterling   │ │ • Workday    │ │ • Claude     │ │ • Email    │ │ │
+│  │  │ • Checkr     │ │ • SAP SF     │ │ • GPT-4      │ │ • Webhook  │ │ │
+│  │  │ • PACER      │ │ • Oracle     │ │ • Gemini     │ │ • SMS      │ │ │
+│  │  │ • World-Check│ │ • ADP        │ │              │ │            │ │ │
+│  │  │ • Acxiom     │ │              │ │              │ │            │ │ │
+│  │  └──────────────┘ └──────────────┘ └──────────────┘ └────────────┘ │ │
+│  └────────────────────────────────────────────────────────────────────┘ │
+│                                    │                                     │
+│                                    ▼                                     │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                     INFRASTRUCTURE LAYER                            │ │
+│  │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌────────────┐ │ │
+│  │  │  Repository  │ │    Cache     │ │  Job Queue   │ │   Audit    │ │ │
+│  │  │   (SQLAlchemy)│ │   (Redis)    │ │   (ARQ)      │ │   Logger   │ │ │
+│  │  └──────────────┘ └──────────────┘ └──────────────┘ └────────────┘ │ │
+│  └────────────────────────────────────────────────────────────────────┘ │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+### 11.3 Module Boundaries & Communication
+
+Modules communicate through well-defined interfaces, not direct imports of internal classes:
+
+```python
+# Module public interface (elile/screening/__init__.py)
+from .service import ScreeningService
+from .models import ScreeningRequest, ScreeningResult, ScreeningStatus
+
+__all__ = ["ScreeningService", "ScreeningRequest", "ScreeningResult", "ScreeningStatus"]
+
+# Internal implementation details are NOT exported
+# Other modules import only from the public interface
+```
+
+**Communication Patterns:**
+
+| Pattern | Use Case | Example |
+|---------|----------|---------|
+| **Direct call** | Synchronous, in-request | `compliance.validate(request)` |
+| **Domain events** | Async notification, decoupled | `ScreeningCompleted` event triggers report generation |
+| **Job queue** | Background processing | Provider data fetching, PDF generation |
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        KUBERNETES CLUSTER                        │
+│                  MODULE COMMUNICATION PATTERNS                   │
 │                                                                  │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │                    INGRESS / API GATEWAY                    │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                              │                                   │
-│    ┌─────────────────────────┼─────────────────────────┐        │
-│    ▼                         ▼                         ▼        │
-│  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐    │
-│  │  Screening   │     │    HRIS      │     │   Provider   │    │
-│  │   Service    │     │   Gateway    │     │   Gateway    │    │
-│  │  (replicas)  │     │  (replicas)  │     │  (replicas)  │    │
-│  └──────────────┘     └──────────────┘     └──────────────┘    │
-│         │                                         │             │
-│         ▼                                         ▼             │
-│  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐    │
-│  │    Redis     │     │  Vigilance   │     │   Message    │    │
-│  │   (Cache)    │     │  Scheduler   │     │    Queue     │    │
-│  └──────────────┘     └──────────────┘     └──────────────┘    │
+│  SYNCHRONOUS (in-process function calls)                        │
+│  ─────────────────────────────────────────                      │
 │                                                                  │
+│  API Request                                                     │
+│       │                                                          │
+│       ▼                                                          │
+│  ┌─────────────┐  validate()  ┌─────────────┐                  │
+│  │  Screening  │─────────────►│ Compliance  │                  │
+│  │  Service    │◄─────────────│   Module    │                  │
+│  └─────────────┘   result     └─────────────┘                  │
+│       │                                                          │
+│       │ analyze()                                                │
+│       ▼                                                          │
+│  ┌─────────────┐                                                │
+│  │    Risk     │                                                │
+│  │   Module    │                                                │
+│  └─────────────┘                                                │
+│                                                                  │
+│  ASYNCHRONOUS (domain events via in-memory bus)                 │
+│  ───────────────────────────────────────────────                │
+│                                                                  │
+│  ┌─────────────┐  ScreeningCompleted  ┌─────────────┐          │
+│  │  Screening  │─────────────────────►│   Report    │          │
+│  │  Service    │      (event)         │   Module    │          │
+│  └─────────────┘                      └─────────────┘          │
+│                          │                                       │
+│                          ▼                                       │
+│                   ┌─────────────┐                               │
+│                   │Notification │                               │
+│                   │   Module    │                               │
+│                   └─────────────┘                               │
+│                                                                  │
+│  BACKGROUND (job queue for heavy/external work)                 │
+│  ──────────────────────────────────────────────                 │
+│                                                                  │
+│  ┌─────────────┐   enqueue()   ┌─────────────┐  fetch  ┌─────┐ │
+│  │  Screening  │──────────────►│  Job Queue  │────────►│Worker│ │
+│  │  Service    │               │   (Redis)   │         │     │ │
+│  └─────────────┘               └─────────────┘         └─────┘ │
+│                                                            │     │
+│                                                            ▼     │
+│                                                    ┌───────────┐ │
+│                                                    │ Provider  │ │
+│                                                    │ Adapter   │ │
+│                                                    └───────────┘ │
 └─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      MANAGED SERVICES                            │
-│                                                                  │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│  │  PostgreSQL  │  │ Object Store │  │  Vault/KMS   │          │
-│  │  (Primary)   │  │   (Reports)  │  │   (Secrets)  │          │
-│  └──────────────┘  └──────────────┘  └──────────────┘          │
-└─────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+### 11.4 Process Model
+
+The application runs as two process types that can be scaled independently:
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          PROCESS MODEL                                   │
+│                                                                          │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                        WEB PROCESS                                  │ │
+│  │                                                                      │ │
+│  │  uvicorn elile.main:app --workers N                                │ │
+│  │                                                                      │ │
+│  │  Responsibilities:                                                  │ │
+│  │  • HTTP API requests (FastAPI)                                      │ │
+│  │  • WebSocket connections (alerts, real-time updates)               │ │
+│  │  • Webhook receivers (HRIS events)                                 │ │
+│  │  • Health checks                                                    │ │
+│  │                                                                      │ │
+│  │  Scaling: Horizontal via process count (--workers) or load balancer│ │
+│  └────────────────────────────────────────────────────────────────────┘ │
+│                                                                          │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                       WORKER PROCESS                                │ │
+│  │                                                                      │ │
+│  │  arq elile.worker.WorkerSettings --concurrency N                   │ │
+│  │                                                                      │ │
+│  │  Responsibilities:                                                  │ │
+│  │  • Provider data fetching (HTTP calls to external APIs)            │ │
+│  │  • LangGraph workflow execution (screening pipeline)               │ │
+│  │  • Report generation (PDF rendering)                               │ │
+│  │  • Vigilance scheduled checks                                       │ │
+│  │  • Entity resolution (background deduplication)                    │ │
+│  │                                                                      │ │
+│  │  Scaling: Horizontal via worker count or concurrency setting       │ │
+│  └────────────────────────────────────────────────────────────────────┘ │
+│                                                                          │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                     SCHEDULER PROCESS (optional)                    │ │
+│  │                                                                      │ │
+│  │  python -m elile.scheduler                                         │ │
+│  │                                                                      │ │
+│  │  Responsibilities:                                                  │ │
+│  │  • Vigilance cron jobs (V1/V2/V3 check triggers)                   │ │
+│  │  • Data freshness expiration checks                                │ │
+│  │  • Cleanup jobs (cache pruning, audit log rotation)                │ │
+│  │                                                                      │ │
+│  │  Note: Can be embedded in worker process for simpler deployments   │ │
+│  └────────────────────────────────────────────────────────────────────┘ │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+### 11.5 Deployment Options
+
+The modular monolith supports multiple deployment targets:
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                       DEPLOYMENT OPTIONS                                 │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  OPTION A: SINGLE VM / BARE METAL (Simplest)                           │
+│  ───────────────────────────────────────────                            │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │                         SINGLE SERVER                            │    │
+│  │                                                                   │    │
+│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐            │    │
+│  │  │   Web   │  │ Worker  │  │ Worker  │  │Scheduler│            │    │
+│  │  │ Process │  │   #1    │  │   #2    │  │         │            │    │
+│  │  └─────────┘  └─────────┘  └─────────┘  └─────────┘            │    │
+│  │       │            │            │            │                   │    │
+│  │       └────────────┴────────────┴────────────┘                   │    │
+│  │                         │                                         │    │
+│  │                    ┌────┴────┐                                   │    │
+│  │                    │  Redis  │                                   │    │
+│  │                    └─────────┘                                   │    │
+│  │                                                                   │    │
+│  │  Managed: PostgreSQL (RDS/Cloud SQL)                            │    │
+│  │  Process Manager: systemd / supervisord                         │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  OPTION B: CONTAINER (Docker Compose / ECS / Cloud Run)                │
+│  ──────────────────────────────────────────────────────                 │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │                     CONTAINER ORCHESTRATION                      │    │
+│  │                                                                   │    │
+│  │  ┌───────────────────┐  ┌───────────────────┐                   │    │
+│  │  │   Web Container   │  │  Worker Container │                   │    │
+│  │  │   (2-4 replicas)  │  │   (2-4 replicas)  │                   │    │
+│  │  │                   │  │                   │                   │    │
+│  │  │  CMD: uvicorn     │  │  CMD: arq         │                   │    │
+│  │  │       --workers 2 │  │       --concurrency 10                │    │
+│  │  └───────────────────┘  └───────────────────┘                   │    │
+│  │           │                      │                               │    │
+│  │           └──────────┬───────────┘                               │    │
+│  │                      ▼                                           │    │
+│  │  ┌──────────────────────────────────────────────────────────┐   │    │
+│  │  │              MANAGED SERVICES                             │   │    │
+│  │  │  PostgreSQL (RDS)  │  Redis (ElastiCache)  │  S3 (Reports)│   │    │
+│  │  └──────────────────────────────────────────────────────────┘   │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  OPTION C: PLATFORM-AS-A-SERVICE (Railway, Render, Fly.io)             │
+│  ─────────────────────────────────────────────────────────              │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │                         PAAS PLATFORM                            │    │
+│  │                                                                   │    │
+│  │  Service: elile-web          Service: elile-worker              │    │
+│  │  ┌───────────────────┐       ┌───────────────────┐              │    │
+│  │  │ Procfile: web     │       │ Procfile: worker  │              │    │
+│  │  │ Instances: 2      │       │ Instances: 2      │              │    │
+│  │  └───────────────────┘       └───────────────────┘              │    │
+│  │                                                                   │    │
+│  │  Addons: PostgreSQL, Redis, S3-compatible storage               │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+### 11.6 Scaling Strategy
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        SCALING STRATEGY                                  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  VERTICAL SCALING (Scale Up)                                            │
+│  ──────────────────────────                                             │
+│  • Increase CPU/RAM on web and worker processes                        │
+│  • Increase database connection pool size                              │
+│  • Increase Redis memory                                                │
+│                                                                          │
+│  Suitable for: Initial growth, up to ~1000 concurrent screenings       │
+│                                                                          │
+│  HORIZONTAL SCALING (Scale Out)                                         │
+│  ─────────────────────────────                                          │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │                     LOAD BALANCER                                │    │
+│  │                   (nginx / ALB / Cloud LB)                       │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│         │              │              │              │                   │
+│         ▼              ▼              ▼              ▼                   │
+│  ┌───────────┐  ┌───────────┐  ┌───────────┐  ┌───────────┐            │
+│  │  Web #1   │  │  Web #2   │  │  Web #3   │  │  Web #4   │            │
+│  └───────────┘  └───────────┘  └───────────┘  └───────────┘            │
+│                                                                          │
+│  ┌───────────┐  ┌───────────┐  ┌───────────┐  ┌───────────┐            │
+│  │ Worker #1 │  │ Worker #2 │  │ Worker #3 │  │ Worker #4 │            │
+│  └───────────┘  └───────────┘  └───────────┘  └───────────┘            │
+│         │              │              │              │                   │
+│         └──────────────┴──────────────┴──────────────┘                   │
+│                              │                                           │
+│                    ┌─────────┴─────────┐                                │
+│                    ▼                   ▼                                 │
+│             ┌───────────┐       ┌───────────┐                           │
+│             │  Redis    │       │ PostgreSQL│                           │
+│             │ (Cluster) │       │ (Primary/ │                           │
+│             │           │       │  Replica) │                           │
+│             └───────────┘       └───────────┘                           │
+│                                                                          │
+│  Suitable for: High volume, ~10,000+ concurrent screenings             │
+│                                                                          │
+│  FUTURE: MODULAR EXTRACTION                                             │
+│  ─────────────────────────                                              │
+│  If specific modules become bottlenecks, they can be extracted:        │
+│  • Provider Gateway → Separate service (high external API load)        │
+│  • Report Generator → Separate service (CPU-intensive PDF rendering)   │
+│  • Module boundaries already defined; extraction is straightforward    │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+### 11.7 Configuration Management
+
+```python
+# elile/config/settings.py
+
+class Settings(BaseSettings):
+    """Application configuration via environment variables."""
+
+    # Database
+    database_url: PostgresDsn
+    database_pool_size: int = 20
+    database_pool_overflow: int = 10
+
+    # Redis
+    redis_url: RedisDsn
+    redis_pool_size: int = 10
+
+    # API Keys (secrets)
+    anthropic_api_key: SecretStr
+    openai_api_key: SecretStr | None = None
+    google_api_key: SecretStr | None = None
+
+    # Provider API Keys
+    sterling_api_key: SecretStr | None = None
+    world_check_api_key: SecretStr | None = None
+    # ... other providers
+
+    # Feature Flags
+    enable_enhanced_tier: bool = True
+    enable_evolution_analytics: bool = True
+    enable_human_review_queue: bool = True
+
+    # Process Configuration
+    web_workers: int = 4
+    worker_concurrency: int = 10
+    scheduler_enabled: bool = True
+
+    # Observability
+    otel_endpoint: str | None = None
+    log_level: str = "INFO"
+    log_format: Literal["json", "console"] = "json"
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+    )
+```
+
+**Environment-based deployment:**
+
+```bash
+# .env.production
+DATABASE_URL=postgresql://user:pass@db.example.com:5432/elile
+REDIS_URL=redis://redis.example.com:6379/0
+ANTHROPIC_API_KEY=sk-ant-...
+LOG_LEVEL=INFO
+LOG_FORMAT=json
+WEB_WORKERS=4
+WORKER_CONCURRENCY=20
 ```
 
 ---
@@ -1687,6 +2303,1159 @@ This section will be expanded after architecture review.
 | 6 | Production | Security hardening, scalability, observability |
 
 ---
+<div style="break-after: page;"></div>
 
-*Document Version: 0.3.0*
-*Last Updated: 2025-01-27*
+## 14. Per-Persona Report Types
+
+Different stakeholders require different views of screening results. The system generates persona-specific reports from the same underlying data.
+
+### 14.1 Report Persona Matrix
+
+| Persona | Report Type | Content Focus | Data Depth | Format |
+|---------|-------------|---------------|------------|--------|
+| HR Manager | Summary Report | Risk level, recommendation, key flags | High-level | PDF, Dashboard |
+| Compliance Officer | Audit Report | Data sources, consent, compliance checks | Full audit trail | PDF, JSON |
+| Security Team | Investigation Report | Detailed findings, connections, threats | Complete | PDF, Structured |
+| Investigator | Case File | Raw findings, cross-references, evidence | Complete + raw | PDF, Export |
+| Subject | Disclosure Report | What was checked, summary results | Redacted | PDF, Portal |
+| Executive | Portfolio Report | Aggregate risk, trends, statistics | Aggregated | Dashboard, PDF |
+
+### 14.2 HR Manager Summary Report
+
+**Purpose:** Enable quick hiring decisions with appropriate risk context.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     BACKGROUND SCREENING SUMMARY                         │
+│                                                                          │
+│  Candidate: ████████████████           Position: Senior Analyst         │
+│  Request ID: SCR-2025-00847            Date: January 27, 2025           │
+│  Service: Standard | V0 | D2           Reviewed by: Jane Analyst        │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  OVERALL RISK ASSESSMENT                                         │    │
+│  │                                                                   │    │
+│  │      ▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░  MODERATE (42/100)          │    │
+│  │                                                                   │    │
+│  │  Recommendation: PROCEED WITH CAUTION                            │    │
+│  │  Requires: Additional verification of employment gap 2021-2022  │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  KEY FINDINGS SUMMARY                                            │    │
+│  │                                                                   │    │
+│  │  ✓ Identity Verified         ✓ Education Confirmed               │    │
+│  │  ✓ No Criminal Records       ✓ Credit Acceptable                 │    │
+│  │  ⚠ Employment Gap Found      ✓ No Sanctions/PEP                  │    │
+│  │  ✓ References Positive       ⚠ Minor Civil Judgment (resolved)   │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  CATEGORY BREAKDOWN                                              │    │
+│  │                                                                   │    │
+│  │  Category          Status    Score    Notes                      │    │
+│  │  ─────────────────────────────────────────────────────────       │    │
+│  │  Identity          CLEAR     95       Multi-source verified      │    │
+│  │  Criminal          CLEAR     100      No records found           │    │
+│  │  Financial         REVIEW    65       Resolved judgment 2019     │    │
+│  │  Employment        REVIEW    58       8-month gap unexplained    │    │
+│  │  Education         CLEAR     100      Degree confirmed           │    │
+│  │  Regulatory        CLEAR     100      Active licenses verified   │    │
+│  │  Connections (D2)  CLEAR     88       No adverse associations    │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  RECOMMENDED ACTIONS                                             │    │
+│  │                                                                   │    │
+│  │  1. Request explanation for employment gap (Jun 2021 - Feb 2022)│    │
+│  │  2. Verify financial situation has stabilized since 2019        │    │
+│  │  3. If satisfactory, proceed with hire                          │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  [View Full Report]  [Request Additional Checks]  [Proceed to Offer]   │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+**Content Specifications:**
+
+| Section | Content | Data Source |
+|---------|---------|-------------|
+| Risk Assessment | Composite score (0-100), risk level, recommendation | Risk Analyzer output |
+| Key Findings | Pass/Flag/Fail summary per check category | Finding categories |
+| Category Breakdown | Per-category scores with brief notes | Category scores |
+| Recommended Actions | AI-suggested next steps based on findings | Model-generated |
+
+**Exclusions (HR Manager):**
+- Raw data from providers
+- Specific financial amounts
+- Detailed litigation records
+- Connection details (summary only)
+- Source system identifiers
+
+### 14.3 Compliance Officer Audit Report
+
+**Purpose:** Document compliance with regulations and audit requirements.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      COMPLIANCE AUDIT REPORT                             │
+│                                                                          │
+│  Screening ID: SCR-2025-00847          Locale: US-CA (California)       │
+│  Subject: ████████████████             Generated: 2025-01-27 14:32 UTC  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  CONSENT & AUTHORIZATION                                         │    │
+│  │                                                                   │    │
+│  │  Consent Reference: CON-2025-00847-A                            │    │
+│  │  Consent Date: 2025-01-25 09:14:22 UTC                          │    │
+│  │  Consent Scope: Standard Tier, V0 Pre-screen, D2 Connections    │    │
+│  │  FCRA Disclosure: ✓ Provided 2025-01-25 09:12:18 UTC           │    │
+│  │  CA ICRAA Disclosure: ✓ Provided 2025-01-25 09:12:18 UTC       │    │
+│  │  Consent Verification: ✓ E-signature validated                  │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  COMPLIANCE RULES APPLIED                                        │    │
+│  │                                                                   │    │
+│  │  Rule ID          Jurisdiction    Check Type     Status          │    │
+│  │  ─────────────────────────────────────────────────────────       │    │
+│  │  FCRA-001         US Federal      Criminal       ✓ Applied       │    │
+│  │  CA-ICRAA-003     California      Criminal       ✓ Applied       │    │
+│  │  CA-AB1008-001    California      Criminal       ✓ Applied       │    │
+│  │  FCRA-612         US Federal      Credit         ✓ Applied       │    │
+│  │  EEOC-GUIDE-001   US Federal      All            ✓ Applied       │    │
+│  │                                                                   │    │
+│  │  Rules Blocking Checks: None                                     │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  DATA SOURCES ACCESSED                                           │    │
+│  │                                                                   │    │
+│  │  Provider            Check Type        Access Time     Cost      │    │
+│  │  ─────────────────────────────────────────────────────────       │    │
+│  │  Equifax             Credit            09:45:12        $4.50     │    │
+│  │  Sterling            Criminal (Ntl)    09:45:15        $12.00    │    │
+│  │  LA County Courts    Criminal (Cnty)   09:46:01        $3.00     │    │
+│  │  Work Number         Employment        09:47:22        $8.00     │    │
+│  │  NSC                 Education         09:48:01        $5.00     │    │
+│  │  World-Check         Sanctions/PEP     09:45:10        $2.00     │    │
+│  │  PACER               Civil Litigation  09:49:15        $1.50     │    │
+│  │  ─────────────────────────────────────────────────────────       │    │
+│  │  Total Cost: $36.00                                              │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  AUDIT TRAIL (Key Events)                                        │    │
+│  │                                                                   │    │
+│  │  Timestamp           Event                         Actor         │    │
+│  │  ─────────────────────────────────────────────────────────       │    │
+│  │  2025-01-25 09:12    Consent documents provided    System        │    │
+│  │  2025-01-25 09:14    Consent granted               Subject       │    │
+│  │  2025-01-25 09:15    Screening initiated           HR Portal     │    │
+│  │  2025-01-25 09:45    Data collection started       System        │    │
+│  │  2025-01-25 09:52    Data collection complete      System        │    │
+│  │  2025-01-25 10:15    AI analysis complete          System        │    │
+│  │  2025-01-26 14:00    Human review started          J. Analyst    │    │
+│  │  2025-01-27 11:30    Human review complete         J. Analyst    │    │
+│  │  2025-01-27 11:30    Report generated              System        │    │
+│  │                                                                   │    │
+│  │  [Download Full Audit Log (847 events)]                          │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  DATA HANDLING COMPLIANCE                                        │    │
+│  │                                                                   │    │
+│  │  ✓ PII encrypted at rest (AES-256)                              │    │
+│  │  ✓ PII encrypted in transit (TLS 1.3)                           │    │
+│  │  ✓ Data minimization applied (role-appropriate)                 │    │
+│  │  ✓ Retention policy: 7 years (FCRA)                             │    │
+│  │  ✓ Access restricted to authorized personnel                    │    │
+│  │  ✓ Immutable audit log maintained                               │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  [Export JSON]  [Download PDF]  [View Immutable Log Hash]               │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+### 14.4 Security Team Investigation Report
+
+**Purpose:** Provide detailed findings for security assessment decisions.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    SECURITY INVESTIGATION REPORT                         │
+│                                                                          │
+│  Subject: ████████████████             Case: INV-2025-00847             │
+│  Service: Enhanced | V2 | D3           Classification: CONFIDENTIAL     │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  THREAT ASSESSMENT                                               │    │
+│  │                                                                   │    │
+│  │  Insider Threat Score: ▓▓▓▓▓▓▓░░░  ELEVATED (68/100)            │    │
+│  │                                                                   │    │
+│  │  Contributing Factors:                                           │    │
+│  │  • Financial stress indicators (recent bankruptcy filing)        │    │
+│  │  • Undisclosed foreign business connection                       │    │
+│  │  • Network includes 2 entities with sanctions adjacency         │    │
+│  │  • Rapid network expansion in past 12 months (+340%)            │    │
+│  │                                                                   │    │
+│  │  Mitigating Factors:                                             │    │
+│  │  • Long tenure at previous cleared positions                     │    │
+│  │  • No criminal history                                           │    │
+│  │  • Positive counterintelligence indicators                      │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  CONNECTION NETWORK (D3 Analysis)                                │    │
+│  │                                                                   │    │
+│  │               [Subject]                                          │    │
+│  │                   │                                              │    │
+│  │     ┌─────────────┼─────────────┐                               │    │
+│  │     │             │             │                               │    │
+│  │   [Emp A]      [Emp B]      [Bus C]                             │    │
+│  │     │          ⚠ FLAGGED       │                                │    │
+│  │   [Reg]          │          ┌──┴──┐                             │    │
+│  │                  │       [Dir D] [Dir E]                        │    │
+│  │            [PEP Adjacency]   ⚠       ⚠                          │    │
+│  │                           SANCTIONS  SANCTIONS                   │    │
+│  │                           ADJACENT   ADJACENT                    │    │
+│  │                                                                   │    │
+│  │  Legend: ⚠ = Risk Flag    [Entity] = Normal                    │    │
+│  │                                                                   │    │
+│  │  Total Entities: 47 | D1: 1 | D2: 12 | D3: 34                   │    │
+│  │  Flagged Entities: 5 | High Risk: 2 | Moderate: 3               │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  DETAILED FINDINGS                                               │    │
+│  │                                                                   │    │
+│  │  [FINANCIAL-001] Bankruptcy Filing - HIGH                       │    │
+│  │  ─────────────────────────────────────────────────────────      │    │
+│  │  Type: Chapter 7 Personal Bankruptcy                             │    │
+│  │  Filed: 2024-09-15 | Discharged: 2025-01-10                     │    │
+│  │  Amount: $127,450 in discharged debt                            │    │
+│  │  Source: PACER (Central District of California)                 │    │
+│  │  Confidence: 0.99                                                │    │
+│  │  Security Relevance: Financial vulnerability may increase       │    │
+│  │                      susceptibility to coercion/bribery         │    │
+│  │                                                                   │    │
+│  │  [NETWORK-001] Undisclosed Business Connection - HIGH           │    │
+│  │  ─────────────────────────────────────────────────────────      │    │
+│  │  Entity: Meridian Holdings LLC (Delaware)                       │    │
+│  │  Role: 40% Beneficial Owner (via shell structure)               │    │
+│  │  Discovered: Corporate registry + beneficial ownership trace    │    │
+│  │  Concern: Not disclosed on application; shell company structure │    │
+│  │  Source: OpenCorporates + Delaware Registry                     │    │
+│  │  Confidence: 0.95                                                │    │
+│  │                                                                   │    │
+│  │  [NETWORK-002] Sanctions-Adjacent Connection - MEDIUM           │    │
+│  │  ─────────────────────────────────────────────────────────      │    │
+│  │  Subject → Business C → Director D → Entity on OFAC SDN        │    │
+│  │  Path Length: 3 degrees                                          │    │
+│  │  Relationship: Business C director also directs sanctioned co.  │    │
+│  │  Assessment: Indirect connection; no direct sanctions exposure  │    │
+│  │  Source: World-Check + OFAC SDN + Corporate Registry            │    │
+│  │  Confidence: 0.88                                                │    │
+│  │                                                                   │    │
+│  │  [+ 12 more findings...]                                        │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  EVOLUTION SIGNALS (Compared to baseline 12 months ago)         │    │
+│  │                                                                   │    │
+│  │  Signal                    Severity    Change                    │    │
+│  │  ─────────────────────────────────────────────────────────       │    │
+│  │  network_expansion         HIGH        +340% (12→47 entities)   │    │
+│  │  shell_company_buildup     HIGH        +3 new shell companies   │    │
+│  │  financial_deterioration   HIGH        Bankruptcy filed          │    │
+│  │  undisclosed_interests     MEDIUM      1 new undisclosed entity │    │
+│  │                                                                   │    │
+│  │  Pattern Match: "Financial Distress + Network Opacity"          │    │
+│  │  Historical correlation: 34% of similar patterns preceded       │    │
+│  │                          insider threat incidents                │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  [Export to Case Management]  [Schedule Interview]  [Escalate]          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+### 14.5 Subject Disclosure Report (FCRA Compliant)
+
+**Purpose:** Inform subject of screening results; required for adverse action.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                   YOUR BACKGROUND CHECK RESULTS                          │
+│                                                                          │
+│  Hello ████████████████,                                                │
+│                                                                          │
+│  Your background check for [Company Name] has been completed.           │
+│  Below is a summary of what was reviewed.                               │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  WHAT WAS CHECKED                                                │    │
+│  │                                                                   │    │
+│  │  ✓ Identity Verification                                         │    │
+│  │  ✓ Criminal Records (National and County)                        │    │
+│  │  ✓ Employment History (Past 5 Employers)                         │    │
+│  │  ✓ Education Verification                                        │    │
+│  │  ✓ Credit History                                                │    │
+│  │  ✓ Civil Court Records                                           │    │
+│  │  ✓ Professional License Verification                            │    │
+│  │  ✓ Sanctions and Watchlist Screening                            │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  SUMMARY OF RESULTS                                              │    │
+│  │                                                                   │    │
+│  │  Items Verified Successfully:           7                        │    │
+│  │  Items Requiring Attention:             1                        │    │
+│  │  Items That Could Not Be Verified:      0                        │    │
+│  │                                                                   │    │
+│  │  ─────────────────────────────────────────────────────────       │    │
+│  │                                                                   │    │
+│  │  ⚠ ITEM REQUIRING ATTENTION:                                    │    │
+│  │                                                                   │    │
+│  │  Employment History: We were unable to verify employment at      │    │
+│  │  [Previous Employer] for the dates June 2021 - February 2022.   │    │
+│  │  The employer did not respond to our verification request.       │    │
+│  │                                                                   │    │
+│  │  ─────────────────────────────────────────────────────────       │    │
+│  │                                                                   │    │
+│  │  Note: A resolved civil judgment from 2019 was found but is     │    │
+│  │  shown as paid in full.                                          │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  YOUR RIGHTS                                                     │    │
+│  │                                                                   │    │
+│  │  Under the Fair Credit Reporting Act (FCRA), you have the       │    │
+│  │  right to:                                                       │    │
+│  │                                                                   │    │
+│  │  • Request a free copy of your background check report          │    │
+│  │  • Dispute any information you believe is inaccurate            │    │
+│  │  • Contact the reporting agency directly                         │    │
+│  │  • Add a statement to your file                                  │    │
+│  │                                                                   │    │
+│  │  To dispute information or request your full report:            │    │
+│  │  [Start Dispute Process]                                         │    │
+│  │                                                                   │    │
+│  │  Consumer Reporting Agency:                                      │    │
+│  │  Elile Background Services                                       │    │
+│  │  disputes@elile.com | 1-800-XXX-XXXX                            │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  DATA SOURCES USED                                               │    │
+│  │                                                                   │    │
+│  │  • National criminal database                                    │    │
+│  │  • Los Angeles County Court Records                             │    │
+│  │  • Equifax Consumer Credit Report                               │    │
+│  │  • The Work Number (Employment verification)                    │    │
+│  │  • National Student Clearinghouse                               │    │
+│  │  • OFAC Sanctions List                                          │    │
+│  │  • California State Bar                                         │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  [Download PDF Report]  [File a Dispute]  [Contact Support]             │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+### 14.6 Executive Portfolio Report
+
+**Purpose:** Aggregate view of organizational screening metrics and risk posture.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                   EXECUTIVE RISK DASHBOARD                               │
+│                                                                          │
+│  Organization: Acme Corporation          Period: Q4 2025                │
+│  Generated: 2025-01-27                   Prepared for: C-Suite          │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  PORTFOLIO RISK SNAPSHOT                                         │    │
+│  │                                                                   │    │
+│  │  Active Employees Monitored: 12,847                              │    │
+│  │  Average Risk Score: 18.4 (LOW)                                  │    │
+│  │                                                                   │    │
+│  │  Risk Distribution:                                              │    │
+│  │  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░  LOW (76%)                  │    │
+│  │  ▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░  MODERATE (18%)              │    │
+│  │  ▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  HIGH (5%)                   │    │
+│  │  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  CRITICAL (1%)               │    │
+│  │                                                                   │    │
+│  │  Quarter-over-Quarter Change: ↓ 2.1 points (IMPROVING)          │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌───────────────────────────────────┬─────────────────────────────┐    │
+│  │  SCREENING ACTIVITY (Q4)         │  TOP RISK CATEGORIES         │    │
+│  │                                   │                              │    │
+│  │  New Hires Screened:    847      │  1. Financial (23%)          │    │
+│  │  Monitoring Checks:   4,231      │  2. Employment Gaps (18%)    │    │
+│  │  Alerts Generated:      127      │  3. Network Risk (12%)       │    │
+│  │  Escalations:            14      │  4. Regulatory (8%)          │    │
+│  │  Adverse Actions:         3      │  5. Criminal (4%)            │    │
+│  │                                   │                              │    │
+│  │  Clear Rate: 94.2%               │  [View Category Details]     │    │
+│  └───────────────────────────────────┴─────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  RISK BY BUSINESS UNIT                                           │    │
+│  │                                                                   │    │
+│  │  Business Unit          Headcount    Avg Score    Trend         │    │
+│  │  ─────────────────────────────────────────────────────────       │    │
+│  │  Treasury Operations        124        34.2       ↑ +2.1        │    │
+│  │  IT Security                 89        28.7       ↓ -1.4        │    │
+│  │  Executive Office            23        26.1       → stable      │    │
+│  │  Client Advisory            412        22.4       ↓ -3.2        │    │
+│  │  Operations               8,847        15.2       ↓ -0.8        │    │
+│  │  ...                                                             │    │
+│  │                                                                   │    │
+│  │  ⚠ Treasury Operations showing elevated risk trend              │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  EVOLUTION ALERTS                                                │    │
+│  │                                                                   │    │
+│  │  Employees showing significant risk evolution this quarter:     │    │
+│  │                                                                   │    │
+│  │  • 3 employees: Financial distress patterns emerging            │    │
+│  │  • 2 employees: Rapid network expansion (Enhanced tier)         │    │
+│  │  • 1 employee: New sanctions-adjacent connection discovered     │    │
+│  │                                                                   │    │
+│  │  All flagged for enhanced monitoring or investigation.          │    │
+│  │                                                                   │    │
+│  │  [View Evolution Details]                                        │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  SPEND & EFFICIENCY                                              │    │
+│  │                                                                   │    │
+│  │  Q4 Screening Spend: $127,450                                   │    │
+│  │  Cost per Screen: $28.42 (↓ 8% from Q3)                         │    │
+│  │  Cache Hit Rate: 34% (cost savings: ~$18,200)                   │    │
+│  │                                                                   │    │
+│  │  Tier Breakdown:                                                 │    │
+│  │  Standard: 89% of screenings | $21.50 avg                       │    │
+│  │  Enhanced: 11% of screenings | $84.20 avg                       │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  [Download Full Report]  [Schedule Briefing]  [Drill Down by Unit]      │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+### 14.7 Report Generation Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     REPORT GENERATION PIPELINE                           │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │                    UNIFIED DATA MODEL                            │    │
+│  │                                                                  │    │
+│  │  All reports draw from the same underlying data:                │    │
+│  │  - Screening results                                            │    │
+│  │  - Findings (categorized, scored)                               │    │
+│  │  - Connection graphs                                            │    │
+│  │  - Evolution signals                                            │    │
+│  │  - Audit trail                                                  │    │
+│  │  - Compliance metadata                                          │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                              │                                          │
+│                              ▼                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │                    PERSONA FILTER ENGINE                         │    │
+│  │                                                                  │    │
+│  │  Applies persona-specific:                                      │    │
+│  │  - Field visibility rules (what data to include)                │    │
+│  │  - Aggregation rules (detail vs. summary)                       │    │
+│  │  - Redaction rules (PII masking levels)                         │    │
+│  │  - Compliance overlays (FCRA disclosures, etc.)                 │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                              │                                          │
+│         ┌────────────────────┼────────────────────┐                    │
+│         ▼                    ▼                    ▼                    │
+│  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐           │
+│  │  HR Summary  │     │   Audit      │     │  Security    │           │
+│  │   Template   │     │  Template    │     │  Template    │           │
+│  └──────────────┘     └──────────────┘     └──────────────┘           │
+│         │                    │                    │                    │
+│         ▼                    ▼                    ▼                    │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │                    OUTPUT FORMATTERS                             │    │
+│  │                                                                  │    │
+│  │  PDF Generator │ JSON Exporter │ Dashboard API │ Email Template │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+**Report Access Control:**
+
+| Report Type | Default Access | Override Available |
+|-------------|----------------|-------------------|
+| HR Summary | HR Manager role | Yes (by admin) |
+| Audit Report | Compliance role | No |
+| Security Report | Security role + clearance | No |
+| Investigator Case | Investigator role + case assignment | No |
+| Subject Disclosure | Subject (authenticated) | No |
+| Executive Portfolio | Executive role | Yes (delegate) |
+
+---
+<div style="break-after: page;"></div>
+
+## 15. User Interface Requirements
+
+The platform requires multiple user interfaces to serve different personas and workflows.
+
+### 15.1 Interface Overview
+
+| Interface | Primary Users | Purpose |
+|-----------|---------------|---------|
+| **Screening Portal** | HR, Hiring Managers | Initiate screenings, view status, access reports |
+| **Review Dashboard** | Analysts, Investigators | Review findings, make decisions, document rationale |
+| **Monitoring Console** | Security, Compliance | View ongoing monitoring, respond to alerts |
+| **Admin Console** | Administrators | Configure rules, manage providers, system settings |
+| **Subject Portal** | Candidates, Employees | View status, dispute findings, provide information |
+| **Executive Dashboard** | Leadership | Portfolio view, trends, metrics |
+
+### 15.2 Screening Portal (HR Interface)
+
+**Purpose:** Enable HR teams to initiate and track background screenings.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  ☰ ELILE                    Screening Portal              Jane HR ▼    │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  📊 DASHBOARD                                          [+ New]  │    │
+│  ├─────────────────────────────────────────────────────────────────┤    │
+│  │                                                                  │    │
+│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐        │    │
+│  │  │    12    │  │     5    │  │     3    │  │     4    │        │    │
+│  │  │ Pending  │  │In Review │  │ Complete │  │  Action  │        │    │
+│  │  │ Consent  │  │          │  │ Today    │  │ Required │        │    │
+│  │  └──────────┘  └──────────┘  └──────────┘  └──────────┘        │    │
+│  │                                                                  │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  🔍 Search: [________________________] [Filter ▼] [Date Range ▼]│    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  RECENT SCREENINGS                                               │    │
+│  ├─────────────────────────────────────────────────────────────────┤    │
+│  │                                                                  │    │
+│  │  ┌─────────────────────────────────────────────────────────┐    │    │
+│  │  │ SCR-2025-00851 │ Sarah Johnson │ Sr. Analyst │ Finance  │    │    │
+│  │  │ [████████████████████░░░░░░░░░░] 67% Complete            │    │    │
+│  │  │ Status: Data collection in progress                      │    │    │
+│  │  │ Est. completion: Jan 28, 2025                            │    │    │
+│  │  │ Config: Standard | V1 | D2                               │    │    │
+│  │  │ [View Details]                                           │    │    │
+│  │  └─────────────────────────────────────────────────────────┘    │    │
+│  │                                                                  │    │
+│  │  ┌─────────────────────────────────────────────────────────┐    │    │
+│  │  │ SCR-2025-00847 │ John Smith │ VP Operations │ Energy    │    │    │
+│  │  │ [████████████████████████████████] ✓ Complete           │    │    │
+│  │  │ Risk: ●●●○○ MODERATE   │ Recommendation: PROCEED W/CAUT │    │    │
+│  │  │ ⚠ 2 items requiring attention                          │    │    │
+│  │  │ [View Report] [Request Interview] [Proceed to Offer]   │    │    │
+│  │  └─────────────────────────────────────────────────────────┘    │    │
+│  │                                                                  │    │
+│  │  ┌─────────────────────────────────────────────────────────┐    │    │
+│  │  │ SCR-2025-00842 │ Maria Garcia │ Contractor │ IT         │    │    │
+│  │  │ [████████████████████████████████] ✓ Complete           │    │    │
+│  │  │ Risk: ●○○○○ LOW        │ Recommendation: PROCEED        │    │    │
+│  │  │ ✓ All checks clear                                      │    │    │
+│  │  │ [View Report] [Proceed to Offer]                        │    │    │
+│  │  └─────────────────────────────────────────────────────────┘    │    │
+│  │                                                                  │    │
+│  │  [Show More...]                                                 │    │
+│  │                                                                  │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+**New Screening Form:**
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  ☰ ELILE                  New Screening Request           Jane HR ▼    │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  CANDIDATE INFORMATION                                    1/4   │    │
+│  ├─────────────────────────────────────────────────────────────────┤    │
+│  │                                                                  │    │
+│  │  ┌─────────────────────┐  ┌─────────────────────┐              │    │
+│  │  │ First Name *        │  │ Last Name *         │              │    │
+│  │  │ [Sarah            ] │  │ [Johnson          ] │              │    │
+│  │  └─────────────────────┘  └─────────────────────┘              │    │
+│  │                                                                  │    │
+│  │  ┌─────────────────────┐  ┌─────────────────────┐              │    │
+│  │  │ Email *             │  │ Phone               │              │    │
+│  │  │ [sarah@email.com  ] │  │ [555-123-4567     ] │              │    │
+│  │  └─────────────────────┘  └─────────────────────┘              │    │
+│  │                                                                  │    │
+│  │  ┌─────────────────────────────────────────────┐               │    │
+│  │  │ Date of Birth *                             │               │    │
+│  │  │ [MM/DD/YYYY        ]  📅                    │               │    │
+│  │  └─────────────────────────────────────────────┘               │    │
+│  │                                                                  │    │
+│  │  ┌─────────────────────────────────────────────────────────┐    │    │
+│  │  │ SSN (Last 4 required; full SSN speeds processing)       │    │    │
+│  │  │ [XXX-XX-1234      ]                                     │    │    │
+│  │  └─────────────────────────────────────────────────────────┘    │    │
+│  │                                                                  │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  POSITION DETAILS                                         2/4   │    │
+│  ├─────────────────────────────────────────────────────────────────┤    │
+│  │                                                                  │    │
+│  │  ┌─────────────────────┐  ┌─────────────────────┐              │    │
+│  │  │ Position Title *    │  │ Department *        │              │    │
+│  │  │ [Senior Analyst   ] │  │ [Finance ▼        ] │              │    │
+│  │  └─────────────────────┘  └─────────────────────┘              │    │
+│  │                                                                  │    │
+│  │  ┌─────────────────────┐  ┌─────────────────────┐              │    │
+│  │  │ Role Category *     │  │ Work Location *     │              │    │
+│  │  │ [Finance ▼        ] │  │ [US-California ▼  ] │              │    │
+│  │  └─────────────────────┘  └─────────────────────┘              │    │
+│  │                                                                  │    │
+│  │  ⓘ Role category determines default service configuration      │    │
+│  │                                                                  │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  SERVICE CONFIGURATION                                    3/4   │    │
+│  ├─────────────────────────────────────────────────────────────────┤    │
+│  │                                                                  │    │
+│  │  Use preset: [Finance - Standard ▼]   or customize below       │    │
+│  │                                                                  │    │
+│  │  ┌───────────────────────────────────────────────────────────┐  │    │
+│  │  │ SERVICE TIER (What data sources)                          │  │    │
+│  │  │                                                            │  │    │
+│  │  │  ◉ Standard                    ○ Enhanced                  │  │    │
+│  │  │    Core data sources             + Premium sources         │  │    │
+│  │  │    Identity, criminal,           OSINT, behavioral,        │  │    │
+│  │  │    employment, education,        data brokers, dark web    │  │    │
+│  │  │    credit, sanctions                                       │  │    │
+│  │  └───────────────────────────────────────────────────────────┘  │    │
+│  │                                                                  │    │
+│  │  ┌───────────────────────────────────────────────────────────┐  │    │
+│  │  │ MONITORING (How often)                                    │  │    │
+│  │  │                                                            │  │    │
+│  │  │  ◉ V0 Pre-screen Only          ○ V1 Annual                │  │    │
+│  │  │  ○ V2 Monthly                  ○ V3 Bi-monthly            │  │    │
+│  │  └───────────────────────────────────────────────────────────┘  │    │
+│  │                                                                  │    │
+│  │  ┌───────────────────────────────────────────────────────────┐  │    │
+│  │  │ SEARCH DEPTH (How wide)                                   │  │    │
+│  │  │                                                            │  │    │
+│  │  │  ○ D1 Subject Only             ◉ D2 Direct Connections    │  │    │
+│  │  │  ○ D3 Extended Network (requires Enhanced)                │  │    │
+│  │  └───────────────────────────────────────────────────────────┘  │    │
+│  │                                                                  │    │
+│  │  ┌───────────────────────────────────────────────────────────┐  │    │
+│  │  │ HUMAN REVIEW                                              │  │    │
+│  │  │                                                            │  │    │
+│  │  │  ○ Automated Only              ◉ Analyst Review           │  │    │
+│  │  │  ○ Investigator Escalation     ○ Dedicated Case Manager   │  │    │
+│  │  └───────────────────────────────────────────────────────────┘  │    │
+│  │                                                                  │    │
+│  │  Configuration: Standard | V0 | D2 | Analyst                   │    │
+│  │  Estimated Cost: $32.00                                         │    │
+│  │                                                                  │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  CONSENT                                                  4/4   │    │
+│  ├─────────────────────────────────────────────────────────────────┤    │
+│  │                                                                  │    │
+│  │  ◉ Send consent request to candidate via email                 │    │
+│  │  ○ Candidate will provide consent in person                    │    │
+│  │  ○ Consent already obtained (Reference: [____________])        │    │
+│  │                                                                  │    │
+│  │  ☑ Include California ICRAA disclosure (required for CA)       │    │
+│  │  ☑ Include FCRA Summary of Rights                              │    │
+│  │                                                                  │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  [Cancel]                                    [Save Draft] [Submit →]    │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+### 15.3 Review Dashboard (Analyst Interface)
+
+**Purpose:** Enable analysts to efficiently review findings and document decisions.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  ☰ ELILE                   Review Dashboard            Amy Analyst ▼   │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌──────────────────────────────────────────────────────────────────┐   │
+│  │ 📋 REVIEW QUEUE                                    [Filters ▼]   │   │
+│  ├──────────────────────────────────────────────────────────────────┤   │
+│  │                                                                   │   │
+│  │  ┌─────────────────┬───────────────────────────────────────────┐ │   │
+│  │  │                 │                                           │ │   │
+│  │  │  MY QUEUE (7)   │  Case: SCR-2025-00847                    │ │   │
+│  │  │                 │  John Smith │ VP Operations │ Energy     │ │   │
+│  │  │  ─────────────  │                                           │ │   │
+│  │  │                 │  Risk Score: ●●●○○ 42 (MODERATE)         │ │   │
+│  │  │  ▶ SCR-00847 ●● │  Time in Queue: 2h 14m                   │ │   │
+│  │  │    John Smith   │                                           │ │   │
+│  │  │    Moderate     │  ┌─────────────────────────────────────┐ │ │   │
+│  │  │                 │  │ FINDINGS TO REVIEW                   │ │ │   │
+│  │  │  ─────────────  │  ├─────────────────────────────────────┤ │ │   │
+│  │  │                 │  │                                      │ │ │   │
+│  │  │  SCR-00852 ●    │  │  ⚠ EMPLOYMENT GAP           [OPEN]  │ │ │   │
+│  │  │    Maria Lopez  │  │  ──────────────────────────────────  │ │ │   │
+│  │  │    Low          │  │  8-month gap: Jun 2021 - Feb 2022   │ │ │   │
+│  │  │                 │  │  Employer "TechCorp" did not respond │ │ │   │
+│  │  │  SCR-00849 ●●   │  │  to verification requests (3 attempts)│ │   │
+│  │  │    Alex Chen    │  │                                      │ │ │   │
+│  │  │    Moderate     │  │  Source: The Work Number, Direct     │ │ │   │
+│  │  │                 │  │  Confidence: 0.92                    │ │ │   │
+│  │  │  SCR-00848 ●●●  │  │                                      │ │ │   │
+│  │  │    Bob Wilson   │  │  AI Assessment: Gap may indicate     │ │ │   │
+│  │  │    High         │  │  undisclosed employment or personal  │ │ │   │
+│  │  │                 │  │  circumstances. Recommend interview. │ │ │   │
+│  │  │  SCR-00846 ●    │  │                                      │ │ │   │
+│  │  │    Carol Davis  │  │  Analyst Action:                     │ │ │   │
+│  │  │    Low          │  │  ○ Confirm as risk                   │ │ │   │
+│  │  │                 │  │  ○ Dismiss (with reason)             │ │ │   │
+│  │  │  SCR-00844 ●    │  │  ◉ Request more information          │ │ │   │
+│  │  │    Dan Evans    │  │                                      │ │ │   │
+│  │  │    Low          │  │  Notes: [Recommend HR interview    ] │ │ │   │
+│  │  │                 │  │         [to clarify gap. Candidate ] │ │ │   │
+│  │  │  SCR-00843 ●●   │  │         [has strong refs otherwise ] │ │ │   │
+│  │  │    Eve Foster   │  │                                      │ │ │   │
+│  │  │    Moderate     │  │  [Save Note]        [Resolve Finding]│ │ │   │
+│  │  │                 │  │                                      │ │ │   │
+│  │  └─────────────────┴──┴──────────────────────────────────────┘ │ │   │
+│  │                                                                   │   │
+│  │                       │  ⚠ CIVIL JUDGMENT          [PENDING]  │ │   │
+│  │                       │  ──────────────────────────────────    │ │   │
+│  │                       │  Judgment: $4,200 (2019)               │ │   │
+│  │                       │  Status: Satisfied/Paid 2020-03-15     │ │   │
+│  │                       │  Source: LA County Superior Court      │ │   │
+│  │                       │  Confidence: 0.99                      │ │   │
+│  │                       │                                        │ │   │
+│  │                       │  AI Assessment: Resolved financial     │ │   │
+│  │                       │  matter. No ongoing concern unless     │ │   │
+│  │                       │  pattern exists.                       │ │   │
+│  │                       │                                        │ │   │
+│  │                       │  [Confirm Clear] [Flag for Review]     │ │   │
+│  │                       │                                        │ │   │
+│  │                       └────────────────────────────────────────┘ │   │
+│  │                                                                   │   │
+│  │  ┌─────────────────────────────────────────────────────────────┐ │   │
+│  │  │ CASE SUMMARY                                                │ │   │
+│  │  ├─────────────────────────────────────────────────────────────┤ │   │
+│  │  │                                                              │ │   │
+│  │  │  Total Findings: 8     Reviewed: 6     Pending: 2          │ │   │
+│  │  │                                                              │ │   │
+│  │  │  ✓ Identity (clear)    ✓ Criminal (clear)                  │ │   │
+│  │  │  ⚠ Financial (review)  ⚠ Employment (review)               │ │   │
+│  │  │  ✓ Education (clear)   ✓ Sanctions (clear)                 │ │   │
+│  │  │  ✓ References (clear)  ✓ Connections (clear)               │ │   │
+│  │  │                                                              │ │   │
+│  │  │  [View Full Report]  [View Connection Graph]                │ │   │
+│  │  │                                                              │ │   │
+│  │  └─────────────────────────────────────────────────────────────┘ │   │
+│  │                                                                   │   │
+│  │  ┌─────────────────────────────────────────────────────────────┐ │   │
+│  │  │ CASE DECISION                                               │ │   │
+│  │  ├─────────────────────────────────────────────────────────────┤ │   │
+│  │  │                                                              │ │   │
+│  │  │  Overall Recommendation:                                    │ │   │
+│  │  │  ○ Clear - Proceed with hire                               │ │   │
+│  │  │  ◉ Proceed with Caution - Minor concerns noted             │ │   │
+│  │  │  ○ Hold - Additional investigation needed                  │ │   │
+│  │  │  ○ Do Not Proceed - Significant concerns                   │ │   │
+│  │  │                                                              │ │   │
+│  │  │  Decision Notes (required):                                 │ │   │
+│  │  │  ┌───────────────────────────────────────────────────────┐ │ │   │
+│  │  │  │ Employment gap and resolved judgment noted. Gap      │ │ │   │
+│  │  │  │ should be addressed in interview but does not        │ │ │   │
+│  │  │  │ disqualify. Financial matter fully resolved.         │ │ │   │
+│  │  │  └───────────────────────────────────────────────────────┘ │ │   │
+│  │  │                                                              │ │   │
+│  │  │  [Save Draft]              [Complete Review & Submit →]     │ │   │
+│  │  │                                                              │ │   │
+│  │  └─────────────────────────────────────────────────────────────┘ │   │
+│  │                                                                   │   │
+│  └──────────────────────────────────────────────────────────────────┘   │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+### 15.4 Monitoring Console (Security Interface)
+
+**Purpose:** Monitor ongoing screenings and respond to alerts.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  ☰ ELILE               Monitoring Console             Mike Security ▼  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  🔔 ACTIVE ALERTS                                    [Settings] │    │
+│  ├─────────────────────────────────────────────────────────────────┤    │
+│  │                                                                  │    │
+│  │  ┌───────────────────────────────────────────────────────────┐  │    │
+│  │  │ 🔴 CRITICAL │ ALT-2025-00127 │ 14 min ago                │  │    │
+│  │  │ ─────────────────────────────────────────────────────────  │  │    │
+│  │  │ Subject: James Wilson (Treasury Operations)               │  │    │
+│  │  │ Alert: New sanctions match - OFAC SDN List update         │  │    │
+│  │  │ Match Type: Name + DOB (confidence: 0.94)                 │  │    │
+│  │  │ Monitoring: V3 Bi-monthly │ Enhanced Tier                 │  │    │
+│  │  │                                                            │  │    │
+│  │  │ [View Details] [Acknowledge] [Escalate to Investigator]   │  │    │
+│  │  └───────────────────────────────────────────────────────────┘  │    │
+│  │                                                                  │    │
+│  │  ┌───────────────────────────────────────────────────────────┐  │    │
+│  │  │ 🟠 HIGH │ ALT-2025-00126 │ 2 hours ago                   │  │    │
+│  │  │ ─────────────────────────────────────────────────────────  │  │    │
+│  │  │ Subject: Patricia Chen (IT Security)                      │  │    │
+│  │  │ Alert: Evolution signal - Rapid network expansion         │  │    │
+│  │  │ Detail: Connection count +280% in 30 days (12 → 46)      │  │    │
+│  │  │ Pattern: "Network opacity" signature detected             │  │    │
+│  │  │ Monitoring: V2 Monthly │ Enhanced Tier                    │  │    │
+│  │  │                                                            │  │    │
+│  │  │ [View Network Graph] [Acknowledge] [Schedule Interview]   │  │    │
+│  │  └───────────────────────────────────────────────────────────┘  │    │
+│  │                                                                  │    │
+│  │  ┌───────────────────────────────────────────────────────────┐  │    │
+│  │  │ 🟡 MEDIUM │ ALT-2025-00125 │ 6 hours ago                 │  │    │
+│  │  │ ─────────────────────────────────────────────────────────  │  │    │
+│  │  │ Subject: Robert Kim (Operations)                          │  │    │
+│  │  │ Alert: New civil judgment filed                           │  │    │
+│  │  │ Detail: Breach of contract suit, $45,000                  │  │    │
+│  │  │ Monitoring: V1 Annual │ Standard Tier                     │  │    │
+│  │  │                                                            │  │    │
+│  │  │ [View Details] [Acknowledge] [Notify HR]                  │  │    │
+│  │  └───────────────────────────────────────────────────────────┘  │    │
+│  │                                                                  │    │
+│  │  [Show 12 more alerts...]                                       │    │
+│  │                                                                  │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  📊 MONITORING OVERVIEW                                         │    │
+│  ├─────────────────────────────────────────────────────────────────┤    │
+│  │                                                                  │    │
+│  │  ┌──────────────────────────────────────────────────────────┐   │    │
+│  │  │ MONITORED POPULATION                                      │   │    │
+│  │  │                                                           │   │    │
+│  │  │ Total Monitored: 12,847                                   │   │    │
+│  │  │                                                           │   │    │
+│  │  │ By Vigilance:          By Tier:                          │   │    │
+│  │  │ V1 Annual:   8,234     Standard:  11,429                 │   │    │
+│  │  │ V2 Monthly:  3,891     Enhanced:   1,418                 │   │    │
+│  │  │ V3 Bi-mthly:   722                                       │   │    │
+│  │  │                                                           │   │    │
+│  │  │ Checks Scheduled Today: 847                               │   │    │
+│  │  │ Checks Completed Today: 612                               │   │    │
+│  │  │ Checks Pending: 235                                       │   │    │
+│  │  └──────────────────────────────────────────────────────────┘   │    │
+│  │                                                                  │    │
+│  │  ┌──────────────────────────────────────────────────────────┐   │    │
+│  │  │ ALERT TREND (Last 30 Days)                               │   │    │
+│  │  │                                                           │   │    │
+│  │  │  Critical ▁▁▂▁▁▁▁▁▁▁▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█                │   │    │
+│  │  │  High     ▂▃▂▄▃▂▃▂▄▃▂▃▂▄▃▂▃▂▄▃▂▃▂▄▃▂▃▂▄▅                │   │    │
+│  │  │  Medium   ▄▅▄▅▄▅▄▅▄▅▄▅▄▅▄▅▄▅▄▅▄▅▄▅▄▅▄▅▄▅                │   │    │
+│  │  │  Low      ▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆                │   │    │
+│  │  │           └────────────────────────────────┘              │   │    │
+│  │  │           Dec 28                        Jan 27            │   │    │
+│  │  └──────────────────────────────────────────────────────────┘   │    │
+│  │                                                                  │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  🔍 QUICK SEARCH                          [Advanced Search →]   │    │
+│  │  [Search by name, ID, or department...                        ] │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+### 15.5 Subject Portal (Candidate/Employee Interface)
+
+**Purpose:** Allow subjects to view their screening status, provide information, and dispute findings.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  ELILE                  Candidate Portal                   Sarah J. ▼  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │                                                                  │    │
+│  │      Hello Sarah,                                               │    │
+│  │                                                                  │    │
+│  │      Your background check for Acme Corporation is in progress.│    │
+│  │                                                                  │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  STATUS                                                         │    │
+│  ├─────────────────────────────────────────────────────────────────┤    │
+│  │                                                                  │    │
+│  │  [✓] Consent Provided ────────────────────────────── Jan 25    │    │
+│  │      │                                                          │    │
+│  │  [✓] Information Collected ───────────────────────── Jan 25    │    │
+│  │      │                                                          │    │
+│  │  [▶] Verification In Progress ─────────────────────  Now       │    │
+│  │      │                                                          │    │
+│  │      │  ✓ Identity Verification      Complete                  │    │
+│  │      │  ✓ Criminal Records           Complete                  │    │
+│  │      │  ▶ Employment History         In Progress               │    │
+│  │      │  ○ Education Verification     Pending                   │    │
+│  │      │  ○ Reference Checks           Pending                   │    │
+│  │      │                                                          │    │
+│  │  [ ] Review ──────────────────────────────────────── Pending   │    │
+│  │      │                                                          │    │
+│  │  [ ] Complete ────────────────────────────────────── Pending   │    │
+│  │                                                                  │    │
+│  │  Estimated Completion: January 28, 2025                        │    │
+│  │                                                                  │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  ⚠ ACTION NEEDED                                                │    │
+│  ├─────────────────────────────────────────────────────────────────┤    │
+│  │                                                                  │    │
+│  │  We were unable to verify one of your previous employers.      │    │
+│  │  Please provide additional documentation.                       │    │
+│  │                                                                  │    │
+│  │  Employer: TechCorp Inc.                                        │    │
+│  │  Dates: June 2021 - February 2022                              │    │
+│  │                                                                  │    │
+│  │  Acceptable documentation:                                      │    │
+│  │  • W-2 form for 2021 or 2022                                   │    │
+│  │  • Pay stubs from TechCorp                                      │    │
+│  │  • Employment letter on company letterhead                     │    │
+│  │                                                                  │    │
+│  │  [Upload Documentation]                                         │    │
+│  │                                                                  │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  YOUR RIGHTS                                                    │    │
+│  ├─────────────────────────────────────────────────────────────────┤    │
+│  │                                                                  │    │
+│  │  Under federal and state law, you have the right to:           │    │
+│  │                                                                  │    │
+│  │  • Request a copy of your background check report              │    │
+│  │  • Dispute any information you believe is inaccurate           │    │
+│  │  • Receive notice before any adverse action is taken           │    │
+│  │                                                                  │    │
+│  │  [Request Report Copy]  [Start a Dispute]  [Learn More]        │    │
+│  │                                                                  │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  Questions? Contact support@elile.com or call 1-800-XXX-XXXX           │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+**Dispute Flow:**
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  ELILE                  File a Dispute                     Sarah J. ▼  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐    │
+│  │  DISPUTE INFORMATION                                            │    │
+│  ├─────────────────────────────────────────────────────────────────┤    │
+│  │                                                                  │    │
+│  │  You are disputing information in your background check.        │    │
+│  │  Please provide details below. We are required to investigate  │    │
+│  │  your dispute within 30 days.                                   │    │
+│  │                                                                  │    │
+│  │  ┌───────────────────────────────────────────────────────────┐  │    │
+│  │  │ What are you disputing? *                                 │  │    │
+│  │  │                                                            │  │    │
+│  │  │ ○ Criminal record information                             │  │    │
+│  │  │ ◉ Employment history                                      │  │    │
+│  │  │ ○ Education verification                                  │  │    │
+│  │  │ ○ Financial/credit information                            │  │    │
+│  │  │ ○ Identity information                                    │  │    │
+│  │  │ ○ Other                                                   │  │    │
+│  │  └───────────────────────────────────────────────────────────┘  │    │
+│  │                                                                  │    │
+│  │  ┌───────────────────────────────────────────────────────────┐  │    │
+│  │  │ Describe the error: *                                     │  │    │
+│  │  │ ┌─────────────────────────────────────────────────────┐   │  │    │
+│  │  │ │ The report shows I did not work at TechCorp from    │   │  │    │
+│  │  │ │ June 2021 to February 2022. This is incorrect. I    │   │  │    │
+│  │  │ │ was employed there during this entire period. The   │   │  │    │
+│  │  │ │ company has since closed, which may explain why     │   │  │    │
+│  │  │ │ verification failed.                                 │   │  │    │
+│  │  │ └─────────────────────────────────────────────────────┘   │  │    │
+│  │  └───────────────────────────────────────────────────────────┘  │    │
+│  │                                                                  │    │
+│  │  ┌───────────────────────────────────────────────────────────┐  │    │
+│  │  │ Supporting documentation (optional but recommended):      │  │    │
+│  │  │                                                            │  │    │
+│  │  │  📎 W2_2021_TechCorp.pdf                    [Remove]      │  │    │
+│  │  │  📎 TechCorp_PayStub_Dec2021.pdf            [Remove]      │  │    │
+│  │  │                                                            │  │    │
+│  │  │  [+ Add More Files]                                       │  │    │
+│  │  └───────────────────────────────────────────────────────────┘  │    │
+│  │                                                                  │    │
+│  │  ┌───────────────────────────────────────────────────────────┐  │    │
+│  │  │ ☑ I certify that the information I have provided is      │  │    │
+│  │  │   true and accurate to the best of my knowledge.          │  │    │
+│  │  └───────────────────────────────────────────────────────────┘  │    │
+│  │                                                                  │    │
+│  │  [Cancel]                               [Submit Dispute →]      │    │
+│  │                                                                  │    │
+│  └─────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  What happens next?                                                     │
+│  1. We will investigate your dispute within 30 days                    │
+│  2. You will receive written notification of the results               │
+│  3. If we correct information, we'll notify anyone who received it     │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+### 15.6 Admin Console
+
+**Purpose:** System configuration and management for administrators.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  ☰ ELILE                   Admin Console               Admin User ▼    │
+├──────────┬──────────────────────────────────────────────────────────────┤
+│          │                                                              │
+│  MENU    │  COMPLIANCE RULES                              [+ New Rule] │
+│          │                                                              │
+│ ─────────│  ┌───────────────────────────────────────────────────────┐  │
+│          │  │ 🔍 Filter: [All Locales ▼] [All Check Types ▼]        │  │
+│ Dashboard│  └───────────────────────────────────────────────────────┘  │
+│          │                                                              │
+│ ─────────│  ┌───────────────────────────────────────────────────────┐  │
+│          │  │                                                        │  │
+│ Compliance│ │  Rule ID: FCRA-001                                    │  │
+│ Rules    │  │  Jurisdiction: US Federal                             │  │
+│ ▶        │  │  Check Type: Criminal Records                         │  │
+│          │  │  Status: ● Active                                     │  │
+│ Providers│  │                                                        │  │
+│          │  │  Requirements:                                         │  │
+│ Service  │  │  • 7-year lookback limit                              │  │
+│ Configs  │  │  • Disposition required (no arrest-only)              │  │
+│          │  │  • Relevance to position required                     │  │
+│ Users    │  │                                                        │  │
+│          │  │  [Edit] [Disable] [View History]                      │  │
+│ Audit    │  │                                                        │  │
+│ Logs     │  └───────────────────────────────────────────────────────┘  │
+│          │                                                              │
+│ System   │  ┌───────────────────────────────────────────────────────┐  │
+│ Health   │  │                                                        │  │
+│          │  │  Rule ID: CA-ICRAA-003                                │  │
+│ ─────────│  │  Jurisdiction: US-California                          │  │
+│          │  │  Check Type: Criminal Records                         │  │
+│ Settings │  │  Status: ● Active                                     │  │
+│          │  │                                                        │  │
+│          │  │  Requirements (in addition to FCRA):                  │  │
+│          │  │  • Additional disclosure to subject                   │  │
+│          │  │  • Subject can receive copy before employer           │  │
+│          │  │  • Specific adverse action procedures                 │  │
+│          │  │                                                        │  │
+│          │  │  [Edit] [Disable] [View History]                      │  │
+│          │  │                                                        │  │
+│          │  └───────────────────────────────────────────────────────┘  │
+│          │                                                              │
+│          │  ┌───────────────────────────────────────────────────────┐  │
+│          │  │                                                        │  │
+│          │  │  Rule ID: GDPR-DATA-002                               │  │
+│          │  │  Jurisdiction: EU                                     │  │
+│          │  │  Check Type: Behavioral Data                          │  │
+│          │  │  Status: ● Active                                     │  │
+│          │  │                                                        │  │
+│          │  │  Restrictions:                                         │  │
+│          │  │  • Explicit consent required (separate from screening)│  │
+│          │  │  • Exclude: political, religious, health, orientation │  │
+│          │  │  • Purpose limitation enforced                        │  │
+│          │  │  • Right to erasure supported                         │  │
+│          │  │                                                        │  │
+│          │  │  [Edit] [Disable] [View History]                      │  │
+│          │  │                                                        │  │
+│          │  └───────────────────────────────────────────────────────┘  │
+│          │                                                              │
+│          │  [Show 47 more rules...]                                    │
+│          │                                                              │
+└──────────┴──────────────────────────────────────────────────────────────┘
+```
+<div style="break-after: page;"></div>
+
+### 15.7 Interface Requirements Summary
+
+| Interface | Key Requirements |
+|-----------|------------------|
+| **Screening Portal** | Quick screening initiation, status tracking, report access, HRIS integration hooks |
+| **Review Dashboard** | Queue management, finding-by-finding review, decision documentation, AI assistance |
+| **Monitoring Console** | Real-time alerts, alert triage, trend visualization, quick subject lookup |
+| **Admin Console** | Rule management, provider configuration, user management, audit access |
+| **Subject Portal** | Status visibility, document upload, dispute filing, FCRA rights information |
+| **Executive Dashboard** | Portfolio metrics, trend analysis, risk distribution, cost tracking |
+
+### 15.8 Cross-Cutting UI Requirements
+
+**Accessibility (WCAG 2.1 AA):**
+- Keyboard navigation for all functions
+- Screen reader compatibility
+- Sufficient color contrast
+- Focus indicators
+- Alt text for all images/icons
+
+**Responsiveness:**
+- Desktop-first design (primary use case)
+- Tablet support for Review Dashboard (field analysts)
+- Mobile support for Subject Portal only
+- Minimum supported width: 1024px (desktop), 768px (tablet), 320px (mobile)
+
+**Performance:**
+- Initial page load < 2 seconds
+- Subsequent navigation < 500ms
+- Real-time updates via WebSocket for alerts
+- Pagination for large data sets (50 items default)
+
+**Security:**
+- Session timeout: 30 minutes idle
+- Re-authentication for sensitive actions (adverse action, dispute resolution)
+- Audit logging of all user actions
+- Role-based UI element visibility
+
+---
+
+*Document Version: 0.5.0*
+*Last Updated: 2025-01-28*
