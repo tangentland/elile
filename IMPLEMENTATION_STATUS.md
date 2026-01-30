@@ -55,6 +55,7 @@ entities (4 tables)
 3. **Versioned profiles**: Each investigation creates a new profile version for temporal tracking
 4. **Freshness tracking**: Cache entries track fresh/stale/expired states
 5. **PostgreSQL-specific features**: UUID type, JSONB, cascade deletes
+6. **UUIDv7 for all identifiers**: Time-ordered UUIDs (Python 3.14 native) for natural chronological sorting and better index performance
 
 **Dependencies Added**:
 - sqlalchemy[asyncio]>=2.0.0

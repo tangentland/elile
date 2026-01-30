@@ -66,6 +66,15 @@ Expected tables:
 
 ## Database Schema
 
+### UUID Strategy
+
+All primary keys use **UUIDv7** (time-ordered UUIDs), which provides:
+- **Natural chronological ordering**: Records sort by creation time without additional timestamp columns
+- **Distributed generation**: No central ID authority needed
+- **Index efficiency**: Better B-tree performance than random UUIDv4
+
+Python 3.14+ includes native `uuid.uuid7()` support.
+
 ### Core Tables
 
 #### entities
@@ -74,7 +83,7 @@ Stores the fundamental objects being investigated.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| entity_id | UUID (PK) | Unique identifier |
+| entity_id | UUIDv7 (PK) | Time-ordered unique identifier |
 | entity_type | VARCHAR(50) | Type: individual, organization, address |
 | canonical_identifiers | JSONB | Encrypted identifiers (SSN, EIN, etc.) |
 | created_at | TIMESTAMP | Creation timestamp |
@@ -90,7 +99,7 @@ Versioned snapshots of investigations, enabling temporal tracking and comparison
 
 | Column | Type | Description |
 |--------|------|-------------|
-| profile_id | UUID (PK) | Unique identifier |
+| profile_id | UUIDv7 (PK) | Time-ordered unique identifier |
 | entity_id | UUID (FK) | Reference to entity |
 | version | INTEGER | Version number (incremental) |
 | trigger_type | VARCHAR(50) | screening, monitoring, manual |
@@ -119,7 +128,7 @@ Tracks discovered relationships between entities.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| relation_id | UUID (PK) | Unique identifier |
+| relation_id | UUIDv7 (PK) | Time-ordered unique identifier |
 | from_entity_id | UUID (FK) | Source entity |
 | to_entity_id | UUID (FK) | Target entity |
 | relation_type | VARCHAR(100) | employer, household, etc. |
@@ -139,7 +148,7 @@ Stores cached provider responses to minimize API calls and costs.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| cache_id | UUID (PK) | Unique identifier |
+| cache_id | UUIDv7 (PK) | Time-ordered unique identifier |
 | entity_id | UUID (FK) | Reference to entity |
 | provider_id | VARCHAR(100) | Provider identifier |
 | check_type | VARCHAR(100) | Type of check performed |

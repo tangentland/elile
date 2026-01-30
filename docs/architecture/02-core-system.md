@@ -1098,10 +1098,12 @@ Pattern detection across profile versions to identify emerging risks.
 
 ## Core Data Models
 
+All models use **UUIDv7** for primary keys, providing time-ordered identifiers that enable natural chronological sorting without additional timestamp-based ordering.
+
 ```python
 class Entity(BaseModel):
     """Core entity in the system."""
-    entity_id: UUID
+    entity_id: UUID  # UUIDv7 (time-ordered)
     entity_type: EntityType  # individual | organization | address
     canonical_identifiers: dict[str, str]  # SSN, EIN, passport, etc.
     created_at: datetime

@@ -114,6 +114,7 @@ src/elile/
 - Python 3.14 target version
 - Line length: 100 characters (Black formatting)
 - Strict type hints (mypy strict mode)
+- **UUIDv7 for all identifiers**: Time-ordered UUIDs (Python 3.14 native `uuid.uuid7()`) for natural chronological sorting
 - All operations must accept locale parameter
 - Comprehensive audit logging for all data access
 - Rate limiting and retry logic for external APIs
