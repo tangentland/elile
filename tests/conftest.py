@@ -1,13 +1,16 @@
 """Pytest fixtures for Elile tests."""
 
-from collections.abc import Generator
+import asyncio
+from collections.abc import AsyncGenerator, Generator
 from unittest.mock import MagicMock, patch
 
 import pytest
 from pydantic import SecretStr
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from elile.agent.state import AgentState, EntityConnection, RiskFinding, SearchResult
 from elile.config.settings import ModelProvider, Settings
+from elile.db.models.base import Base
 
 
 @pytest.fixture
@@ -84,3 +87,50 @@ def initial_agent_state() -> AgentState:
         should_continue=True,
         final_report=None,
     )
+
+
+# Database fixtures
+
+
+@pytest.fixture(scope="session")
+def event_loop():
+    """Create an instance of the default event loop for the test session."""
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
+
+
+@pytest.fixture(scope="session")
+async def test_engine():
+    """Create a test database engine."""
+    # Use in-memory SQLite for tests
+    engine = create_async_engine(
+        "sqlite+aiosqlite:///:memory:",
+        echo=False,
+    )
+
+    # Create all tables
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    yield engine
+
+    # Drop all tables
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+
+    await engine.dispose()
+
+
+@pytest.fixture
+async def db_session(test_engine) -> AsyncGenerator[AsyncSession, None]:
+    """Create a test database session."""
+    async_session = async_sessionmaker(
+        test_engine,
+        class_=AsyncSession,
+        expire_on_commit=False,
+    )
+
+    async with async_session() as session:
+        yield session
+        await session.rollback()

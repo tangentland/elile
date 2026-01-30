@@ -45,6 +45,7 @@ INCONSISTENCY_BASE_SCORES: dict[InconsistencyType, float] = {
     InconsistencyType.SYSTEMATIC_PATTERN: 0.95,
 }
 
+
 # Map base score to severity level
 def _score_to_severity(score: float) -> Literal["low", "medium", "high", "critical"]:
     """Convert a risk score to severity level.
@@ -358,9 +359,7 @@ class InconsistencyAnalyzer:
             RiskFinding for the individual inconsistency.
         """
         # Calculate adjusted score
-        base_score = INCONSISTENCY_BASE_SCORES.get(
-            inconsistency.inconsistency_type, 0.5
-        )
+        base_score = INCONSISTENCY_BASE_SCORES.get(inconsistency.inconsistency_type, 0.5)
         adjusted_score = min(1.0, base_score * pattern_modifier)
         severity = _score_to_severity(adjusted_score)
 
@@ -659,9 +658,7 @@ class InconsistencyAnalyzer:
         Returns:
             Fully classified Inconsistency object.
         """
-        inc_type, rationale = self.classify_inconsistency(
-            field, value_a, value_b, type_a, type_b
-        )
+        inc_type, rationale = self.classify_inconsistency(field, value_a, value_b, type_a, type_b)
 
         base_score = INCONSISTENCY_BASE_SCORES.get(inc_type, 0.5)
         severity = _score_to_severity(base_score)

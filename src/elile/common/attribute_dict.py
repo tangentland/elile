@@ -14,6 +14,7 @@ import sys
 import time
 import uuid
 
+
 class BaseBaseString(type):
     def __instancecheck__(cls, instance):
         return isinstance(instance, (bytes, str))
@@ -21,6 +22,7 @@ class BaseBaseString(type):
     def __subclasshook__(cls, thing):
         # TODO: What should go here?
         raise NotImplemented
+
 
 def with_metaclass(meta, *bases):
     class metaclass(meta):
@@ -32,10 +34,12 @@ def with_metaclass(meta, *bases):
                 return type.__new__(cls, name, (), d)
             return meta(name, bases, d)
 
-    return metaclass('temporary_class', None, {})
+    return metaclass("temporary_class", None, {})
+
 
 class basestring(with_metaclass(BaseBaseString)):
     pass
+
 
 def _recursive_repr(item):
     """Hack around python `repr` to deterministically represent dictionaries.
@@ -47,37 +51,38 @@ def _recursive_repr(item):
         result = str(item)
 
     elif isinstance(item, list):
-        result = '[{}]'.format(', '.join([_recursive_repr(x) for x in item]))
+        result = "[{}]".format(", ".join([_recursive_repr(x) for x in item]))
 
     elif isinstance(item, (dict, AD, CAD)):
         kv_pairs = [
-            '{}: {}'.format(_recursive_repr(k), _recursive_repr(item[k]))
-            for k in sorted(item)
+            "{}: {}".format(_recursive_repr(k), _recursive_repr(item[k])) for k in sorted(item)
         ]
-        result = '{' + ', '.join(kv_pairs) + '}'
+        result = "{" + ", ".join(kv_pairs) + "}"
     else:
         result = repr(item)
     return result
 
 
 def get_hash(item):
-    repr_ = _recursive_repr(item).encode('utf-8')
+    repr_ = _recursive_repr(item).encode("utf-8")
     return hashlib.md5(repr_).hexdigest()
+
 
 def get_hash_int(item):
     return int(get_hash(item), base=16)
+
 
 def escape_chars(text, chars):
     """Helper function to escape uncomfortable characters."""
     text = str(text)
     chars = list(set(chars))
 
-    if '\\' in chars:
-        chars.remove('\\')
-        chars.insert(0, '\\')
+    if "\\" in chars:
+        chars.remove("\\")
+        chars.insert(0, "\\")
 
     for ch in chars:
-        text = text.replace(ch, '\\' + ch)
+        text = text.replace(ch, "\\" + ch)
 
     return text
 
@@ -115,13 +120,15 @@ class JSONEncoder(json.JSONEncoder):
 ### json object serializer
 def json_safe(obj):
     """JSON dumper for objects not serializable by default json code"""
-    return json.dumps(obj, cls=JSONEncoder, default=str, indent=4, separators=(",", ": "), sort_keys=True)
-
+    return json.dumps(
+        obj, cls=JSONEncoder, default=str, indent=4, separators=(",", ": "), sort_keys=True
+    )
 
 
 ########################################################################################################
 # AD - Persistent Attribute Accessible Dict Class
 ########################################################################################################
+
 
 class Attribute_Dict_Exception(Exception):
     def __init__(self, message, payload=None):
@@ -134,6 +141,7 @@ class Attribute_Dict_Exception(Exception):
         rv["message"] = self.message
         return rv
 
+
 class Attribute_Dict_Error(Attribute_Dict_Exception):
     def __init__(self, message, payload=None):
         Attribute_Dict_Exception.__init__(self, message, payload)
@@ -143,42 +151,43 @@ class Attribute_Dict_Error(Attribute_Dict_Exception):
 # AD - nesting utility functions
 ########################################################################################################
 
+
 def __deep_keys(d):
     """Recursive key iterator"""
 
     def _dkeys(dk):
         """Interior recursion function"""
         dkvs = []
-        if not hasattr(dk, 'items'):
+        if not hasattr(dk, "items"):
             return dkvs
         for _k, _v in dict.items(dk):
-            if _k == '__dict__':
+            if _k == "__dict__":
                 dkvs.append(_k)
             if isinstance(_k, bytes):
                 _k = _k.decode()
             else:
                 _k = str(_k)
-            if hasattr(_v, 'items'):
+            if hasattr(_v, "items"):
                 dkvs.append(_k)
-                dkvs.extend([f'{_k}.{str(__K)}' for __K in _dkeys(_v)])
+                dkvs.extend([f"{_k}.{str(__K)}" for __K in _dkeys(_v)])
             else:
                 dkvs.append(_k)
         return sorted(dkvs)
 
-    if not hasattr(d, 'items'):
+    if not hasattr(d, "items"):
         raise TypeError(f"Object of type {type(d)} does not support the dictionary protocol")
 
     kvs = []
     for k, v in dict.items(d):
-        if k == '__dict__':
+        if k == "__dict__":
             kvs.append(k)
         if isinstance(k, bytes):
             k = k.decode()
         else:
             k = str(k)
-        if hasattr(v, 'items'):
+        if hasattr(v, "items"):
             kvs.append(k)
-            kvs.extend([f'{k}.{str(_K)}' for _K in _dkeys(v)])
+            kvs.extend([f"{k}.{str(_K)}" for _K in _dkeys(v)])
         else:
             kvs.append(k)
     return sorted(kvs)
@@ -190,7 +199,7 @@ def __deep_items(d):
     def _ditems(di):
         """Interior recursion function"""
         dkvts = []
-        if not hasattr(di, 'items'):
+        if not hasattr(di, "items"):
             return dkvts
         for _k, _v in dict.items(di):
             if _k == "__dict__":
@@ -199,14 +208,14 @@ def __deep_items(d):
                 _k = _k.decode()
             else:
                 _k = str(_k)
-            if hasattr(_v, 'items'):
+            if hasattr(_v, "items"):
                 dkvts.append((_k, _v.__class__()))
-                dkvts.extend([(f'{_k}.{str(__K)}', __V) for __K, __V in _ditems(_v)])
+                dkvts.extend([(f"{_k}.{str(__K)}", __V) for __K, __V in _ditems(_v)])
             else:
                 dkvts.append((_k, _v))
         return sorted(dkvts, key=lambda x: x[0])
 
-    if not hasattr(d, 'items'):
+    if not hasattr(d, "items"):
         raise TypeError(f"Object of type {type(d)} does not support the dictionary protocol")
 
     kvts = []
@@ -217,9 +226,9 @@ def __deep_items(d):
             k = k.decode()
         else:
             k = str(k)
-        if hasattr(v, 'items'):
+        if hasattr(v, "items"):
             kvts.append((k, v.__class__()))
-            kvts.extend([(f'{k}.{str(_K)}', _V) for _K, _V in _ditems(v)])
+            kvts.extend([(f"{k}.{str(_K)}", _V) for _K, _V in _ditems(v)])
         else:
             kvts.append((k, v))
     return sorted(kvts, key=lambda x: x[0])
@@ -228,7 +237,7 @@ def __deep_items(d):
 def _to_x(d, tgt=None):
     if isinstance(d, tgt):
         return d
-    elif hasattr(d, 'items'):
+    elif hasattr(d, "items"):
         td = tgt()
         for k, v in d.items():
             if k == "__dict__":
@@ -239,7 +248,7 @@ def _to_x(d, tgt=None):
                 k = str(k)
             td[k] = _to_x(v, tgt=tgt)
         return td
-    elif isinstance(d, list) and d.__class__ == 'list':
+    elif isinstance(d, list) and d.__class__ == "list":
         return [_to_x(v, tgt=tgt) for v in d]
     elif isinstance(d, bytes):
         return d.decode()
@@ -249,16 +258,18 @@ def _to_x(d, tgt=None):
 
 class AD(dict):
     meta = {}
-    consul_value_sig = sorted(["CreateIndex", "ModifyIndex", "LockIndex", "Flags", "Key", "Value", "Session"])
+    consul_value_sig = sorted(
+        ["CreateIndex", "ModifyIndex", "LockIndex", "Flags", "Key", "Value", "Session"]
+    )
 
     def __init__(self, *args, **kwargs):
         dict.__init__(self)
 
-        if 'persistTGT' in kwargs:
-            self.set_file_persistence(kwargs['persistTGT'], flush=kwargs.get('flush'))
-            del kwargs['persistTGT']
-            if 'flush' in kwargs:
-                del kwargs['flush']
+        if "persistTGT" in kwargs:
+            self.set_file_persistence(kwargs["persistTGT"], flush=kwargs.get("flush"))
+            del kwargs["persistTGT"]
+            if "flush" in kwargs:
+                del kwargs["flush"]
 
         self.update(*args, **kwargs)
 
@@ -268,7 +279,7 @@ class AD(dict):
         return tmp
 
     def __iadd__(self, tgt):
-       self.update(tgt)
+        self.update(tgt)
 
     def __cmp__(self, other):
         return id(self) == id(other)
@@ -314,6 +325,7 @@ class AD(dict):
 
     def __deepcopy__(self):
         return AD(AD._deep_items(self))
+
     copy = __deepcopy__
 
     def __getattr__(self, key):
@@ -328,8 +340,8 @@ class AD(dict):
                 key = key.decode()
             else:
                 key = str(key)
-            if '.' in key:
-                path, key = key.split('.', 1)
+            if "." in key:
+                path, key = key.split(".", 1)
                 return dict.__getitem__(self, path)[key]
             else:
                 return dict.__getitem__(self, key)
@@ -355,7 +367,7 @@ class AD(dict):
             path, key = key.split(".", 1)
             if isinstance(dict.setdefault(self, path, AD()), (AD, dict)):
                 if isinstance(dict.__getitem__(self, path), dict):
-                    dict.__setitem__(self, path,  _to_x(dict.__getitem__(self, path), tgt=AD))
+                    dict.__setitem__(self, path, _to_x(dict.__getitem__(self, path), tgt=AD))
             else:
                 dict.__setitem__(self, path, AD())
             dict.__getitem__(self, path).__setitem__(key, value)
@@ -370,7 +382,7 @@ class AD(dict):
         my_id = id(me)
         if my_id not in AD.meta:
             AD.meta[my_id] = {}
-            if params and isinstance(params (dict, AD)):
+            if params and isinstance(params(dict, AD)):
                 AD.meta[my_id].update(params)
         return AD.meta[my_id]
 
@@ -381,7 +393,7 @@ class AD(dict):
         def _ditems(di):
             """Interior recursion function"""
             dkvts = []
-            if not hasattr(di, 'items'):
+            if not hasattr(di, "items"):
                 return dkvts
             for _k, _v in dict.items(di):
                 if _k == "__dict__":
@@ -390,14 +402,14 @@ class AD(dict):
                     _k = _k.decode()
                 else:
                     _k = str(_k)
-                if hasattr(_v, 'items'):
+                if hasattr(_v, "items"):
                     dkvts.append((_k, AD()))
-                    dkvts.extend([(f'{_k}.{str(__K)}', __V) for __K, __V in _ditems(_v)])
+                    dkvts.extend([(f"{_k}.{str(__K)}", __V) for __K, __V in _ditems(_v)])
                 else:
                     dkvts.append((_k, _v))
             return sorted(dkvts, key=lambda x: x[0])
 
-        if not hasattr(d, 'items'):
+        if not hasattr(d, "items"):
             raise TypeError(f"Object of type {type(d)} does not support the dictionary protocol")
 
         kvts = []
@@ -408,9 +420,9 @@ class AD(dict):
                 k = k.decode()
             else:
                 k = str(k)
-            if hasattr(v, 'items'):
+            if hasattr(v, "items"):
                 kvts.append((k, AD()))
-                kvts.extend([(f'{k}.{str(_K)}', _V) for _K, _V in _ditems(v)])
+                kvts.extend([(f"{k}.{str(_K)}", _V) for _K, _V in _ditems(v)])
             else:
                 kvts.append((k, v))
         return sorted(kvts, key=lambda x: x[0])
@@ -422,43 +434,45 @@ class AD(dict):
         def _dkeys(dk):
             """Interior recursion function"""
             dkvs = []
-            if not hasattr(dk, 'items'):
+            if not hasattr(dk, "items"):
                 return dkvs
             for _k, _v in dict.items(dk):
-                if _k == '__dict__':
+                if _k == "__dict__":
                     dkvs.append(_k)
                 if isinstance(_k, bytes):
                     _k = _k.decode()
                 else:
                     _k = str(_k)
-                if hasattr(_v, 'items'):
+                if hasattr(_v, "items"):
                     dkvs.append(_k)
-                    dkvs.extend([f'{_k}.{str(__K)}' for __K in _dkeys(_v)])
+                    dkvs.extend([f"{_k}.{str(__K)}" for __K in _dkeys(_v)])
                 else:
                     dkvs.append(_k)
             return sorted(dkvs)
 
-        if not hasattr(d, 'items'):
+        if not hasattr(d, "items"):
             raise TypeError(f"Object of type {type(d)} does not support the dictionary protocol")
 
         kvs = []
         for k, v in dict.items(d):
-            if k == '__dict__':
+            if k == "__dict__":
                 kvs.append(k)
             if isinstance(k, bytes):
                 k = k.decode()
             else:
                 k = str(k)
-            if hasattr(v, 'items'):
+            if hasattr(v, "items"):
                 kvs.append(k)
-                kvs.extend([f'{k}.{str(_K)}' for _K in _dkeys(v)])
+                kvs.extend([f"{k}.{str(_K)}" for _K in _dkeys(v)])
             else:
                 kvs.append(k)
         return sorted(kvs)
 
     def _json_safe(self):
         """JSON dumper for objects not serializable by default json code"""
-        return json.dumps(self, cls=JSONEncoder, default=str, indent=4, separators=(",", ": "), sort_keys=True)
+        return json.dumps(
+            self, cls=JSONEncoder, default=str, indent=4, separators=(",", ": "), sort_keys=True
+        )
 
     @staticmethod
     def _jvalue(value):
@@ -486,10 +500,12 @@ class AD(dict):
 
     def deep_items(self):
         return AD._deep_items(self)
+
     deepItems = deep_items
 
     def deep_keys(self):
         return AD._deep_keys(self)
+
     deepKeys = deep_keys
 
     def delete_keys(self, keys):
@@ -498,7 +514,7 @@ class AD(dict):
 
     def dump(self, path):
         os.system(f"mkdir -p {os.path.dirname(path)}")
-        with open(path, 'w') as df:
+        with open(path, "w") as df:
             df.write(self.dumps())
 
     def dumps(self):
@@ -531,6 +547,7 @@ class AD(dict):
 
     def jstr(self):
         return self._json_safe()
+
     _for_json = jstr
     to_json = jstr
 
@@ -548,7 +565,7 @@ class AD(dict):
 
     @staticmethod
     def loads(jstr):
-        """Reads parses str_in as json, and updates from results """
+        """Reads parses str_in as json, and updates from results"""
         if isinstance(jstr, bytes):
             jstr = jstr.decode("utf-8")
         t = AD._jvalue(jstr)
@@ -564,9 +581,9 @@ class AD(dict):
         self.__delitem__(key)
         return (key, value)
 
-    def retrieve(self, mkey, method='glob'):
+    def retrieve(self, mkey, method="glob"):
         res = AD()
-        if method == 're':
+        if method == "re":
             rec = re.compile(mkey)
             for key in self.deep_keys():
                 if rec.match(key):
@@ -587,34 +604,36 @@ class AD(dict):
     def set_file_persistence(self, path, flush=False):
         """Sets path for persistent json store"""
         myself = self.__myself__(self)
-        if path in ['.', '..', './', '/']:
+        if path in [".", "..", "./", "/"]:
             raise IOError(f"attribute_dict.set_file_persistence exception invalid path: {path}")
-        myself['persistence'] = {}
-        myself['persistence']['mode'] = 'file'
-        if path[0] not in ['.', '/']:
-            path = f'{os.path.dirname(__file__)}/{path}'
-        myself['persistence']['path'] = path
-        myself['persistence']['fname'] = os.path.basename(path)
-        myself['persistence']['dir'] = os.path.dirname(path)
-        if not os.path.exists(myself['persistence']['dir']):
+        myself["persistence"] = {}
+        myself["persistence"]["mode"] = "file"
+        if path[0] not in [".", "/"]:
+            path = f"{os.path.dirname(__file__)}/{path}"
+        myself["persistence"]["path"] = path
+        myself["persistence"]["fname"] = os.path.basename(path)
+        myself["persistence"]["dir"] = os.path.dirname(path)
+        if not os.path.exists(myself["persistence"]["dir"]):
             os.system(f"mkdir -p {myself['persistence']['dir']}")
         if flush:
-            with open(myself['persistence']['path'], 'w') as fh:
+            with open(myself["persistence"]["path"], "w") as fh:
                 fh.writelines(["{}"])
-        if os.path.exists(myself['persistence']['path']):
-            self.update(self.load(myself['persistence']['path']))
+        if os.path.exists(myself["persistence"]["path"]):
+            self.update(self.load(myself["persistence"]["path"]))
 
     setpersist = set_file_persistence
 
     def sync(self, **kwargs):
         """Writes text rendering of self to a file"""
         myself = self.__myself__(self)
-        if (myself and
-            'persistence' in myself and
-            'mode' in myself['persistence'] and
-             myself['persistence']['mode'] == 'file'):
+        if (
+            myself
+            and "persistence" in myself
+            and "mode" in myself["persistence"]
+            and myself["persistence"]["mode"] == "file"
+        ):
             os.system(f"mkdir -p {myself['persistence']['dir']}")
-            with open(myself['persistence']['path'], "w") as pf:
+            with open(myself["persistence"]["path"], "w") as pf:
                 pf.write(self.jstr())
 
     def to_dict(self):
@@ -645,11 +664,13 @@ class AD(dict):
                                 items.extend(list(json.load(fh).items()))
                     except json.JSONDecodeError:
                         pass
-                elif hasattr(item, 'deep_items'):
+                elif hasattr(item, "deep_items"):
                     items.extend(list(item.deep_items()))
-                elif hasattr(item, 'items'):
+                elif hasattr(item, "items"):
                     items.extend(list(item.items()))
-                elif isinstance(item, list) and all([isinstance(i, tuple) and len (i) == 2 for i in item]):
+                elif isinstance(item, list) and all(
+                    [isinstance(i, tuple) and len(i) == 2 for i in item]
+                ):
                     items.extend([e for e in item if len(e) == 2])
                 elif isinstance(item, tuple) and len(item) == 2:
                     items.append(item)
@@ -657,11 +678,13 @@ class AD(dict):
         if len(kwargs):
             items += list(kwargs.items())
 
-        for key, value in [i for i in items if not isinstance(i, bool) and len(i) == 2 and i[0] is not None]:
-            if hasattr(value, 'items') and len(value):
+        for key, value in [
+            i for i in items if not isinstance(i, bool) and len(i) == 2 and i[0] is not None
+        ]:
+            if hasattr(value, "items") and len(value):
                 for k, v in value.items():
-                    self.__setitem__(f'{key}.{k}', v)
-            elif isinstance(value, list) and value.__class__ == 'list':
+                    self.__setitem__(f"{key}.{k}", v)
+            elif isinstance(value, list) and value.__class__ == "list":
                 self.__setitem__(key, [_to_x(v, tgt=AD) for v in value])
             else:
                 self.__setitem__(key, value)
@@ -669,7 +692,9 @@ class AD(dict):
     def values(self):
         return list(self.itervalues())
 
+
 # Mapping.register(AD)
+
 
 class CAD(AD):
     """
@@ -701,31 +726,29 @@ class CAD(AD):
                 fname: str = None ->  "filename.ext" - auto populated from persistTGT
                 persistTGT:  str = None -> "/local/filesystem/path"  if the file exists, load it, otherwise initialize it
     """
-    consul_value_sig = sorted(["CreateIndex", "ModifyIndex", "LockIndex", "Flags", "Key", "Value", "Session"])
-    meta = AD({'default': {
-                    'persistence': {
-                        'file': {
-                            'dir': None,
-                            'flush': None,
-                            'fname': None,
-                            'path': None
-                        },
-                        'locked': False,
-                        'mode': False,
-                        's3': {
-                            'bucket': None,
-                            'key_path': None,
-                            'metadata': {
-                                'tnumber': None,
-                                'tstamp': None
-                            },
-                            'version': None,
-                            'uri': None
-                        },
+
+    consul_value_sig = sorted(
+        ["CreateIndex", "ModifyIndex", "LockIndex", "Flags", "Key", "Value", "Session"]
+    )
+    meta = AD(
+        {
+            "default": {
+                "persistence": {
+                    "file": {"dir": None, "flush": None, "fname": None, "path": None},
+                    "locked": False,
+                    "mode": False,
+                    "s3": {
+                        "bucket": None,
+                        "key_path": None,
+                        "metadata": {"tnumber": None, "tstamp": None},
+                        "version": None,
+                        "uri": None,
                     },
-                    'subscriptions': {}
-                    }
-            })
+                },
+                "subscriptions": {},
+            }
+        }
+    )
     s3_mgr = None
 
     def __init__(self, *args, **kwargs):
@@ -733,24 +756,24 @@ class CAD(AD):
         myself = self.__myself__(self)
 
         if len(kwargs):
-            if 'persistTGT' in kwargs:
-                self.set_file_persistence(kwargs['persistTGT'], flush=kwargs.get('flush'))
-                del kwargs['persistTGT']
-                if 'flush' in kwargs:
-                    del kwargs['flush']
-            if 's3_params' in kwargs:
-                self.set_s3_persistence(**kwargs['s3_params'])
-                del kwargs['s3_params']
-            if 'callbacks' in kwargs:
-                for cb, key_path in kwargs['callbacks']:
+            if "persistTGT" in kwargs:
+                self.set_file_persistence(kwargs["persistTGT"], flush=kwargs.get("flush"))
+                del kwargs["persistTGT"]
+                if "flush" in kwargs:
+                    del kwargs["flush"]
+            if "s3_params" in kwargs:
+                self.set_s3_persistence(**kwargs["s3_params"])
+                del kwargs["s3_params"]
+            if "callbacks" in kwargs:
+                for cb, key_path in kwargs["callbacks"]:
                     self.register_callback(cb, key_path)
-                del kwargs['callbacks']
-            if 'callback' in kwargs:
-                if isinstance(kwargs['callback'], tuple):
-                    self.register_callback(kwargs['callback'][0], kwargs['callback'][1])
+                del kwargs["callbacks"]
+            if "callback" in kwargs:
+                if isinstance(kwargs["callback"], tuple):
+                    self.register_callback(kwargs["callback"][0], kwargs["callback"][1])
                 else:
-                    self.register_callback(kwargs['callback'], any)
-                del kwargs['callback']
+                    self.register_callback(kwargs["callback"], any)
+                del kwargs["callback"]
 
         self.update(*args)
 
@@ -792,8 +815,8 @@ class CAD(AD):
                 key = key[1:]
             if key[-1] == ".":
                 key = key[:-1]
-            if '.' in key:
-                path, key = key.split('.', 1)
+            if "." in key:
+                path, key = key.split(".", 1)
                 return dict.__getitem__(self, path)[key]
             else:
                 return dict.__getitem__(self, key)
@@ -820,7 +843,7 @@ class CAD(AD):
             path, key = key.split(".", 1)
             if isinstance(dict.setdefault(self, path, CAD()), (AD, CAD, dict)):
                 if isinstance(dict.__getitem__(self, path), dict):
-                    dict.__setitem__(self, path,  _to_x(dict.__getitem__(self, path), tgt=CAD))
+                    dict.__setitem__(self, path, _to_x(dict.__getitem__(self, path), tgt=CAD))
             else:
                 dict.__setitem__(self, path, CAD())
             dict.__getitem__(self, path).__setitem__(key, value)
@@ -828,57 +851,61 @@ class CAD(AD):
         else:
             dict.__setitem__(self, key, value)
 
-        if key in myself['subscriptions'] and len(myself['subscriptions'][key]):
+        if key in myself["subscriptions"] and len(myself["subscriptions"][key]):
             self.__notify__(key, value)
 
     def __myself__(self, me, params=None):
         my_id = id(me)
         if my_id not in CAD.meta:
             CAD.meta[my_id] = AD(CAD.meta.default)
-            if params and isinstance(params (dict, AD, CAD)):
+            if params and isinstance(params(dict, AD, CAD)):
                 CAD.meta[my_id].update(params)
         return CAD.meta[my_id]
 
     def __notify__(self, key, value):
         myself = self.__myself__(self)
         for k in [any, key]:
-            if k in myself['subscriptions']:
-                for cb in myself['subscriptions'][k]:
-                    if hasattr(cb, '__call__'):
+            if k in myself["subscriptions"]:
+                for cb in myself["subscriptions"][k]:
+                    if hasattr(cb, "__call__"):
                         cb(*(key, value))
 
     @staticmethod
     def _ckvSig(rec):
         if hasattr(rec, "keys"):
-            if len([k for k in rec.keys() if k in CAD.consul_value_sig]) >= 5 and "Key" in rec and "Value" in rec:
+            if (
+                len([k for k in rec.keys() if k in CAD.consul_value_sig]) >= 5
+                and "Key" in rec
+                and "Value" in rec
+            ):
                 return True
         return False
 
     def delete(self, key):
-        key = key.replace('/', '.')
+        key = key.replace("/", ".")
         super().delete(key)
 
     def get(self, key, default=None):
-        key = key.replace('/', '.')
+        key = key.replace("/", ".")
         super().get(key, default=default)
 
     def put(self, key, value):
-        key = key.replace('/', '.')
+        key = key.replace("/", ".")
         super().__setitem__(key, value)
 
     def register_callback(self, cb, key_path):
         myself = self.__myself__(self)
-        if key_path not in myself['subscriptions']:
-            myself['subscriptions'][key_path] = [cb]
-        elif cb not in myself['subscriptions'][key_path]:
-            myself['subscriptions'][key_path].append(cb)
+        if key_path not in myself["subscriptions"]:
+            myself["subscriptions"][key_path] = [cb]
+        elif cb not in myself["subscriptions"][key_path]:
+            myself["subscriptions"][key_path].append(cb)
 
     def remove_callback(self, key_path, cb):
         myself = self.__myself__(self)
         if myself:
-            if key_path in myself['subscriptions']:
-                if cb in myself['subscriptions']:
-                    myself['subscriptions'][key_path].remove(cb)
+            if key_path in myself["subscriptions"]:
+                if cb in myself["subscriptions"]:
+                    myself["subscriptions"][key_path].remove(cb)
 
     def replace(self, replacement):
         self.clear()
@@ -887,14 +914,14 @@ class CAD(AD):
     def set_file_persistence(self, path, flush=False):
         """Sets path for persistent json store"""
         myself = self.__myself__(self)
-        myself['persistence.mode'] = 'file'
-        myself['persistence.file.path'] = path
-        myself['persistence.file.fname'] = os.path.basename(path)
-        myself['persistence.file.dir'] = os.path.dirname(path)
+        myself["persistence.mode"] = "file"
+        myself["persistence.file.path"] = path
+        myself["persistence.file.fname"] = os.path.basename(path)
+        myself["persistence.file.dir"] = os.path.dirname(path)
         if not os.path.exists(myself.persistence.file.dir):
             os.system(f"mkdir -p {myself.persistence.file.dir}")
         if flush:
-            with open(myself.persistence.file.path, 'w') as fh:
+            with open(myself.persistence.file.path, "w") as fh:
                 fh.writelines(["{}"])
         if os.path.exists(myself.persistence.file.path):
             self.update(self.load(myself.persistence.file.path))
@@ -907,41 +934,41 @@ class CAD(AD):
 
     def set_s3_persistence(self, bucket=None, key=None, metadata={}, uri=None):
         myself = self.__myself__(self)
-        myself['persistence.mode'] = 's3'
+        myself["persistence.mode"] = "s3"
         if bucket and key:
-            myself['persistence.s3.bucket'] = bucket
-            myself['persistence.s3.key'] = key
-            myself['persistence.s3.uri'] = f"s3://{bucket}/{key}"
+            myself["persistence.s3.bucket"] = bucket
+            myself["persistence.s3.key"] = key
+            myself["persistence.s3.uri"] = f"s3://{bucket}/{key}"
         else:
-            myself['persistence.s3.uri'] = uri
+            myself["persistence.s3.uri"] = uri
             bucket, key = uri.split("://")[-1].split("/", 1)
-            myself['persistence.s3.bucket'] = bucket
-            myself['persistence.s3.key'] = f"/{key}"
-        myself['persistence.s3.metadata'].update(metadata)
-        if not myself['persistence.s3.metadata'].tnumber:
-            myself['persistence.s3.metadata'].tnumber = int(time.time())
-        if not myself['persistence.s3.metadata'].tstamp:
-             myself['persistence.s3.metadata.tstamp'] = time.time()
+            myself["persistence.s3.bucket"] = bucket
+            myself["persistence.s3.key"] = f"/{key}"
+        myself["persistence.s3.metadata"].update(metadata)
+        if not myself["persistence.s3.metadata"].tnumber:
+            myself["persistence.s3.metadata"].tnumber = int(time.time())
+        if not myself["persistence.s3.metadata"].tstamp:
+            myself["persistence.s3.metadata.tstamp"] = time.time()
         self.s3_load()
 
     def s3_load(self):
         myself = self.__myself__(self)
         if CAD.s3_mgr:
             try:
-                myself['persistence.s3.version'] = CAD.s3_mgr.exists(myself['bucket'], myself['key_path'])
+                myself["persistence.s3.version"] = CAD.s3_mgr.exists(
+                    myself["bucket"], myself["key_path"]
+                )
                 if myself.persistence.s3.version:
-                    myself['s3_metadata'] = CAD.s3_mgr.get_metadata(
-                        myself.persistence.s3.bucket,
-                        myself.persistence.s3.key
+                    myself["s3_metadata"] = CAD.s3_mgr.get_metadata(
+                        myself.persistence.s3.bucket, myself.persistence.s3.key
                     )
                     self.update(
-                        CAD.s3_mgr.get(
-                                    myself.persistence.s3.bucket,
-                                    myself.persistence.s3.key
-                                )
-                            )
+                        CAD.s3_mgr.get(myself.persistence.s3.bucket, myself.persistence.s3.key)
+                    )
             except Exception as err:
-                return Attribute_Dict_Exception(f"CAD.s3_load exception {myself.persistence.s3.uri}: {err}")
+                return Attribute_Dict_Exception(
+                    f"CAD.s3_load exception {myself.persistence.s3.uri}: {err}"
+                )
         else:
             return Attribute_Dict_Exception(f"CAD.s3_load error: s3_mgr has not been set")
 
@@ -949,14 +976,14 @@ class CAD(AD):
         """Writes text rendering of self to a file"""
         myself = self.__myself__(self)
         if myself:
-            if myself.persistence.mode == 'file':
+            if myself.persistence.mode == "file":
                 self.sync_file()
-            elif myself.persistence.mode == 's3':
+            elif myself.persistence.mode == "s3":
                 self.sync_s3()
 
     def sync_file(self):
         myself = self.__myself__(self)
-        if myself.persistence.mode == 'file':
+        if myself.persistence.mode == "file":
             os.system(f"mkdir -p {myself.persistence.file.dir}")
             with open(myself.persistence.file.path, "w") as pme:
                 pme.write(self.jstr())
@@ -964,13 +991,13 @@ class CAD(AD):
     def sync_s3(self, force=False):
         myself = self.__myself__(self)
         try:
-            if myself.persistence.mode == 's3' and not myself.persistence.s3.version or force:
-                myself['persistence.s3.version'] = CAD.s3_mgr.put(
+            if myself.persistence.mode == "s3" and not myself.persistence.s3.version or force:
+                myself["persistence.s3.version"] = CAD.s3_mgr.put(
                     myself.persistence.s3.bucket,
                     myself.persistence.s3.key,
                     self.jstr(),
-                    metadata=myself.persistence.s3.metadata
-                    )
+                    metadata=myself.persistence.s3.metadata,
+                )
         except Exception as err:
             raise Attribute_Dict_Exception(f"AD.persist exception {myself['s3_uri']}: {err}")
 
@@ -999,9 +1026,9 @@ class CAD(AD):
                                 items.extend(list(json.load(fh).items()))
                     except json.JSONDecodeError:
                         pass
-                elif hasattr(item, 'items'):
+                elif hasattr(item, "items"):
                     items.extend(list(item.items()))
-                elif hasattr(item, 'keys'):
+                elif hasattr(item, "keys"):
                     items.extend([(sk, item[sk]) for sk in item.keys()])
                 else:
                     items.extend([e for e in item if len(e) == 2])
@@ -1010,12 +1037,12 @@ class CAD(AD):
             items += list(kwargs.items())
 
         for key, value in [i for i in filter(None, items) if len(i) == 2]:
-            if hasattr(value, 'items') and len(value):
+            if hasattr(value, "items") and len(value):
                 for sk, sv in value.items():
-                    super().__setitem__(f'{key}.{sk}', sv)
-            elif hasattr(value, 'keys') and len(value):
+                    super().__setitem__(f"{key}.{sk}", sv)
+            elif hasattr(value, "keys") and len(value):
                 for sk in value.keys():
-                    super().__setitem__(f'{key}.{sk}', value[sk])
+                    super().__setitem__(f"{key}.{sk}", value[sk])
             else:
                 super().__setitem__(key, value)
 
@@ -1025,5 +1052,3 @@ ConsulAD = CAD
 to_AD = functools.partial(_to_x, tgt=AD)
 to_CAD = functools.partial(_to_x, tgt=CAD)
 to_DICT = functools.partial(_to_x, tgt=dict)
-
-

@@ -215,9 +215,7 @@ class Inconsistency(BaseModel):
     # Resolution tracking
     resolved: bool = False
     resolution: str | None = None
-    resolution_outcome: (
-        Literal["explained", "confirmed_error", "confirmed_deception"] | None
-    ) = None
+    resolution_outcome: Literal["explained", "confirmed_error", "confirmed_deception"] | None = None
 
 
 # =============================================================================

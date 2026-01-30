@@ -79,18 +79,14 @@ def calculate_risk_score(findings: list[RiskFinding]) -> RiskScore:
     # Calculate category scores
     category_scores: dict[str, float] = {}
     for category, cat_findings in category_findings.items():
-        weighted_sum = sum(
-            _severity_weight(f.severity) * f.confidence for f in cat_findings
-        )
+        weighted_sum = sum(_severity_weight(f.severity) * f.confidence for f in cat_findings)
         category_scores[category] = min(1.0, weighted_sum / len(cat_findings))
 
     # Calculate overall score
     overall_score = sum(category_scores.values()) / len(category_scores) if category_scores else 0.0
 
     # Count high severity findings
-    high_severity_count = sum(
-        1 for f in findings if f.severity in ("high", "critical")
-    )
+    high_severity_count = sum(1 for f in findings if f.severity in ("high", "critical"))
 
     # Calculate average confidence
     avg_confidence = sum(f.confidence for f in findings) / len(findings)

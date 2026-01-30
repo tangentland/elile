@@ -4,7 +4,14 @@
       "WebSearch",
       "WebFetch(domain:docs.langchain.com)",
       "Bash(ruff check:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(alembic init:*)",
+      "Bash(pip install:*)",
+      "Bash(pytest:*)",
+      "Bash(python3.12 -m pytest:*)",
+      "Bash(python:*)",
+      "Bash(black:*)",
+      "Bash(git add:*)"
     ]
   }
 }

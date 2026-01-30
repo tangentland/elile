@@ -18,7 +18,9 @@ Elile is a multi-model AI agent that conducts thorough research on entities to u
 
 ### Requirements
 
-- Python 3.14+
+- Python 3.12+
+- PostgreSQL 15+
+- Redis 7.0+
 - API keys for at least one provider (Anthropic, OpenAI, or Google)
 
 ### Setup
@@ -40,10 +42,22 @@ Elile is a multi-model AI agent that conducts thorough research on entities to u
    pip install -e ".[dev]"
    ```
 
-4. Configure environment variables:
+4. Set up PostgreSQL database:
+   ```bash
+   createdb elile_dev
+   psql elile_dev -c "CREATE USER elile_user WITH PASSWORD 'elile_pass';"
+   psql elile_dev -c "GRANT ALL PRIVILEGES ON DATABASE elile_dev TO elile_user;"
+   ```
+
+5. Configure environment variables:
    ```bash
    cp .env.example .env
-   # Edit .env with your API keys
+   # Edit .env with your API keys and database URL
+   ```
+
+6. Run database migrations:
+   ```bash
+   alembic upgrade head
    ```
 
 ## Usage
@@ -128,15 +142,21 @@ pytest --cov=elile --cov-report=html
 ```
 elile/
 ├── src/elile/
-│   ├── agent/          # LangGraph workflow
-│   ├── config/         # Configuration management
-│   ├── models/         # Model adapters
+│   ├── agent/          # LangGraph workflow orchestration
+│   ├── config/         # Configuration and settings
+│   ├── db/             # Database models and schemas
+│   │   ├── models/     # SQLAlchemy models
+│   │   └── schemas/    # Pydantic schemas
+│   ├── models/         # AI model adapters
 │   ├── risk/           # Risk assessment
 │   ├── search/         # Search system
 │   └── utils/          # Utilities
 ├── tests/
 │   ├── conftest.py     # Test fixtures
-│   └── unit/           # Unit tests
+│   ├── unit/           # Unit tests
+│   └── integration/    # Integration tests
+├── migrations/         # Alembic database migrations
+├── docs/               # Documentation
 ├── pyproject.toml      # Project configuration
 └── langgraph.json      # LangGraph deployment config
 ```
@@ -151,8 +171,12 @@ Configure Elile using environment variables or a `.env` file:
 | `OPENAI_API_KEY` | OpenAI API key | - |
 | `GOOGLE_API_KEY` | Google API key | - |
 | `DEFAULT_MODEL_PROVIDER` | Default provider | `anthropic` |
+| `DATABASE_URL` | PostgreSQL connection URL | `postgresql+asyncpg://...` |
+| `REDIS_URL` | Redis connection URL | `redis://localhost:6379/0` |
+| `ENCRYPTION_KEY` | 32-byte encryption key (base64) | - |
 | `LOG_LEVEL` | Logging level | `INFO` |
 | `MAX_SEARCH_DEPTH` | Maximum search iterations | `5` |
+| `ENVIRONMENT` | Environment (dev/staging/prod) | `development` |
 
 ## License
 

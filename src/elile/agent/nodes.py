@@ -823,9 +823,7 @@ def _generate_summary(
     if risk_findings:
         high_severity = [f for f in risk_findings if f.severity in ("high", "critical")]
         if high_severity:
-            summary_parts.append(
-                f"High/Critical Findings: {len(high_severity)}"
-            )
+            summary_parts.append(f"High/Critical Findings: {len(high_severity)}")
 
     return " | ".join(summary_parts)
 

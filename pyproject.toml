@@ -8,14 +8,14 @@ version = "0.1.0"
 description = "Autonomous research agent for comprehensive investigations and risk assessment"
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.14"
+requires-python = ">=3.12"
 authors = [{ name = "Elile Team" }]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = [
@@ -28,6 +28,14 @@ dependencies = [
     "httpx>=0.27.0",
     "tenacity>=8.0.0",
     "structlog>=24.0.0",
+    "sqlalchemy[asyncio]>=2.0.0",
+    "alembic>=1.13.0",
+    "asyncpg>=0.29.0",
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "cryptography>=41.0.0",
+    "redis>=5.0.0",
+    "python-multipart>=0.0.6",
 ]
 
 [project.optional-dependencies]
@@ -49,7 +57,7 @@ packages = ["src/elile"]
 
 [tool.black]
 line-length = 100
-target-version = ["py314"]
+target-version = ["py312"]
 include = '\.pyi?$'
 extend-exclude = '''
 (
@@ -60,7 +68,7 @@ extend-exclude = '''
 
 [tool.ruff]
 line-length = 100
-target-version = "py314"
+target-version = "py312"
 
 [tool.ruff.lint]
 select = [
@@ -80,7 +88,7 @@ ignore = [
 ]
 
 [tool.mypy]
-python_version = "3.14"
+python_version = "3.12"
 strict = true
 warn_return_any = true
 warn_unused_ignores = true

@@ -103,6 +103,25 @@ class Settings(BaseSettings):
     langchain_api_key: SecretStr | None = None
     langchain_project: str = "elile"
 
+    # Database Configuration
+    DATABASE_URL: str = "postgresql+asyncpg://user:pass@localhost:5432/elile_dev"
+    DATABASE_POOL_SIZE: int = 20
+    DATABASE_MAX_OVERFLOW: int = 10
+
+    # Redis Configuration
+    REDIS_URL: str = "redis://localhost:6379/0"
+
+    # Security Configuration
+    ENCRYPTION_KEY: SecretStr | None = None
+    API_SECRET_KEY: SecretStr | None = None
+
+    # Environment Configuration
+    ENVIRONMENT: Literal["development", "staging", "production", "test"] = "development"
+    DEBUG: bool = True
+
+    # Multi-Tenancy
+    DEFAULT_TENANT_ID: str = "00000000-0000-0000-0000-000000000000"
+
     # Application Configuration
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
     rate_limit_rpm: int = 60
@@ -137,3 +156,7 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     """Get cached settings instance."""
     return Settings()
+
+
+# Global settings instance
+settings = get_settings()
