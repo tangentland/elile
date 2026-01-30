@@ -315,21 +315,26 @@ Performance optimization, security hardening, compliance certification, document
 🔲 Migration applied (pending: `alembic upgrade head`)
 
 ### Testing Status
-✅ Unit tests written (entity, profile, cache models)
-✅ Integration tests written (database operations)
-🔲 Tests passing (requires environment setup)
+✅ Unit tests written (entity, profile, cache, audit models)
+✅ Integration tests written (database operations, audit system)
+✅ All 47 tests passing
 🔲 Coverage measured
 
 ---
 
 ## Technical Debt & Known Issues
 
-### Current
-1. **Python 3.14 compatibility**: Plan specifies 3.14, but currently using 3.12 (3.14 not released)
-2. **Test execution**: Tests written but not yet verified due to environment setup
-3. **Missing tenant model**: Referenced in cache model FK but not yet implemented (Task 1.4)
+### Resolved
+1. ~~**Python 3.14 compatibility**~~: Now using Python 3.14.2
+2. ~~**Test execution**~~: All 47 tests passing
+3. ~~**Missing tenant model**~~: Tenant model implemented in `src/elile/db/models/tenant.py`
 
-### Planned
+### Current
+1. **Cache model FK to tenants**: `customer_id` column exists but FK constraint not yet added (requires migration after Task 1.4)
+2. **Test coverage**: Tests pass but coverage not measured
+3. **Database migrations**: Initial migration not yet generated (`alembic revision --autogenerate`)
+
+### Planned (Next Tasks)
 1. Encryption implementation for PII fields (Task 1.6)
 2. Request context propagation (Task 1.3)
 3. Connection pooling optimization based on load testing
