@@ -215,13 +215,15 @@ async def test_profile_versioning(db_session: AsyncSession):
 @pytest.mark.asyncio
 async def test_bulk_entity_insert(db_session: AsyncSession):
     """Test inserting multiple entities efficiently."""
-    entities = [Entity(entity_type=EntityType.INDIVIDUAL) for _ in range(100)]
+    # Use a unique entity type marker for test isolation
+    test_marker = "bulk_test_individual"
+    entities = [Entity(entity_type=test_marker) for _ in range(100)]
     db_session.add_all(entities)
     await db_session.commit()
 
-    # Count entities
-    stmt = select(Entity)
+    # Count only the entities we created (isolate from other tests by type)
+    stmt = select(Entity).where(Entity.entity_type == test_marker)
     result = await db_session.execute(stmt)
-    all_entities = result.scalars().all()
+    our_entities = result.scalars().all()
 
-    assert len(all_entities) == 100
+    assert len(our_entities) == 100

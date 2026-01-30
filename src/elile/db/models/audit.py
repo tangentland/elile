@@ -2,13 +2,12 @@
 
 from datetime import datetime
 from enum import Enum
-from uuid import UUID, uuid4
+from uuid import UUID, uuid7
 
 from sqlalchemy import DateTime, Float, ForeignKey, Index, String, Text, func
-from sqlalchemy.dialects.postgresql import JSONB, UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from .base import Base
+from .base import Base, PortableJSON, PortableUUID
 
 
 class AuditEventType(str, Enum):
@@ -72,28 +71,29 @@ class AuditEvent(Base):
     __tablename__ = "audit_events"
 
     # Primary identification
-    audit_id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    # UUIDv7 is time-ordered, making audit events naturally sortable by ID
+    audit_id: Mapped[UUID] = mapped_column(PortableUUID(), primary_key=True, default=uuid7)
     event_type: Mapped[str] = mapped_column(String(100), nullable=False)
     severity: Mapped[str] = mapped_column(String(20), nullable=False, default="info")
 
     # Context
     tenant_id: Mapped[UUID | None] = mapped_column(
-        PGUUID(as_uuid=True), nullable=True
+        PortableUUID(), nullable=True
     )  # null for system events
-    user_id: Mapped[UUID | None] = mapped_column(PGUUID(as_uuid=True), nullable=True)
+    user_id: Mapped[UUID | None] = mapped_column(PortableUUID(), nullable=True)
     correlation_id: Mapped[UUID] = mapped_column(
-        PGUUID(as_uuid=True), nullable=False
+        PortableUUID(), nullable=False
     )  # Request correlation
 
     # Event details
     entity_id: Mapped[UUID | None] = mapped_column(
-        PGUUID(as_uuid=True), nullable=True
+        PortableUUID(), nullable=True
     )  # Entity affected
     resource_type: Mapped[str | None] = mapped_column(String(50), nullable=True)
     resource_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     # Event data (structured JSON)
-    event_data: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    event_data: Mapped[dict] = mapped_column(PortableJSON(), nullable=False)
 
     # Metadata
     ip_address: Mapped[str | None] = mapped_column(String(45), nullable=True)  # IPv6 support

@@ -3,13 +3,12 @@
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
-from uuid import UUID, uuid4
+from uuid import UUID, uuid7
 
 from sqlalchemy import DateTime, ForeignKey, Index, LargeBinary, Numeric, String
-from sqlalchemy.dialects.postgresql import JSONB, UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .base import Base, TimestampMixin
+from .base import Base, PortableJSON, PortableUUID, TimestampMixin
 
 
 class DataOrigin(str, Enum):
@@ -46,18 +45,18 @@ class CachedDataSource(Base, TimestampMixin):
 
     __tablename__ = "cached_data_sources"
 
-    cache_id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    cache_id: Mapped[UUID] = mapped_column(PortableUUID(), primary_key=True, default=uuid7)
     entity_id: Mapped[UUID] = mapped_column(
-        PGUUID(as_uuid=True), ForeignKey("entities.entity_id", ondelete="CASCADE"), nullable=False
+        PortableUUID(), ForeignKey("entities.entity_id", ondelete="CASCADE"), nullable=False
     )
     provider_id: Mapped[str] = mapped_column(String(100), nullable=False)
     check_type: Mapped[str] = mapped_column(String(100), nullable=False)
 
     # Origin (determines sharing scope)
     data_origin: Mapped[str] = mapped_column(String(50), nullable=False)
+    # FK to tenants.tenant_id will be added via migration when tenants table exists
     customer_id: Mapped[UUID | None] = mapped_column(
-        PGUUID(as_uuid=True),
-        ForeignKey("tenants.tenant_id"),
+        PortableUUID(),
         nullable=True,  # Set if customer_provided
     )
 
@@ -69,7 +68,7 @@ class CachedDataSource(Base, TimestampMixin):
 
     # Data (raw_response should be encrypted by application layer)
     raw_response: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)  # Encrypted
-    normalized_data: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    normalized_data: Mapped[dict] = mapped_column(PortableJSON(), nullable=False)
 
     # Cost tracking
     cost_incurred: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)

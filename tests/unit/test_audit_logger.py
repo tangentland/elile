@@ -105,7 +105,11 @@ async def test_query_events_by_event_type(db_session):
     await logger.log_event(AuditEventType.SCREENING_INITIATED, correlation_id, {"test": 3})
     await db_session.commit()
 
-    events = await logger.query_events(event_type=AuditEventType.SCREENING_INITIATED)
+    # Filter by both event_type and correlation_id to isolate from other tests
+    events = await logger.query_events(
+        event_type=AuditEventType.SCREENING_INITIATED,
+        correlation_id=correlation_id,
+    )
     assert len(events) == 2
     assert all(e.event_type == AuditEventType.SCREENING_INITIATED.value for e in events)
 

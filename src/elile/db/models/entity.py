@@ -1,13 +1,12 @@
 """Entity models for Elile database."""
 
 from enum import Enum
-from uuid import UUID, uuid4
+from uuid import UUID, uuid7
 
 from sqlalchemy import Float, ForeignKey, Index, String
-from sqlalchemy.dialects.postgresql import JSONB, UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .base import Base, TimestampMixin
+from .base import Base, PortableJSON, PortableUUID, TimestampMixin
 
 
 class EntityType(str, Enum):
@@ -28,11 +27,11 @@ class Entity(Base, TimestampMixin):
 
     __tablename__ = "entities"
 
-    entity_id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    entity_id: Mapped[UUID] = mapped_column(PortableUUID(), primary_key=True, default=uuid7)
     entity_type: Mapped[str] = mapped_column(String(50), nullable=False)
 
     # Canonical identifiers (SSN, EIN, etc.) - should be encrypted by application layer
-    canonical_identifiers: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
+    canonical_identifiers: Mapped[dict] = mapped_column(PortableJSON(), nullable=False, default=dict)
 
     # Relationships
     profiles: Mapped[list["EntityProfile"]] = relationship(
@@ -64,12 +63,12 @@ class EntityRelation(Base, TimestampMixin):
 
     __tablename__ = "entity_relations"
 
-    relation_id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    relation_id: Mapped[UUID] = mapped_column(PortableUUID(), primary_key=True, default=uuid7)
     from_entity_id: Mapped[UUID] = mapped_column(
-        PGUUID(as_uuid=True), ForeignKey("entities.entity_id", ondelete="CASCADE"), nullable=False
+        PortableUUID(), ForeignKey("entities.entity_id", ondelete="CASCADE"), nullable=False
     )
     to_entity_id: Mapped[UUID] = mapped_column(
-        PGUUID(as_uuid=True), ForeignKey("entities.entity_id", ondelete="CASCADE"), nullable=False
+        PortableUUID(), ForeignKey("entities.entity_id", ondelete="CASCADE"), nullable=False
     )
     relation_type: Mapped[str] = mapped_column(
         String(100), nullable=False
@@ -78,7 +77,7 @@ class EntityRelation(Base, TimestampMixin):
         Float, nullable=False
     )  # 0.0 - 1.0 confidence in this relation
     discovered_in_screening: Mapped[UUID | None] = mapped_column(
-        PGUUID(as_uuid=True), ForeignKey("entity_profiles.profile_id"), nullable=True
+        PortableUUID(), ForeignKey("entity_profiles.profile_id"), nullable=True
     )
 
     __table_args__ = (

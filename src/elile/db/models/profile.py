@@ -1,13 +1,12 @@
 """Entity profile models for Elile database."""
 
 from enum import Enum
-from uuid import UUID, uuid4
+from uuid import UUID, uuid7
 
 from sqlalchemy import ForeignKey, Index, Integer, String
-from sqlalchemy.dialects.postgresql import JSONB, UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .base import Base, TimestampMixin
+from .base import Base, PortableJSON, PortableUUID, TimestampMixin
 
 
 class ProfileTrigger(str, Enum):
@@ -28,41 +27,41 @@ class EntityProfile(Base, TimestampMixin):
 
     __tablename__ = "entity_profiles"
 
-    profile_id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    profile_id: Mapped[UUID] = mapped_column(PortableUUID(), primary_key=True, default=uuid7)
     entity_id: Mapped[UUID] = mapped_column(
-        PGUUID(as_uuid=True), ForeignKey("entities.entity_id", ondelete="CASCADE"), nullable=False
+        PortableUUID(), ForeignKey("entities.entity_id", ondelete="CASCADE"), nullable=False
     )
     version: Mapped[int] = mapped_column(Integer, nullable=False)
 
     # Trigger context - what created this profile
     trigger_type: Mapped[str] = mapped_column(String(50), nullable=False)
     trigger_id: Mapped[UUID | None] = mapped_column(
-        PGUUID(as_uuid=True), nullable=True
+        PortableUUID(), nullable=True
     )  # Screening or monitoring run ID
 
     # Snapshot data - findings from this investigation
     findings: Mapped[dict] = mapped_column(
-        JSONB, nullable=False
+        PortableJSON(), nullable=False
     )  # List of Finding objects as dicts
-    risk_score: Mapped[dict] = mapped_column(JSONB, nullable=False)  # RiskScore object as dict
-    connections: Mapped[dict] = mapped_column(JSONB, nullable=False)  # Connection graph as dict
+    risk_score: Mapped[dict] = mapped_column(PortableJSON(), nullable=False)  # RiskScore object as dict
+    connections: Mapped[dict] = mapped_column(PortableJSON(), nullable=False)  # Connection graph as dict
     connection_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
     # Data sources used in this profile
     data_sources_used: Mapped[dict] = mapped_column(
-        JSONB, nullable=False
+        PortableJSON(), nullable=False
     )  # List of data source references
     stale_data_used: Mapped[dict] = mapped_column(
-        JSONB, nullable=False, default=dict
+        PortableJSON(), nullable=False, default=dict
     )  # Flagged stale sources
 
     # Evolution tracking - comparison to previous versions
     previous_version: Mapped[int | None] = mapped_column(Integer, nullable=True)
     delta: Mapped[dict | None] = mapped_column(
-        JSONB, nullable=True
+        PortableJSON(), nullable=True
     )  # ProfileDelta if comparing to previous
     evolution_signals: Mapped[dict] = mapped_column(
-        JSONB, nullable=False, default=dict
+        PortableJSON(), nullable=False, default=dict
     )  # Detected evolution patterns
 
     # Relationships

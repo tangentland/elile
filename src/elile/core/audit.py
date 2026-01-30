@@ -134,7 +134,10 @@ class AuditLogger:
         if isinstance(severity, AuditSeverity):
             severity = severity.value
 
-        query = select(AuditEvent).order_by(AuditEvent.created_at.desc())
+        query = select(AuditEvent).order_by(
+            AuditEvent.created_at.desc(),
+            AuditEvent.audit_id.desc(),  # Secondary sort for equal timestamps
+        )
 
         # Apply filters
         if tenant_id is not None:

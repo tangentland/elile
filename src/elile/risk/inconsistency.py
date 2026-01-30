@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from typing import Literal
-from uuid import uuid4
+from uuid import uuid7
 
 import structlog
 
@@ -664,7 +664,7 @@ class InconsistencyAnalyzer:
         severity = _score_to_severity(base_score)
 
         return Inconsistency(
-            inconsistency_id=uuid4(),
+            inconsistency_id=uuid7(),
             type_a=type_a,
             type_b=type_b,
             field=field,
