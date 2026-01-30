@@ -1,9 +1,10 @@
 """Audit logging service for compliance and accountability."""
 
+from collections.abc import Callable
 from datetime import datetime
 from functools import wraps
-from typing import Any, Callable
-from uuid import UUID
+from typing import Any
+from uuid import UUID, uuid7
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -243,6 +244,142 @@ def audit_operation(
                     severity=AuditSeverity.ERROR,
                     tenant_id=kwargs.get("tenant_id"),
                     user_id=kwargs.get("user_id"),
+                )
+                raise
+
+        return wrapper
+
+    return decorator
+
+
+def audit_operation_v2(
+    event_type: AuditEventType,
+    severity: AuditSeverity = AuditSeverity.INFO,
+    extract_entity_id: Callable[[Any], UUID] | None = None,
+):
+    """Context-aware decorator to automatically audit function calls.
+
+    This is an enhanced version of audit_operation that automatically extracts
+    tenant_id and correlation_id from the current RequestContext if available,
+    falling back to explicit kwargs if no context is set.
+
+    The decorated function must accept a 'db' parameter (AsyncSession).
+    If no RequestContext is available, it must also provide 'correlation_id'.
+
+    Args:
+        event_type: Type of audit event to log
+        severity: Severity level (default: INFO)
+        extract_entity_id: Optional function to extract entity_id from result
+
+    Example:
+        >>> @audit_operation_v2(
+        ...     AuditEventType.SCREENING_INITIATED,
+        ...     extract_entity_id=lambda result: result.entity_id
+        ... )
+        ... async def initiate_screening(
+        ...     db: AsyncSession,
+        ...     subject_name: str,
+        ... ) -> ScreeningResult:
+        ...     # tenant_id and correlation_id extracted from context
+        ...     ...
+
+        >>> # Can also override from kwargs
+        >>> @audit_operation_v2(AuditEventType.DATA_ACCESSED)
+        ... async def access_data(
+        ...     db: AsyncSession,
+        ...     correlation_id: UUID,  # Explicit, overrides context
+        ...     ...
+        ... ):
+        ...     ...
+    """
+    # Import here to avoid circular imports
+    from elile.core.context import get_current_context_or_none
+
+    def decorator(func: Callable):
+        @wraps(func)
+        async def wrapper(*args, **kwargs):
+            # Extract db (required)
+            db = kwargs.get("db")
+            if not db:
+                raise ValueError(f"Function {func.__name__} must accept 'db' parameter")
+
+            # Try to get context
+            ctx = get_current_context_or_none()
+            context_used = ctx is not None
+
+            # Get tenant_id and correlation_id from context or kwargs
+            if ctx is not None:
+                tenant_id = kwargs.get("tenant_id", ctx.tenant_id)
+                correlation_id = kwargs.get("correlation_id", ctx.correlation_id)
+                user_id = kwargs.get("user_id", ctx.actor_id)
+            else:
+                tenant_id = kwargs.get("tenant_id")
+                correlation_id = kwargs.get("correlation_id")
+                user_id = kwargs.get("user_id")
+
+            # correlation_id is required either from context or kwargs
+            if not correlation_id:
+                if ctx is None:
+                    raise ValueError(
+                        f"Function {func.__name__} requires either a RequestContext "
+                        "or explicit 'correlation_id' parameter"
+                    )
+                correlation_id = uuid7()
+
+            audit_logger = AuditLogger(db)
+
+            # Execute function
+            try:
+                result = await func(*args, **kwargs)
+
+                # Extract entity_id from result if extractor provided
+                entity_id = None
+                if extract_entity_id and result:
+                    entity_id = extract_entity_id(result)
+
+                # Log success with context metadata
+                event_data: dict[str, Any] = {
+                    "function": func.__name__,
+                    "status": "success",
+                    "context_used": context_used,
+                }
+                if ctx is not None:
+                    event_data["request_id"] = str(ctx.request_id)
+                    event_data["locale"] = ctx.locale
+                    event_data["service_tier"] = ctx.service_tier.value
+
+                await audit_logger.log_event(
+                    event_type=event_type,
+                    correlation_id=correlation_id,
+                    event_data=event_data,
+                    severity=severity,
+                    entity_id=entity_id,
+                    tenant_id=tenant_id,
+                    user_id=user_id,
+                )
+
+                return result
+
+            except Exception as e:
+                # Log failure with context metadata
+                event_data = {
+                    "function": func.__name__,
+                    "status": "error",
+                    "error": str(e),
+                    "error_type": type(e).__name__,
+                    "context_used": context_used,
+                }
+                if ctx is not None:
+                    event_data["request_id"] = str(ctx.request_id)
+                    event_data["locale"] = ctx.locale
+
+                await audit_logger.log_event(
+                    event_type=event_type,
+                    correlation_id=correlation_id,
+                    event_data=event_data,
+                    severity=AuditSeverity.ERROR,
+                    tenant_id=tenant_id,
+                    user_id=user_id,
                 )
                 raise
 
