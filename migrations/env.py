@@ -12,6 +12,7 @@ from elile.config.settings import settings
 from elile.db.models.base import Base
 
 # Import all models to ensure they are registered with Base.metadata
+from elile.db.models.audit import AuditEvent  # noqa: F401
 from elile.db.models.cache import CachedDataSource  # noqa: F401
 from elile.db.models.entity import Entity, EntityRelation  # noqa: F401
 from elile.db.models.profile import EntityProfile  # noqa: F401

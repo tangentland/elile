@@ -1,5 +1,6 @@
 """Database models for Elile."""
 
+from .audit import AuditEvent, AuditEventType, AuditSeverity
 from .base import Base, TimestampMixin
 from .cache import CachedDataSource, DataOrigin, FreshnessStatus
 from .entity import Entity, EntityRelation, EntityType
@@ -16,4 +17,7 @@ __all__ = [
     "CachedDataSource",
     "DataOrigin",
     "FreshnessStatus",
+    "AuditEvent",
+    "AuditEventType",
+    "AuditSeverity",
 ]
