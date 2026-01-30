@@ -118,16 +118,25 @@ src/elile/
 - Comprehensive audit logging for all data access
 - Rate limiting and retry logic for external APIs
 
-## Architecture Document
+## Architecture Documentation
 
-See `docs/architecture.md` for detailed system design including:
+See `docs/architecture/` for detailed system design, organized by domain:
 
-- **Service Model**: Tiers (Standard/Enhanced), Vigilance (V0-V3), Degrees (D1-D3)
-- **Data Sources**: Core (T1) and Premium (T2) provider categories
-- **Data Persistence**: Entity data lake, caching, freshness, and evolution analytics
-- **Modular Monolith**: Module structure, communication patterns, process model, deployment options
-- **Per-Persona Reports**: HR Summary, Compliance Audit, Security Investigation, Subject Disclosure, Executive Portfolio
-- **User Interfaces**: Screening Portal, Review Dashboard, Monitoring Console, Admin Console, Subject Portal
+| Document | Content |
+|----------|---------|
+| [README.md](docs/architecture/README.md) | Index, dependency diagram, reading order |
+| [01-design.md](docs/architecture/01-design.md) | Design principles, "why modular monolith" |
+| [02-core-system.md](docs/architecture/02-core-system.md) | Storage, database, API structure, data models |
+| [03-screening.md](docs/architecture/03-screening.md) | Service tiers (Standard/Enhanced), degrees (D1-D3), screening flow |
+| [04-monitoring.md](docs/architecture/04-monitoring.md) | Vigilance levels (V0-V3), ongoing monitoring, alerts |
+| [05-investigation.md](docs/architecture/05-investigation.md) | Screening engine, SAR loop, risk analysis |
+| [06-data-sources.md](docs/architecture/06-data-sources.md) | Core (T1) and Premium (T2) provider categories |
+| [07-compliance.md](docs/architecture/07-compliance.md) | Compliance engine, security, data retention |
+| [08-reporting.md](docs/architecture/08-reporting.md) | Per-persona report types (6 report types) |
+| [09-integration.md](docs/architecture/09-integration.md) | API endpoints, HRIS gateway, webhooks |
+| [10-platform.md](docs/architecture/10-platform.md) | Module structure, deployment, scaling |
+| [11-interfaces.md](docs/architecture/11-interfaces.md) | User interfaces (5 portals/dashboards) |
+| [12-roadmap.md](docs/architecture/12-roadmap.md) | Open questions, implementation phases |
 
 ## Report Types
 
