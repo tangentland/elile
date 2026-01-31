@@ -666,7 +666,7 @@ Provider abstraction layer, rate limiting, response caching, cost tracking, requ
 
 ## Phase 5: Investigation Engine (SAR Loop) (P0 - Critical)
 
-**Status**: 🟡 In Progress (2/16 tasks complete)
+**Status**: 🟡 In Progress (3/16 tasks complete)
 **Dependencies**: Phase 4
 
 Search-Assess-Refine loop, query planning, result assessment, refinement.
@@ -724,9 +724,30 @@ Search-Assess-Refine loop, query planning, result assessment, refinement.
 - `src/elile/investigation/query_planner.py` - QueryPlanner class
 - `tests/unit/test_query_planner.py` - Unit tests
 
+#### ✅ Task 5.3: Query Executor
+**Priority**: P0
+**Status**: Complete
+**Completed**: 2026-01-31
+**Dependencies**: Task 4.1, 4.2, 5.2
+
+**Deliverables**:
+- ✅ QueryExecutor class for async query execution
+- ✅ QueryResult dataclass with execution outcome and findings
+- ✅ QueryStatus enum (SUCCESS, FAILED, TIMEOUT, RATE_LIMITED, NO_PROVIDER, SKIPPED)
+- ✅ ExecutionSummary for batch execution statistics
+- ✅ ExecutorConfig for concurrency and batch size configuration
+- ✅ Integration with RequestRouter for retry, caching, rate limiting
+- ✅ SearchQuery to RoutedRequest conversion with SubjectIdentifiers mapping
+- ✅ Priority-based query sorting
+- ✅ Batch execution with configurable concurrency
+- ✅ 26 unit tests
+
+**Key Files**:
+- `src/elile/investigation/query_executor.py` - QueryExecutor class
+- `tests/unit/test_query_executor.py` - Unit tests
+
 ### Pending Tasks
 
-- 🔲 Task 5.3: Query Executor
 - 🔲 Task 5.4: Result Assessor
 - 🔲 Task 5.5: Query Refiner
 - 🔲 Task 5.6: Information Type Manager
@@ -809,7 +830,7 @@ Performance optimization, security hardening, compliance certification, document
 ## Overall Progress
 
 ### By Priority
-- **P0 (Critical)**: 26/85 tasks (30.6%)
+- **P0 (Critical)**: 27/85 tasks (31.8%)
 - **P1 (High)**: 4/45 tasks (8.9%)
 - **P2 (Medium)**: 0/10 tasks (0%)
 - **P3 (Low)**: 0/1 tasks (0%)
@@ -819,10 +840,10 @@ Performance optimization, security hardening, compliance certification, document
 - **Phase 2**: 5/5 tasks (100%) ✅
 - **Phase 3**: 5/5 tasks (100%) ✅
 - **Phase 4**: 6/6 tasks (100%) ✅
-- **Phase 5**: 2/16 tasks (12.5%) 🟡
+- **Phase 5**: 3/16 tasks (18.75%) 🟡
 - **Phase 6-12**: 0/97 tasks (0%)
 
-### Total: 30/141 tasks (21.3%)
+### Total: 31/141 tasks (22.0%)
 
 ---
 
@@ -830,9 +851,9 @@ Performance optimization, security hardening, compliance certification, document
 
 | Category | Tests |
 |----------|-------|
-| Unit Tests | 980 |
+| Unit Tests | 1006 |
 | Integration Tests | 64 |
-| **Total** | **1044** |
+| **Total** | **1070** |
 
 All tests passing as of 2026-01-31.
 
@@ -911,8 +932,15 @@ Task 5.2 (Query Planner) complete:
 - Query deduplication and tier-aware filtering
 - 24 new unit tests
 
-### Next: Task 5.3 - Query Executor
-Implement query executor to execute planned queries against providers with retry, caching, and result normalization.
+Task 5.3 (Query Executor) complete:
+- QueryExecutor for async batch query execution
+- Integration with RequestRouter infrastructure
+- Priority-based query sorting
+- ExecutionSummary for batch statistics
+- 26 new unit tests
+
+### Next: Task 5.4 - Result Assessor
+Implement result assessor to analyze query results, extract findings, and calculate confidence scores.
 
 ---
 

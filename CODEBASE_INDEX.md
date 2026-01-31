@@ -786,14 +786,65 @@ check_types = INFO_TYPE_TO_CHECK_TYPES[InformationType.CRIMINAL]
 @dataclass
 class SearchQuery:
     query_id: UUID             # UUIDv7 identifier
+    info_type: InformationType # Type being searched
+    query_type: QueryType      # INITIAL, ENRICHED, GAP_FILL, REFINEMENT
     provider_id: str           # Target provider
     check_type: CheckType      # Type of check to perform
     search_params: dict[str, Any]  # Provider-specific parameters
-    priority: int              # 1=high, 2=medium, 3=low
-    query_type: QueryType      # INITIAL, ENRICHED, GAP_FILL, REFINEMENT
-    parent_query_id: UUID | None  # For refinement chains
-    expected_info_types: list[InformationType]  # What info this query may return
+    iteration_number: int      # Current SAR iteration
+    priority: int              # 0=low, higher=more important
 ```
+
+### Query Executor
+
+Executes search queries against data providers with retry, rate limiting, and caching:
+
+```python
+from elile.investigation import (
+    QueryExecutor,
+    QueryResult,
+    QueryStatus,
+    ExecutionSummary,
+    ExecutorConfig,
+    create_query_executor,
+)
+from elile.providers.router import RequestRouter
+
+# Create executor with router
+router = RequestRouter(registry=provider_registry)
+executor = create_query_executor(router=router)
+
+# Execute queries from planner
+results, summary = await executor.execute_queries(
+    queries=planned_queries,
+    entity_id=entity_id,
+    tenant_id=tenant_id,
+    locale=Locale.US,
+    service_tier=ServiceTier.STANDARD,
+)
+
+# Check results
+for result in results:
+    if result.status == QueryStatus.SUCCESS:
+        process_findings(result.normalized_data)
+    else:
+        log_failure(result.error_message)
+
+# Review execution summary
+print(f"Success rate: {summary.success_rate:.1f}%")
+print(f"Cache hits: {summary.cache_hits}")
+```
+
+#### Query Status Values
+
+| Status | Description |
+|--------|-------------|
+| `SUCCESS` | Query executed successfully |
+| `FAILED` | Query failed after retries |
+| `TIMEOUT` | Query timed out |
+| `RATE_LIMITED` | Provider rate limit exceeded |
+| `NO_PROVIDER` | No provider available for check type |
+| `SKIPPED` | Query was skipped (e.g., duplicate) |
 
 ## Key Enums
 
@@ -975,6 +1026,7 @@ tests/
 | `src/elile/investigation/models.py` | SARPhase, CompletionReason, SARIterationState, SARTypeState, SARConfig, SARSummary | Task 5.1 |
 | `src/elile/investigation/sar_machine.py` | SARStateMachine, create_sar_machine, FOUNDATION_TYPES | Task 5.1 |
 | `src/elile/investigation/query_planner.py` | QueryPlanner, QueryPlanResult, SearchQuery, QueryType, INFO_TYPE_TO_CHECK_TYPES | Task 5.2 |
+| `src/elile/investigation/query_executor.py` | QueryExecutor, QueryResult, QueryStatus, ExecutionSummary, ExecutorConfig | Task 5.3 |
 
 ## Architecture References
 

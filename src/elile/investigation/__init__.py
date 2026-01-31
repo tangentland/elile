@@ -11,6 +11,8 @@ Key Components:
     - SARIterationState: Tracks state for each iteration
     - QueryPlanner: Generates search queries with cross-type enrichment
     - SearchQuery: Represents a single query to execute
+    - QueryExecutor: Executes search queries against data providers
+    - QueryResult: Result from query execution
 
 Example:
     ```python
@@ -70,6 +72,14 @@ from elile.investigation.models import (
     SARSummary,
     SARTypeState,
 )
+from elile.investigation.query_executor import (
+    ExecutionSummary,
+    ExecutorConfig,
+    QueryExecutor,
+    QueryResult,
+    QueryStatus,
+    create_query_executor,
+)
 from elile.investigation.query_planner import (
     INFO_TYPE_TO_CHECK_TYPES,
     QueryPlanner,
@@ -104,4 +114,11 @@ __all__ = [
     "SearchQuery",
     "QueryType",
     "INFO_TYPE_TO_CHECK_TYPES",
+    # Query executor
+    "QueryExecutor",
+    "create_query_executor",
+    "QueryResult",
+    "QueryStatus",
+    "ExecutorConfig",
+    "ExecutionSummary",
 ]
