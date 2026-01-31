@@ -58,6 +58,12 @@ from elile.entity.types import (
     ResolutionDecision,
     SubjectIdentifiers,
 )
+from elile.entity.tenant import (
+    EntityAccessControl,
+    TenantAwareEntityService,
+    TenantEntityCreateResult,
+    TenantScopedQuery,
+)
 from elile.entity.validation import (
     EntityValidator,
     ValidationError,
@@ -106,4 +112,9 @@ __all__ = [
     "validate_identifier",
     "validate_or_raise",
     "validate_subject",
+    # Tenant Isolation
+    "EntityAccessControl",
+    "TenantAwareEntityService",
+    "TenantEntityCreateResult",
+    "TenantScopedQuery",
 ]
