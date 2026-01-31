@@ -67,6 +67,17 @@ from elile.providers.health import (
     ProviderMetrics,
 )
 from elile.providers.protocol import BaseDataProvider, DataProvider
+from elile.providers.rate_limit import (
+    ProviderRateLimitRegistry,
+    RateLimitConfig,
+    RateLimitExceededError,
+    RateLimitResult,
+    RateLimitStatus,
+    RateLimitStrategy,
+    TokenBucket,
+    get_rate_limit_registry,
+    reset_rate_limit_registry,
+)
 from elile.providers.registry import (
     NoProviderAvailableError,
     ProviderNotFoundError,
@@ -105,6 +116,16 @@ __all__ = [
     "HealthMonitor",
     "HealthMonitorConfig",
     "ProviderMetrics",
+    # Rate Limiting
+    "RateLimitConfig",
+    "RateLimitResult",
+    "RateLimitStatus",
+    "RateLimitStrategy",
+    "RateLimitExceededError",
+    "TokenBucket",
+    "ProviderRateLimitRegistry",
+    "get_rate_limit_registry",
+    "reset_rate_limit_registry",
     # Types
     "CostTier",
     "DataSourceCategory",
