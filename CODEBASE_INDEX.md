@@ -8,6 +8,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 |--------|---------|----------------------|
 | `src/elile/api/` | FastAPI application and middleware | `create_app()`, `APIError`, middleware stack |
 | `src/elile/core/` | Core framework: context, audit, encryption, errors, logging | `RequestContext`, `AuditLogger`, `Encryptor`, `ErrorHandler`, `get_logger()` |
+| `src/elile/compliance/` | Locale-aware compliance engine | `ComplianceEngine`, `Locale`, `CheckType`, `Consent`, `ServiceConfigValidator` |
 | `src/elile/agent/` | LangGraph workflow orchestration | `IterativeSearchState`, `ServiceTier`, `SearchDegree` |
 | `src/elile/config/` | Configuration and settings | `Settings`, `get_settings()`, `validate_configuration()` |
 | `src/elile/db/` | Database models, repositories, and configuration | `Entity`, `AuditEvent`, `Tenant`, `BaseRepository` |
@@ -112,6 +113,54 @@ class MyModel(Base):
     secret: Mapped[str] = mapped_column(EncryptedString())
     secret_data: Mapped[dict] = mapped_column(EncryptedJSON())
 ```
+
+## Compliance Framework (`src/elile/compliance/`)
+
+### Compliance Engine
+```python
+from elile.compliance import ComplianceEngine, Locale, CheckType, RoleCategory
+
+engine = ComplianceEngine()
+result = engine.evaluate_check(
+    locale=Locale.US,
+    check_type=CheckType.CRIMINAL_NATIONAL,
+    role_category=RoleCategory.FINANCIAL,
+)
+if result.permitted:
+    # Proceed with check
+    ...
+```
+
+### Consent Management
+```python
+from elile.compliance import Consent, ConsentManager, ConsentScope, create_consent
+
+consent = create_consent(
+    subject_id=subject_id,
+    scopes=[ConsentScope.BACKGROUND_CHECK, ConsentScope.CREDIT_CHECK],
+)
+manager = ConsentManager()
+manager.register_consent(consent)
+result = manager.verify_consent(subject_id, [ConsentScope.CRIMINAL_RECORDS])
+```
+
+### Service Configuration Validation
+```python
+from elile.compliance import validate_service_config, Locale
+from elile.agent.state import ServiceConfiguration, ServiceTier, SearchDegree
+
+config = ServiceConfiguration(tier=ServiceTier.ENHANCED, degrees=SearchDegree.D3)
+result = validate_service_config(config, Locale.US)
+```
+
+### Compliance Enums
+
+| Enum | Values | Purpose |
+|------|--------|---------|
+| `Locale` | US, EU, UK, CA, AU, BR, etc. | Geographic jurisdictions |
+| `CheckType` | 35 check types | Types of background checks |
+| `RoleCategory` | STANDARD, FINANCIAL, GOVERNMENT, etc. | Job role categories |
+| `ConsentScope` | BACKGROUND_CHECK, CREDIT_CHECK, etc. | Consent scope types |
 
 ## Key Enums
 
@@ -253,6 +302,11 @@ tests/
 | `src/elile/db/types/encrypted.py` | Encrypted SQLAlchemy types | Task 1.6 |
 | `src/elile/agent/state.py` | State definitions, enums, Pydantic models | - |
 | `src/elile/db/models/base.py` | SQLAlchemy base class, portable types | Task 1.1 |
+| `src/elile/compliance/types.py` | Locale, CheckType, RoleCategory enums | Task 2.1 |
+| `src/elile/compliance/rules.py` | ComplianceRule, RuleRepository | Task 2.2 |
+| `src/elile/compliance/engine.py` | ComplianceEngine | Task 2.3 |
+| `src/elile/compliance/consent.py` | Consent, ConsentManager | Task 2.4 |
+| `src/elile/compliance/validation.py` | ServiceConfigValidator | Task 2.5 |
 
 ## Architecture References
 
