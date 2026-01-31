@@ -202,6 +202,31 @@ else:
 | `PENDING_REVIEW` | Enhanced only | 0.70-0.84 |
 | `CREATE_NEW` | Both | <0.70 or Standard tier 0.70-0.84 |
 
+### Entity Deduplication
+```python
+from elile.entity import EntityDeduplicator, DeduplicationResult, MergeResult
+
+# Check for duplicates before creating entity
+dedup = EntityDeduplicator(session, audit_logger)
+result = await dedup.check_duplicate(identifiers, EntityType.INDIVIDUAL)
+
+if result.is_duplicate:
+    # Use existing entity instead of creating new
+    entity_id = result.existing_entity_id
+else:
+    # Safe to create new entity
+    entity = await create_entity(identifiers)
+
+# Merge duplicate entities (keeps older entity as canonical)
+merge_result = await dedup.merge_entities(entity_a_id, entity_b_id)
+canonical_id = merge_result.canonical_entity_id
+
+# Handle identifier enrichment (triggers merge if match found)
+merge_result = await dedup.on_identifier_added(
+    entity_id, IdentifierType.SSN, "123-45-6789"
+)
+```
+
 ### Compliance Enums
 
 | Enum | Values | Purpose |
@@ -367,6 +392,7 @@ tests/
 | `src/elile/compliance/validation.py` | ServiceConfigValidator | Task 2.5 |
 | `src/elile/entity/types.py` | MatchResult, SubjectIdentifiers, enums | Task 3.1 |
 | `src/elile/entity/matcher.py` | EntityMatcher class | Task 3.1 |
+| `src/elile/entity/deduplication.py` | EntityDeduplicator, MergeResult | Task 3.2 |
 
 ## Architecture References
 
