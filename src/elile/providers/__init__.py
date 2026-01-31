@@ -56,6 +56,16 @@ Provider Implementation:
             ...
 """
 
+from elile.providers.health import (
+    CircuitBreaker,
+    CircuitBreakerConfig,
+    CircuitBreakerRegistry,
+    CircuitOpenError,
+    CircuitState,
+    HealthMonitor,
+    HealthMonitorConfig,
+    ProviderMetrics,
+)
 from elile.providers.protocol import BaseDataProvider, DataProvider
 from elile.providers.registry import (
     NoProviderAvailableError,
@@ -86,6 +96,15 @@ __all__ = [
     "reset_provider_registry",
     "ProviderNotFoundError",
     "NoProviderAvailableError",
+    # Health & Circuit Breaker
+    "CircuitBreaker",
+    "CircuitBreakerConfig",
+    "CircuitBreakerRegistry",
+    "CircuitOpenError",
+    "CircuitState",
+    "HealthMonitor",
+    "HealthMonitorConfig",
+    "ProviderMetrics",
     # Types
     "CostTier",
     "DataSourceCategory",

@@ -119,6 +119,20 @@ src/elile/
 - Comprehensive audit logging for all data access
 - Rate limiting and retry logic for external APIs
 
+## Task Completion Workflow
+
+**IMPORTANT**: After completing each implementation task:
+
+1. **Update CODEBASE_INDEX.md** with new module/class documentation
+2. **Update IMPLEMENTATION_STATUS.md** with task completion status
+3. **Save implementation plan** to `implementation_plans/task-X.Y-description.md` documenting:
+   - Overview and requirements
+   - Files created/modified
+   - Key patterns used
+   - Test results
+4. **Commit, merge, and tag** following branching rules
+5. **Update task tracker** if using tasks
+
 ## Architecture Documentation
 
 See `docs/architecture/` for detailed system design, organized by domain:
