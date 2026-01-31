@@ -7,7 +7,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 | Module | Purpose | Key Classes/Functions |
 |--------|---------|----------------------|
 | `src/elile/api/` | FastAPI application and middleware | `create_app()`, `APIError`, middleware stack |
-| `src/elile/core/` | Core framework: context, audit, encryption, errors | `RequestContext`, `AuditLogger`, `Encryptor`, `ErrorHandler` |
+| `src/elile/core/` | Core framework: context, audit, encryption, errors, logging | `RequestContext`, `AuditLogger`, `Encryptor`, `ErrorHandler`, `get_logger()` |
 | `src/elile/agent/` | LangGraph workflow orchestration | `IterativeSearchState`, `ServiceTier`, `SearchDegree` |
 | `src/elile/config/` | Configuration and settings | `Settings`, `get_settings()`, `validate_configuration()` |
 | `src/elile/db/` | Database models, repositories, and configuration | `Entity`, `AuditEvent`, `Tenant`, `BaseRepository` |
