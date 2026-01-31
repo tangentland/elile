@@ -110,6 +110,7 @@ class Settings(BaseSettings):
 
     # Redis Configuration
     REDIS_URL: str = "redis://localhost:6379/0"
+    REDIS_MAX_CONNECTIONS: int = 20
 
     # Security Configuration
     ENCRYPTION_KEY: SecretStr | None = None
