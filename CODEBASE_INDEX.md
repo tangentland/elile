@@ -588,6 +588,7 @@ tests/
 | `src/elile/providers/types.py` | Provider types, enums, result models | Task 4.1 |
 | `src/elile/providers/protocol.py` | DataProvider Protocol, BaseDataProvider | Task 4.1 |
 | `src/elile/providers/registry.py` | ProviderRegistry, provider lookup | Task 4.1 |
+| `src/elile/providers/health.py` | CircuitBreaker, HealthMonitor, ProviderMetrics | Task 4.2 |
 
 ## Architecture References
 
