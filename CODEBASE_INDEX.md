@@ -9,6 +9,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 | `src/elile/api/` | FastAPI application and middleware | `create_app()`, `APIError`, middleware stack |
 | `src/elile/core/` | Core framework: context, audit, encryption, errors, logging | `RequestContext`, `AuditLogger`, `Encryptor`, `ErrorHandler`, `get_logger()` |
 | `src/elile/compliance/` | Locale-aware compliance engine | `ComplianceEngine`, `Locale`, `CheckType`, `Consent`, `ServiceConfigValidator` |
+| `src/elile/entity/` | Entity resolution and matching | `EntityMatcher`, `SubjectIdentifiers`, `MatchResult` |
 | `src/elile/agent/` | LangGraph workflow orchestration | `IterativeSearchState`, `ServiceTier`, `SearchDegree` |
 | `src/elile/config/` | Configuration and settings | `Settings`, `get_settings()`, `validate_configuration()` |
 | `src/elile/db/` | Database models, repositories, and configuration | `Entity`, `AuditEvent`, `Tenant`, `BaseRepository` |
@@ -153,6 +154,54 @@ config = ServiceConfiguration(tier=ServiceTier.ENHANCED, degrees=SearchDegree.D3
 result = validate_service_config(config, Locale.US)
 ```
 
+## Entity Resolution (`src/elile/entity/`)
+
+### Entity Matcher
+```python
+from elile.entity import EntityMatcher, SubjectIdentifiers, MatchType, ResolutionDecision
+from elile.agent.state import ServiceTier
+from elile.db.models.entity import EntityType
+
+# Create matcher with database session
+matcher = EntityMatcher(session)
+
+# Define subject identifiers
+identifiers = SubjectIdentifiers(
+    full_name="John Smith",
+    date_of_birth=date(1980, 1, 15),
+    ssn="123-45-6789",
+    street_address="123 Main St",
+    city="Springfield",
+    state="IL",
+)
+
+# Resolve subject to existing entity or determine new entity needed
+result = await matcher.resolve(identifiers, EntityType.INDIVIDUAL, ServiceTier.STANDARD)
+
+if result.decision == ResolutionDecision.MATCH_EXISTING:
+    entity_id = result.entity_id
+elif result.decision == ResolutionDecision.PENDING_REVIEW:
+    # Queue for analyst review (Enhanced tier)
+    ...
+else:
+    # CREATE_NEW - create new entity
+    ...
+```
+
+### Match Types
+| Type | Description | Confidence |
+|------|-------------|------------|
+| `EXACT` | Canonical identifier match (SSN, EIN, passport) | 1.0 |
+| `FUZZY` | Similarity-based match (name, DOB, address) | 0.70-0.99 |
+| `NEW` | No match found | 0.0 |
+
+### Resolution Decisions
+| Decision | Tier | Confidence Range |
+|----------|------|------------------|
+| `MATCH_EXISTING` | Both | ≥0.85 |
+| `PENDING_REVIEW` | Enhanced only | 0.70-0.84 |
+| `CREATE_NEW` | Both | <0.70 or Standard tier 0.70-0.84 |
+
 ### Compliance Enums
 
 | Enum | Values | Purpose |
@@ -194,6 +243,15 @@ result = validate_service_config(config, Locale.US)
 | Enum | Values | Purpose |
 |------|--------|---------|
 | `EntityType` | INDIVIDUAL, ORGANIZATION, ADDRESS | Type of entity being tracked |
+
+### Entity Resolution (`src/elile/entity/types.py`)
+
+| Enum | Values | Purpose |
+|------|--------|---------|
+| `MatchType` | EXACT, FUZZY, NEW | How entity was matched |
+| `ResolutionDecision` | MATCH_EXISTING, CREATE_NEW, PENDING_REVIEW | Resolution outcome |
+| `IdentifierType` | SSN, EIN, PASSPORT, DRIVERS_LICENSE, EMAIL, PHONE, etc. | Types of identifiers |
+| `RelationType` | EMPLOYER, EMPLOYEE, HOUSEHOLD, FAMILY, DIRECTOR, etc. | Entity relationship types |
 
 ### Profile System (`src/elile/db/models/profile.py`)
 
@@ -307,6 +365,8 @@ tests/
 | `src/elile/compliance/engine.py` | ComplianceEngine | Task 2.3 |
 | `src/elile/compliance/consent.py` | Consent, ConsentManager | Task 2.4 |
 | `src/elile/compliance/validation.py` | ServiceConfigValidator | Task 2.5 |
+| `src/elile/entity/types.py` | MatchResult, SubjectIdentifiers, enums | Task 3.1 |
+| `src/elile/entity/matcher.py` | EntityMatcher class | Task 3.1 |
 
 ## Architecture References
 
