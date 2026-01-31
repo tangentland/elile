@@ -9,7 +9,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 | `src/elile/api/` | FastAPI application and middleware | `create_app()`, `APIError`, middleware stack |
 | `src/elile/core/` | Core framework: context, audit, encryption, errors, logging | `RequestContext`, `AuditLogger`, `Encryptor`, `ErrorHandler`, `get_logger()` |
 | `src/elile/compliance/` | Locale-aware compliance engine | `ComplianceEngine`, `Locale`, `CheckType`, `Consent`, `ServiceConfigValidator` |
-| `src/elile/entity/` | Entity resolution and matching | `EntityMatcher`, `SubjectIdentifiers`, `MatchResult` |
+| `src/elile/entity/` | Entity resolution, matching, tenant isolation | `EntityMatcher`, `EntityManager`, `TenantAwareEntityService` |
 | `src/elile/agent/` | LangGraph workflow orchestration | `IterativeSearchState`, `ServiceTier`, `SearchDegree` |
 | `src/elile/config/` | Configuration and settings | `Settings`, `get_settings()`, `validate_configuration()` |
 | `src/elile/db/` | Database models, repositories, and configuration | `Entity`, `AuditEvent`, `Tenant`, `BaseRepository` |
@@ -285,6 +285,48 @@ if path.exists:
     print(f"Path length: {path.length}")
 ```
 
+### Tenant-Aware Entity Service
+```python
+from elile.entity import TenantAwareEntityService, EntityAccessControl, TenantScopedQuery
+from elile.db.models.cache import DataOrigin
+
+# Create tenant-aware service
+service = TenantAwareEntityService(session, tenant_id=tenant_id)
+
+# Create entity with tenant isolation
+result = await service.create_entity(
+    entity_type=EntityType.INDIVIDUAL,
+    identifiers=identifiers,
+    data_origin=DataOrigin.CUSTOMER_PROVIDED,  # Tenant-scoped
+)
+
+# Shared external data (accessible to all tenants)
+result = await service.create_entity(
+    entity_type=EntityType.INDIVIDUAL,
+    identifiers=identifiers,
+    data_origin=DataOrigin.PAID_EXTERNAL,  # Shared
+)
+
+# Access control verification
+access_control = EntityAccessControl(session)
+can_access = await access_control.can_access(entity_id, tenant_id)
+
+# Tenant-scoped queries
+query = (
+    TenantScopedQuery(session)
+    .with_tenant(tenant_id)
+    .with_shared()  # Include shared external data
+    .filter_by_type(EntityType.INDIVIDUAL)
+)
+entities = await query.execute(limit=100)
+```
+
+### Data Isolation Rules
+| Data Origin | Tenant Access | Description |
+|-------------|---------------|-------------|
+| `CUSTOMER_PROVIDED` | Own tenant only | Strictly tenant-scoped data |
+| `PAID_EXTERNAL` | All tenants | Shared cache for external data |
+
 ### Compliance Enums
 
 | Enum | Values | Purpose |
@@ -455,6 +497,7 @@ tests/
 | `src/elile/entity/identifiers.py` | IdentifierManager class | Task 3.3 |
 | `src/elile/entity/graph.py` | RelationshipGraph class | Task 3.3 |
 | `src/elile/entity/validation.py` | EntityValidator, identifier validation | Task 3.4 |
+| `src/elile/entity/tenant.py` | TenantAwareEntityService, EntityAccessControl | Task 3.5 |
 
 ## Architecture References
 

@@ -33,6 +33,19 @@ class Entity(Base, TimestampMixin):
     # Canonical identifiers (SSN, EIN, etc.) - should be encrypted by application layer
     canonical_identifiers: Mapped[dict] = mapped_column(PortableJSON(), nullable=False, default=dict)
 
+    # Multi-tenancy fields
+    tenant_id: Mapped[UUID | None] = mapped_column(
+        PortableUUID(),
+        ForeignKey("tenants.tenant_id", ondelete="CASCADE"),
+        nullable=True,  # None for shared external data
+        index=True,
+    )
+    data_origin: Mapped[str | None] = mapped_column(
+        String(50),
+        nullable=True,
+        default="customer_provided",  # or "paid_external"
+    )
+
     # Relationships
     profiles: Mapped[list["EntityProfile"]] = relationship(
         "EntityProfile", back_populates="entity", cascade="all, delete-orphan"
@@ -45,6 +58,8 @@ class Entity(Base, TimestampMixin):
     __table_args__ = (
         Index("idx_entity_type", "entity_type"),
         Index("idx_entity_created", "created_at"),
+        Index("idx_entity_tenant", "tenant_id"),
+        Index("idx_entity_data_origin", "data_origin"),
     )
 
     def __repr__(self) -> str:
