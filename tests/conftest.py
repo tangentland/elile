@@ -6,6 +6,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import pytest_asyncio
+from fastapi import FastAPI
+from httpx import ASGITransport, AsyncClient
 from pydantic import SecretStr
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
@@ -127,3 +129,66 @@ async def db_session(test_engine) -> AsyncGenerator[AsyncSession, None]:
     async with async_session() as session:
         yield session
         await session.rollback()
+
+
+# API test fixtures
+
+
+@pytest.fixture
+def test_settings() -> Settings:
+    """Create settings for API testing."""
+    return Settings(
+        anthropic_api_key=SecretStr("test-anthropic-key"),
+        openai_api_key=SecretStr("test-openai-key"),
+        google_api_key=SecretStr("test-google-key"),
+        default_model_provider=ModelProvider.ANTHROPIC,
+        API_SECRET_KEY=SecretStr("test-api-secret"),
+        DATABASE_URL="sqlite+aiosqlite:///:memory:",
+        ENVIRONMENT="test",
+        DEBUG=True,
+        log_level="DEBUG",
+    )
+
+
+@pytest.fixture
+def test_app(test_settings: Settings) -> FastAPI:
+    """Create a FastAPI test application.
+
+    Uses test settings and in-memory database.
+    """
+    from elile.api.app import create_app
+
+    return create_app(settings=test_settings)
+
+
+@pytest_asyncio.fixture
+async def test_client(test_app: FastAPI) -> AsyncGenerator[AsyncClient, None]:
+    """Create an async HTTP client for API testing.
+
+    Provides an httpx.AsyncClient configured to call the test application
+    directly without network overhead.
+    """
+    async with AsyncClient(
+        transport=ASGITransport(app=test_app),
+        base_url="http://test",
+    ) as client:
+        yield client
+
+
+@pytest_asyncio.fixture
+async def authenticated_client(
+    test_app: FastAPI,
+    test_settings: Settings,
+) -> AsyncGenerator[AsyncClient, None]:
+    """Create an authenticated async HTTP client.
+
+    Includes the Authorization header with the test API key.
+    """
+    async with AsyncClient(
+        transport=ASGITransport(app=test_app),
+        base_url="http://test",
+        headers={
+            "Authorization": f"Bearer {test_settings.API_SECRET_KEY.get_secret_value()}",
+        },
+    ) as client:
+        yield client

@@ -159,3 +159,21 @@ class TenantAccessDeniedError(ElileError):
 
     def __str__(self) -> str:
         return f"TenantAccessDeniedError: {self.args[0]}"
+
+
+class AuthenticationError(ElileError):
+    """Raised when authentication fails.
+
+    This exception is used for API authentication failures such as
+    missing or invalid API keys, expired tokens, or invalid credentials.
+
+    Attributes:
+        reason: The specific reason authentication failed
+    """
+
+    def __init__(self, reason: str = "Authentication failed"):
+        super().__init__(reason)
+        self.reason = reason
+
+    def __str__(self) -> str:
+        return f"AuthenticationError: {self.args[0]}"

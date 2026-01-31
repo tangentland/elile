@@ -55,6 +55,10 @@ class AuditEventType(str, Enum):
     DATA_RETENTION_APPLIED = "data.retention_applied"
     DATA_ERASED = "data.erased"
 
+    # API operations
+    API_REQUEST = "api.request"
+    API_ERROR = "api.error"
+
 
 class AuditSeverity(str, Enum):
     """Severity levels for audit events."""
