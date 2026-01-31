@@ -27,6 +27,7 @@ class AuditEventType(str, Enum):
     # Entity operations
     ENTITY_CREATED = "entity.created"
     ENTITY_MERGED = "entity.merged"
+    RELATION_ADDED = "relation.added"
     PROFILE_CREATED = "profile.created"
 
     # Consent
