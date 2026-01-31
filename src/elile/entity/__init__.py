@@ -4,14 +4,20 @@ This package provides entity resolution, deduplication, and management
 functionality for the Elile platform.
 
 Usage:
-    from elile.entity import EntityMatcher, SubjectIdentifiers
+    from elile.entity import EntityManager, SubjectIdentifiers
 
-    matcher = EntityMatcher(session)
+    manager = EntityManager(session)
     identifiers = SubjectIdentifiers(
         full_name="John Smith",
         ssn="123-45-6789",
         date_of_birth=date(1980, 1, 15),
     )
+    result = await manager.create_entity(EntityType.INDIVIDUAL, identifiers)
+
+Resolution:
+    from elile.entity import EntityMatcher
+
+    matcher = EntityMatcher(session)
     result = await matcher.resolve(identifiers)
 
 Deduplication:
@@ -19,8 +25,12 @@ Deduplication:
 
     dedup = EntityDeduplicator(session)
     result = await dedup.check_duplicate(identifiers)
-    if result.is_duplicate:
-        existing_id = result.existing_entity_id
+
+Relationships:
+    from elile.entity import RelationshipGraph, RelationType
+
+    graph = RelationshipGraph(session)
+    neighbors = await graph.get_neighbors(entity_id, depth=2)
 """
 
 from elile.entity.deduplication import (
@@ -29,6 +39,14 @@ from elile.entity.deduplication import (
     EntityDeduplicator,
     MergeResult,
 )
+from elile.entity.graph import (
+    PathSegment,
+    RelationshipEdge,
+    RelationshipGraph,
+    RelationshipPath,
+)
+from elile.entity.identifiers import IdentifierManager, IdentifierUpdate
+from elile.entity.manager import EntityCreateResult, EntityManager
 from elile.entity.matcher import EntityMatcher
 from elile.entity.types import (
     IdentifierRecord,
@@ -42,6 +60,9 @@ from elile.entity.types import (
 )
 
 __all__ = [
+    # Manager
+    "EntityCreateResult",
+    "EntityManager",
     # Matcher
     "EntityMatcher",
     # Deduplication
@@ -49,6 +70,14 @@ __all__ = [
     "DuplicateCandidate",
     "EntityDeduplicator",
     "MergeResult",
+    # Identifiers
+    "IdentifierManager",
+    "IdentifierUpdate",
+    # Graph
+    "PathSegment",
+    "RelationshipEdge",
+    "RelationshipGraph",
+    "RelationshipPath",
     # Types
     "IdentifierRecord",
     "IdentifierType",

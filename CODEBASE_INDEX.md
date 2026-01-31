@@ -227,6 +227,64 @@ merge_result = await dedup.on_identifier_added(
 )
 ```
 
+### Entity Manager (High-Level API)
+```python
+from elile.entity import EntityManager, SubjectIdentifiers, RelationType
+
+manager = EntityManager(session, audit_logger)
+
+# Create entity with automatic dedup check
+identifiers = SubjectIdentifiers(
+    full_name="John Smith",
+    ssn="123-45-6789",
+    email="john@example.com",
+)
+result = await manager.create_entity(EntityType.INDIVIDUAL, identifiers)
+if result.created:
+    entity_id = result.entity_id
+
+# Add identifiers with confidence tracking
+await manager.add_identifier(
+    entity_id, IdentifierType.PASSPORT, "N12345678",
+    confidence=0.95, source="travel_records"
+)
+
+# Manage relationships
+await manager.add_relation(
+    from_entity_id=person_id,
+    to_entity_id=company_id,
+    relation_type=RelationType.EMPLOYEE,
+)
+
+# Query relationship graph
+neighbors = await manager.get_neighbors(entity_id, depth=2)
+path = await manager.find_path(entity_a, entity_b)
+```
+
+### Relationship Graph
+```python
+from elile.entity import RelationshipGraph, RelationType
+
+graph = RelationshipGraph(session)
+
+# Add relationship edge
+edge = await graph.add_edge(
+    from_entity_id=from_id,
+    to_entity_id=to_id,
+    relation_type=RelationType.EMPLOYER,
+    confidence=0.95,
+)
+
+# Get neighbors at various depths
+neighbors_1 = await graph.get_neighbors(entity_id, depth=1)
+neighbors_2 = await graph.get_neighbors(entity_id, depth=2)
+
+# Find shortest path between entities
+path = await graph.get_path(from_id, to_id, max_depth=5)
+if path.exists:
+    print(f"Path length: {path.length}")
+```
+
 ### Compliance Enums
 
 | Enum | Values | Purpose |
@@ -393,6 +451,9 @@ tests/
 | `src/elile/entity/types.py` | MatchResult, SubjectIdentifiers, enums | Task 3.1 |
 | `src/elile/entity/matcher.py` | EntityMatcher class | Task 3.1 |
 | `src/elile/entity/deduplication.py` | EntityDeduplicator, MergeResult | Task 3.2 |
+| `src/elile/entity/manager.py` | EntityManager high-level API | Task 3.3 |
+| `src/elile/entity/identifiers.py` | IdentifierManager class | Task 3.3 |
+| `src/elile/entity/graph.py` | RelationshipGraph class | Task 3.3 |
 
 ## Architecture References
 
