@@ -119,6 +119,22 @@ src/elile/
 - Comprehensive audit logging for all data access
 - Rate limiting and retry logic for external APIs
 
+## Context Management (CRITICAL)
+
+**CODEBASE_INDEX.md is your primary reference** - always consult it first to:
+- Understand module structure and class locations
+- Find existing implementations before creating new code
+- Locate test files and patterns
+- Reduce context overhead by reading the index instead of exploring multiple files
+
+**Workflow**:
+1. Read `CODEBASE_INDEX.md` first when starting work on any task
+2. Use the index to identify which specific files to read
+3. Only read files directly when you need implementation details not in the index
+4. When searching for patterns or conventions, check the index first
+
+**Never explore blindly** - the index documents all modules, classes, and their purposes.
+
 ## Task Completion Workflow
 
 **IMPORTANT**: After completing each implementation task:

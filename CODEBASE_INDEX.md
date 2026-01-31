@@ -414,6 +414,43 @@ class MyProvider(BaseDataProvider):
 | `CostTier` | FREE, LOW, MEDIUM, HIGH, PREMIUM | Billing optimization |
 | `ProviderStatus` | HEALTHY, DEGRADED, UNHEALTHY, MAINTENANCE | Health status |
 
+### Rate Limiting
+```python
+from elile.providers import (
+    RateLimitConfig,
+    ProviderRateLimitRegistry,
+    get_rate_limit_registry,
+    RateLimitExceededError,
+)
+
+# Get global rate limit registry
+rate_limits = get_rate_limit_registry()
+
+# Configure provider-specific rate limits
+rate_limits.configure_provider("sterling", RateLimitConfig(
+    tokens_per_second=10.0,  # Sustained rate
+    max_tokens=50.0,  # Burst capacity
+))
+
+# Before making a request
+try:
+    await rate_limits.acquire_or_raise("sterling")
+    result = await provider.execute_check(...)
+except RateLimitExceededError as e:
+    # Handle rate limit (e.g., queue request, use fallback)
+    print(f"Retry after {e.retry_after_seconds}s")
+
+# Check if request is allowed without consuming
+result = await rate_limits.check("sterling")
+if not result.allowed:
+    print(f"Wait {result.retry_after_seconds}s")
+
+# Synchronous check for quick decisions
+if rate_limits.can_execute("sterling"):
+    await rate_limits.acquire("sterling")
+    ...
+```
+
 ### Compliance Enums
 
 | Enum | Values | Purpose |
@@ -589,6 +626,7 @@ tests/
 | `src/elile/providers/protocol.py` | DataProvider Protocol, BaseDataProvider | Task 4.1 |
 | `src/elile/providers/registry.py` | ProviderRegistry, provider lookup | Task 4.1 |
 | `src/elile/providers/health.py` | CircuitBreaker, HealthMonitor, ProviderMetrics | Task 4.2 |
+| `src/elile/providers/rate_limit.py` | TokenBucket, ProviderRateLimitRegistry, RateLimitConfig | Task 4.3 |
 
 ## Architecture References
 
