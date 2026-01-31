@@ -451,6 +451,57 @@ if rate_limits.can_execute("sterling"):
     ...
 ```
 
+### Response Caching
+```python
+from elile.providers import (
+    ProviderCacheService,
+    CacheFreshnessConfig,
+    CacheEntry,
+    CacheLookupResult,
+)
+from elile.db.models.cache import DataOrigin
+
+# Create cache service with session
+cache = ProviderCacheService(session)
+
+# Cache-aside pattern with get_or_fetch
+result, was_cached = await cache.get_or_fetch(
+    entity_id=entity_id,
+    provider_id="sterling",
+    check_type=CheckType.CRIMINAL_NATIONAL,
+    locale=Locale.US,
+    fetch_fn=lambda: provider.execute_check(...),
+)
+if was_cached:
+    print("Cache hit - saved API call")
+
+# Manual cache lookup
+lookup = await cache.get(entity_id, provider_id, check_type)
+if lookup.is_fresh_hit:
+    return lookup.entry.normalized_data
+elif lookup.is_stale_hit:
+    print(f"Using stale data, age: {lookup.entry.age.days} days")
+
+# Store provider result
+entry = await cache.store(
+    entity_id=entity_id,
+    result=provider_result,
+    data_origin=DataOrigin.PAID_EXTERNAL,  # Shared across tenants
+)
+
+# Tenant-isolated storage
+entry = await cache.store(
+    entity_id=entity_id,
+    result=provider_result,
+    tenant_id=tenant_id,
+    data_origin=DataOrigin.CUSTOMER_PROVIDED,  # Only this tenant
+)
+
+# Get cache statistics
+stats = cache.stats
+print(f"Hit rate: {stats.hit_rate:.1%}")
+```
+
 ### Compliance Enums
 
 | Enum | Values | Purpose |
@@ -627,6 +678,7 @@ tests/
 | `src/elile/providers/registry.py` | ProviderRegistry, provider lookup | Task 4.1 |
 | `src/elile/providers/health.py` | CircuitBreaker, HealthMonitor, ProviderMetrics | Task 4.2 |
 | `src/elile/providers/rate_limit.py` | TokenBucket, ProviderRateLimitRegistry, RateLimitConfig | Task 4.3 |
+| `src/elile/providers/cache.py` | ProviderCacheService, CacheEntry, CacheFreshnessConfig | Task 4.4 |
 
 ## Architecture References
 
