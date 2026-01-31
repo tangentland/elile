@@ -56,6 +56,13 @@ Provider Implementation:
             ...
 """
 
+from elile.providers.cache import (
+    CacheEntry,
+    CacheFreshnessConfig,
+    CacheLookupResult,
+    CacheStats,
+    ProviderCacheService,
+)
 from elile.providers.health import (
     CircuitBreaker,
     CircuitBreakerConfig,
@@ -126,6 +133,12 @@ __all__ = [
     "ProviderRateLimitRegistry",
     "get_rate_limit_registry",
     "reset_rate_limit_registry",
+    # Response Caching
+    "CacheEntry",
+    "CacheFreshnessConfig",
+    "CacheLookupResult",
+    "CacheStats",
+    "ProviderCacheService",
     # Types
     "CostTier",
     "DataSourceCategory",
