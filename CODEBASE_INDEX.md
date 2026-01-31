@@ -10,6 +10,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 | `src/elile/core/` | Core framework: context, audit, encryption, errors, logging | `RequestContext`, `AuditLogger`, `Encryptor`, `ErrorHandler`, `get_logger()` |
 | `src/elile/compliance/` | Locale-aware compliance engine | `ComplianceEngine`, `Locale`, `CheckType`, `Consent`, `ServiceConfigValidator` |
 | `src/elile/entity/` | Entity resolution, matching, tenant isolation | `EntityMatcher`, `EntityManager`, `TenantAwareEntityService` |
+| `src/elile/providers/` | Data provider abstraction and registry | `DataProvider`, `ProviderRegistry`, `ProviderResult` |
 | `src/elile/agent/` | LangGraph workflow orchestration | `IterativeSearchState`, `ServiceTier`, `SearchDegree` |
 | `src/elile/config/` | Configuration and settings | `Settings`, `get_settings()`, `validate_configuration()` |
 | `src/elile/db/` | Database models, repositories, and configuration | `Entity`, `AuditEvent`, `Tenant`, `BaseRepository` |
@@ -327,6 +328,92 @@ entities = await query.execute(limit=100)
 | `CUSTOMER_PROVIDED` | Own tenant only | Strictly tenant-scoped data |
 | `PAID_EXTERNAL` | All tenants | Shared cache for external data |
 
+## Data Provider Framework (`src/elile/providers/`)
+
+### Provider Registry
+```python
+from elile.providers import (
+    DataProvider,
+    BaseDataProvider,
+    ProviderRegistry,
+    get_provider_registry,
+    ProviderInfo,
+    ProviderCapability,
+    ProviderResult,
+    DataSourceCategory,
+    CostTier,
+)
+
+# Get global registry
+registry = get_provider_registry()
+
+# Register a provider
+registry.register(my_provider)
+
+# Get best provider for a check type
+provider = registry.get_provider_for_check(
+    check_type=CheckType.CRIMINAL_NATIONAL,
+    locale=Locale.US,
+    service_tier=ServiceTier.STANDARD,
+)
+
+# Get all providers for fallback
+providers = registry.get_providers_for_check(
+    check_type=CheckType.CREDIT_REPORT,
+    locale=Locale.US,
+    healthy_only=True,
+)
+
+# Execute check
+result = await provider.execute_check(
+    check_type=CheckType.CRIMINAL_NATIONAL,
+    subject=identifiers,
+    locale=Locale.US,
+)
+```
+
+### Provider Implementation
+```python
+class MyProvider(BaseDataProvider):
+    def __init__(self):
+        super().__init__(ProviderInfo(
+            provider_id="my_provider",
+            name="My Provider",
+            category=DataSourceCategory.CORE,
+            capabilities=[
+                ProviderCapability(
+                    check_type=CheckType.CRIMINAL_NATIONAL,
+                    supported_locales=[Locale.US, Locale.CA],
+                    cost_tier=CostTier.LOW,
+                ),
+            ],
+        ))
+
+    async def execute_check(self, check_type, subject, locale, **kwargs):
+        # Provider-specific implementation
+        return ProviderResult(
+            provider_id=self.provider_id,
+            check_type=check_type,
+            locale=locale,
+            success=True,
+            normalized_data={"records": [...]},
+        )
+
+    async def health_check(self):
+        return ProviderHealth(
+            provider_id=self.provider_id,
+            status=ProviderStatus.HEALTHY,
+            last_check=datetime.utcnow(),
+        )
+```
+
+### Provider Enums
+| Enum | Values | Purpose |
+|------|--------|---------|
+| `DataSourceCategory` | CORE, PREMIUM | Tier availability (Standard vs Enhanced) |
+| `CostTier` | FREE, LOW, MEDIUM, HIGH, PREMIUM | Billing optimization |
+| `ProviderStatus` | HEALTHY, DEGRADED, UNHEALTHY, MAINTENANCE | Health status |
+
 ### Compliance Enums
 
 | Enum | Values | Purpose |
@@ -498,6 +585,9 @@ tests/
 | `src/elile/entity/graph.py` | RelationshipGraph class | Task 3.3 |
 | `src/elile/entity/validation.py` | EntityValidator, identifier validation | Task 3.4 |
 | `src/elile/entity/tenant.py` | TenantAwareEntityService, EntityAccessControl | Task 3.5 |
+| `src/elile/providers/types.py` | Provider types, enums, result models | Task 4.1 |
+| `src/elile/providers/protocol.py` | DataProvider Protocol, BaseDataProvider | Task 4.1 |
+| `src/elile/providers/registry.py` | ProviderRegistry, provider lookup | Task 4.1 |
 
 ## Architecture References
 

@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import pytest_asyncio
+import structlog
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from pydantic import SecretStr
@@ -14,6 +15,36 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from elile.agent.state import AgentState, EntityConnection, RiskFinding, SearchResult
 from elile.config.settings import ModelProvider, Settings
 from elile.db.models.base import Base
+
+
+# =============================================================================
+# Structlog Configuration Fixture
+# =============================================================================
+
+
+@pytest.fixture(scope="function", autouse=True)
+def reset_structlog_after_test():
+    """Reset structlog configuration after each test.
+
+    This ensures tests that modify structlog global state
+    don't affect other tests.
+    """
+    yield
+    # Reset structlog to default configuration after each test
+    structlog.reset_defaults()
+    # Re-apply minimal configuration for consistent behavior
+    structlog.configure(
+        processors=[
+            structlog.stdlib.add_log_level,
+            structlog.stdlib.PositionalArgumentsFormatter(),
+            structlog.processors.TimeStamper(fmt="iso"),
+            structlog.dev.ConsoleRenderer(),
+        ],
+        wrapper_class=structlog.stdlib.BoundLogger,
+        context_class=dict,
+        logger_factory=structlog.PrintLoggerFactory(),
+        cache_logger_on_first_use=False,
+    )
 
 
 @pytest.fixture
