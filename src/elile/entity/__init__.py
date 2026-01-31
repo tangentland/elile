@@ -58,6 +58,16 @@ from elile.entity.types import (
     ResolutionDecision,
     SubjectIdentifiers,
 )
+from elile.entity.validation import (
+    EntityValidator,
+    ValidationError,
+    ValidationResult,
+    ValidationSeverity,
+    ValidationWarning,
+    validate_identifier,
+    validate_or_raise,
+    validate_subject,
+)
 
 __all__ = [
     # Manager
@@ -87,4 +97,13 @@ __all__ = [
     "RelationType",
     "ResolutionDecision",
     "SubjectIdentifiers",
+    # Validation
+    "EntityValidator",
+    "ValidationError",
+    "ValidationResult",
+    "ValidationSeverity",
+    "ValidationWarning",
+    "validate_identifier",
+    "validate_or_raise",
+    "validate_subject",
 ]

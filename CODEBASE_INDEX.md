@@ -454,6 +454,7 @@ tests/
 | `src/elile/entity/manager.py` | EntityManager high-level API | Task 3.3 |
 | `src/elile/entity/identifiers.py` | IdentifierManager class | Task 3.3 |
 | `src/elile/entity/graph.py` | RelationshipGraph class | Task 3.3 |
+| `src/elile/entity/validation.py` | EntityValidator, identifier validation | Task 3.4 |
 
 ## Architecture References
 
