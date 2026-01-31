@@ -380,7 +380,7 @@ Last Updated: 2026-01-31
 
 ## Phase 3: Entity Management (P0 - Critical)
 
-**Status**: 🟡 In Progress (1/5 tasks complete)
+**Status**: 🟡 In Progress (2/5 tasks complete)
 **Dependencies**: Phase 1
 
 ### Completed Tasks
@@ -408,9 +408,33 @@ Last Updated: 2026-01-31
 
 ---
 
+#### ✅ Task 3.2: Entity Deduplication Pipeline
+**Priority**: P0
+**Status**: Complete
+**Completed**: 2026-01-31
+**Tag**: `phase3/task-3.2`
+**Dependencies**: Task 3.1
+
+**Deliverables**:
+- ✅ EntityDeduplicator class with check_duplicate(), merge_entities()
+- ✅ DeduplicationResult model for pre-creation checks
+- ✅ MergeResult model with merge statistics
+- ✅ DuplicateCandidate model for potential duplicates
+- ✅ find_potential_duplicates() for batch scanning
+- ✅ on_identifier_added() hook for enrichment triggers
+- ✅ UUIDv7-based canonical entity selection (older = canonical)
+- ✅ Relationship and profile migration on merge
+- ✅ Audit logging for merge operations
+- ✅ 27 unit tests
+
+**Key Files**:
+- `src/elile/entity/deduplication.py` - EntityDeduplicator class
+- `tests/unit/test_deduplication.py` - Unit tests
+
+---
+
 ### Remaining Tasks
 
-- Task 3.2: Entity Deduplication Pipeline
 - Task 3.3: Canonical Entity Management
 - Task 3.4: Entity Validation
 - Task 3.5: Multi-Tenant Entity Isolation
@@ -501,7 +525,7 @@ Performance optimization, security hardening, compliance certification, document
 ## Overall Progress
 
 ### By Priority
-- **P0 (Critical)**: 15/85 tasks (17.6%)
+- **P0 (Critical)**: 16/85 tasks (18.8%)
 - **P1 (High)**: 3/45 tasks (6.7%)
 - **P2 (Medium)**: 0/10 tasks (0%)
 - **P3 (Low)**: 0/1 tasks (0%)
@@ -509,10 +533,10 @@ Performance optimization, security hardening, compliance certification, document
 ### By Phase
 - **Phase 1**: 12/12 tasks (100%) ✅
 - **Phase 2**: 5/5 tasks (100%) ✅
-- **Phase 3**: 1/5 tasks (20%) 🟡
+- **Phase 3**: 2/5 tasks (40%) 🟡
 - **Phase 4-12**: 0/119 tasks (0%)
 
-### Total: 18/141 tasks (12.8%)
+### Total: 19/141 tasks (13.5%)
 
 ---
 
@@ -520,9 +544,9 @@ Performance optimization, security hardening, compliance certification, document
 
 | Category | Tests |
 |----------|-------|
-| Unit Tests | 540 |
+| Unit Tests | 567 |
 | Integration Tests | 53 |
-| **Total** | **593** |
+| **Total** | **620** |
 
 All tests passing as of 2026-01-31.
 
@@ -542,13 +566,15 @@ All 5 Phase 2 tasks implemented:
 - Service configuration validation
 
 ### Phase 3 In Progress 🟡
-Task 3.1 (Entity Resolution Engine) complete:
+Tasks 3.1 and 3.2 complete:
 - EntityMatcher with exact and fuzzy matching
 - Jaro-Winkler similarity algorithm
 - Tier-aware resolution decisions
+- EntityDeduplicator with merge operations
+- UUIDv7-based canonical entity selection
 
-### Next: Task 3.2 - Entity Deduplication Pipeline
-Implement batch deduplication for identifying and merging duplicate entities.
+### Next: Task 3.3 - Canonical Entity Management
+Implement canonical entity lifecycle management with version tracking.
 
 ---
 

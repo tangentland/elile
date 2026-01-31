@@ -13,8 +13,22 @@ Usage:
         date_of_birth=date(1980, 1, 15),
     )
     result = await matcher.resolve(identifiers)
+
+Deduplication:
+    from elile.entity import EntityDeduplicator
+
+    dedup = EntityDeduplicator(session)
+    result = await dedup.check_duplicate(identifiers)
+    if result.is_duplicate:
+        existing_id = result.existing_entity_id
 """
 
+from elile.entity.deduplication import (
+    DeduplicationResult,
+    DuplicateCandidate,
+    EntityDeduplicator,
+    MergeResult,
+)
 from elile.entity.matcher import EntityMatcher
 from elile.entity.types import (
     IdentifierRecord,
@@ -30,6 +44,11 @@ from elile.entity.types import (
 __all__ = [
     # Matcher
     "EntityMatcher",
+    # Deduplication
+    "DeduplicationResult",
+    "DuplicateCandidate",
+    "EntityDeduplicator",
+    "MergeResult",
     # Types
     "IdentifierRecord",
     "IdentifierType",
