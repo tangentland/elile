@@ -13,6 +13,8 @@ Key Components:
     - SearchQuery: Represents a single query to execute
     - QueryExecutor: Executes search queries against data providers
     - QueryResult: Result from query execution
+    - ResultAssessor: Assesses results and extracts findings
+    - AssessmentResult: Complete assessment with confidence and gaps
 
 Example:
     ```python
@@ -87,6 +89,16 @@ from elile.investigation.query_planner import (
     QueryType,
     SearchQuery,
 )
+from elile.investigation.result_assessor import (
+    AssessmentResult,
+    ConfidenceFactors,
+    DetectedInconsistency,
+    DiscoveredEntity,
+    Fact,
+    Gap,
+    ResultAssessor,
+    create_result_assessor,
+)
 from elile.investigation.sar_machine import (
     FOUNDATION_TYPES,
     SARStateMachine,
@@ -121,4 +133,13 @@ __all__ = [
     "QueryStatus",
     "ExecutorConfig",
     "ExecutionSummary",
+    # Result assessor
+    "ResultAssessor",
+    "create_result_assessor",
+    "AssessmentResult",
+    "ConfidenceFactors",
+    "Fact",
+    "Gap",
+    "DetectedInconsistency",
+    "DiscoveredEntity",
 ]
