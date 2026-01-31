@@ -666,10 +666,80 @@ Provider abstraction layer, rate limiting, response caching, cost tracking, requ
 
 ## Phase 5: Investigation Engine (SAR Loop) (P0 - Critical)
 
-**Status**: 🔴 Not Started
+**Status**: 🟡 In Progress (2/16 tasks complete)
 **Dependencies**: Phase 4
 
 Search-Assess-Refine loop, query planning, result assessment, refinement.
+
+### Completed Tasks
+
+#### ✅ Task 5.1: SAR State Machine
+**Priority**: P0
+**Status**: Complete
+**Completed**: 2026-01-31
+**Dependencies**: Task 2.1, 2.2, 1.2
+
+**Deliverables**:
+- ✅ SARStateMachine class for SAR loop orchestration
+- ✅ SARConfig with configurable thresholds and limits
+- ✅ SARIterationState for per-iteration metrics tracking
+- ✅ SARTypeState for per-type progress tracking
+- ✅ SARSummary for aggregate investigation statistics
+- ✅ SARPhase enum (SEARCH, ASSESS, REFINE, COMPLETE, CAPPED, DIMINISHED)
+- ✅ CompletionReason enum for completion tracking
+- ✅ Foundation type handling (higher thresholds, more iterations)
+- ✅ Confidence threshold evaluation
+- ✅ Max iteration limits
+- ✅ Diminishing returns detection
+- ✅ Phase transition logic with audit logging
+- ✅ 43 unit tests + 11 integration tests
+
+**Key Files**:
+- `src/elile/investigation/__init__.py` - Module exports
+- `src/elile/investigation/models.py` - State models and enums
+- `src/elile/investigation/sar_machine.py` - SAR state machine
+- `tests/unit/test_sar_state_machine.py` - Unit tests
+- `tests/integration/test_sar_cycle.py` - Integration tests
+
+#### ✅ Task 5.2: Query Planner
+**Priority**: P0
+**Status**: Complete
+**Completed**: 2026-01-31
+**Dependencies**: Task 5.1, 2.1
+
+**Deliverables**:
+- ✅ QueryPlanner class for intelligent query generation
+- ✅ SearchQuery dataclass with UUIDv7, priority, and enrichment tracking
+- ✅ QueryPlanResult for query planning outcomes
+- ✅ QueryType enum (INITIAL, ENRICHED, GAP_FILL, REFINEMENT)
+- ✅ INFO_TYPE_TO_CHECK_TYPES mapping for all information types
+- ✅ Cross-type query enrichment using KnowledgeBase facts
+- ✅ Type-specific query generation for all InformationType values
+- ✅ Query deduplication by (provider_id, check_type) pair
+- ✅ Tier-aware check filtering (Standard vs Enhanced)
+- ✅ Refinement query generation for knowledge gaps
+- ✅ 24 unit tests
+
+**Key Files**:
+- `src/elile/investigation/query_planner.py` - QueryPlanner class
+- `tests/unit/test_query_planner.py` - Unit tests
+
+### Pending Tasks
+
+- 🔲 Task 5.3: Query Executor
+- 🔲 Task 5.4: Result Assessor
+- 🔲 Task 5.5: Query Refiner
+- 🔲 Task 5.6: Information Type Manager
+- 🔲 Task 5.7: Confidence Scorer
+- 🔲 Task 5.8: Iteration Controller
+- 🔲 Task 5.9: SAR Loop Orchestrator
+- 🔲 Task 5.10: Finding Extractor
+- 🔲 Task 5.11: Foundation Phase
+- 🔲 Task 5.12: Records Phase
+- 🔲 Task 5.13: Intelligence Phase
+- 🔲 Task 5.14: Network Phase
+- 🔲 Task 5.15: Reconciliation Phase
+- 🔲 Task 5.16: Investigation Resume
 
 ---
 
@@ -739,7 +809,7 @@ Performance optimization, security hardening, compliance certification, document
 ## Overall Progress
 
 ### By Priority
-- **P0 (Critical)**: 24/85 tasks (28.2%)
+- **P0 (Critical)**: 26/85 tasks (30.6%)
 - **P1 (High)**: 4/45 tasks (8.9%)
 - **P2 (Medium)**: 0/10 tasks (0%)
 - **P3 (Low)**: 0/1 tasks (0%)
@@ -749,9 +819,10 @@ Performance optimization, security hardening, compliance certification, document
 - **Phase 2**: 5/5 tasks (100%) ✅
 - **Phase 3**: 5/5 tasks (100%) ✅
 - **Phase 4**: 6/6 tasks (100%) ✅
-- **Phase 5-12**: 0/113 tasks (0%)
+- **Phase 5**: 2/16 tasks (12.5%) 🟡
+- **Phase 6-12**: 0/97 tasks (0%)
 
-### Total: 28/141 tasks (19.9%)
+### Total: 30/141 tasks (21.3%)
 
 ---
 
@@ -759,9 +830,9 @@ Performance optimization, security hardening, compliance certification, document
 
 | Category | Tests |
 |----------|-------|
-| Unit Tests | 913 |
-| Integration Tests | 53 |
-| **Total** | **966** |
+| Unit Tests | 980 |
+| Integration Tests | 64 |
+| **Total** | **1044** |
 
 All tests passing as of 2026-01-31.
 
@@ -824,8 +895,24 @@ All 6 Phase 4 tasks implemented:
 - Fallback to alternate providers
 - Integration with circuit breaker, rate limiting, caching, cost tracking
 
-### Next: Phase 5 - Investigation Engine (SAR Loop)
-Implement Search-Assess-Refine loop, query planning, result assessment, and refinement.
+### Phase 5 In Progress 🟡
+Task 5.1 (SAR State Machine) complete:
+- SARStateMachine for SAR loop orchestration
+- SARConfig with configurable thresholds and limits
+- State models: SARIterationState, SARTypeState, SARSummary
+- Foundation type handling (higher thresholds for identity/employment/education)
+- Confidence threshold evaluation and diminishing returns detection
+- 54 new tests (43 unit + 11 integration)
+
+Task 5.2 (Query Planner) complete:
+- QueryPlanner for intelligent query generation
+- Cross-type enrichment using KnowledgeBase facts
+- Type-specific query generation for all InformationType values
+- Query deduplication and tier-aware filtering
+- 24 new unit tests
+
+### Next: Task 5.3 - Query Executor
+Implement query executor to execute planned queries against providers with retry, caching, and result normalization.
 
 ---
 

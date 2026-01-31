@@ -11,6 +11,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 | `src/elile/compliance/` | Locale-aware compliance engine | `ComplianceEngine`, `Locale`, `CheckType`, `Consent`, `ServiceConfigValidator` |
 | `src/elile/entity/` | Entity resolution, matching, tenant isolation | `EntityMatcher`, `EntityManager`, `TenantAwareEntityService` |
 | `src/elile/providers/` | Data provider abstraction and registry | `DataProvider`, `ProviderRegistry`, `ProviderResult` |
+| `src/elile/investigation/` | SAR (Search-Assess-Refine) loop orchestration | `SARStateMachine`, `SARConfig`, `QueryPlanner`, `SearchQuery` |
 | `src/elile/agent/` | LangGraph workflow orchestration | `IterativeSearchState`, `ServiceTier`, `SearchDegree` |
 | `src/elile/config/` | Configuration and settings | `Settings`, `get_settings()`, `validate_configuration()` |
 | `src/elile/db/` | Database models, repositories, and configuration | `Entity`, `AuditEvent`, `Tenant`, `BaseRepository` |
@@ -635,6 +636,165 @@ results = await router.route_batch(requests, parallel=True)
 | `RoleCategory` | STANDARD, FINANCIAL, GOVERNMENT, etc. | Job role categories |
 | `ConsentScope` | BACKGROUND_CHECK, CREDIT_CHECK, etc. | Consent scope types |
 
+## Investigation Framework (`src/elile/investigation/`)
+
+The SAR (Search-Assess-Refine) loop orchestrates iterative information gathering for each information type.
+
+### SAR State Machine
+```python
+from elile.investigation import (
+    SARStateMachine,
+    SARConfig,
+    SARPhase,
+    CompletionReason,
+)
+from elile.agent.state import InformationType
+
+# Create state machine with custom config
+config = SARConfig(
+    confidence_threshold=0.85,       # Complete when confidence >= threshold
+    foundation_confidence_threshold=0.90,  # Higher for identity/employment/education
+    max_iterations_per_type=3,       # Cap iterations if confidence not met
+    foundation_max_iterations=4,     # More iterations for foundation types
+    min_gain_threshold=0.1,          # Stop if info gain < 10%
+)
+machine = SARStateMachine(config)
+
+# Initialize and run SAR loop for a type
+machine.initialize_type(InformationType.CRIMINAL)
+iteration = machine.start_iteration(InformationType.CRIMINAL)
+
+# ... execute queries, analyze results ...
+
+# Record iteration metrics
+iteration.queries_executed = 10
+iteration.new_facts_this_iteration = 8
+iteration.confidence_score = 0.75
+
+# Complete iteration - returns True if should continue
+should_continue = machine.complete_iteration(InformationType.CRIMINAL, iteration)
+
+if not should_continue:
+    state = machine.get_type_state(InformationType.CRIMINAL)
+    print(f"Completed: {state.completion_reason}")
+    # CompletionReason.CONFIDENCE_MET, MAX_ITERATIONS, DIMINISHING_RETURNS, or SKIPPED
+```
+
+### SAR Phase Flow
+
+Each information type cycles through: `SEARCH → ASSESS → REFINE → (loop or complete)`
+
+| Phase | Description |
+|-------|-------------|
+| `SEARCH` | Generating and executing queries |
+| `ASSESS` | Analyzing results, calculating confidence |
+| `REFINE` | Deciding to continue or complete |
+| `COMPLETE` | Confidence threshold met |
+| `CAPPED` | Max iterations reached |
+| `DIMINISHED` | Diminishing returns detected |
+
+### Foundation Types
+
+Foundation types (identity, employment, education) use higher thresholds:
+- Confidence threshold: 0.90 (vs 0.85 standard)
+- Max iterations: 4 (vs 3 standard)
+
+```python
+from elile.investigation import FOUNDATION_TYPES
+
+machine.is_foundation_type(InformationType.IDENTITY)  # True
+machine.get_confidence_threshold(InformationType.IDENTITY)  # 0.90
+machine.get_max_iterations(InformationType.IDENTITY)  # 4
+```
+
+### Investigation Summary
+```python
+summary = machine.get_summary()
+# SARSummary with:
+# - types_processed, types_complete, types_capped, types_diminished, types_skipped
+# - total_iterations, total_facts, total_queries
+# - average_confidence, min_confidence, max_confidence
+```
+
+### Query Planner
+
+Generates search queries for each information type using accumulated knowledge:
+
+```python
+from elile.investigation import (
+    QueryPlanner,
+    SearchQuery,
+    QueryPlanResult,
+    QueryType,
+    INFO_TYPE_TO_CHECK_TYPES,
+)
+from elile.agent.state import InformationType, KnowledgeBase
+from elile.compliance.types import Locale, CheckType
+from elile.providers.types import ServiceTier
+
+planner = QueryPlanner()
+kb = KnowledgeBase()  # Accumulates facts across iterations
+
+# Plan queries for an information type
+result: QueryPlanResult = planner.plan_queries(
+    info_type=InformationType.CRIMINAL,
+    knowledge_base=kb,
+    iteration_number=1,
+    gaps=[],  # List of knowledge gaps to fill
+    locale=Locale.US,
+    tier=ServiceTier.STANDARD,
+    available_providers=["sterling", "checkr"],
+    subject_name="John Smith",
+)
+
+# Result contains:
+# - queries: list[SearchQuery] - queries to execute
+# - enrichment_sources: list[InformationType] - types used for enrichment
+# - skipped_reason: str | None - why no queries if empty
+```
+
+#### Query Types
+
+| Type | Description | Priority |
+|------|-------------|----------|
+| `INITIAL` | First iteration queries | 1 (highest) |
+| `ENRICHED` | Queries using facts from other types | 2 |
+| `GAP_FILL` | Queries targeting knowledge gaps | 2 |
+| `REFINEMENT` | Follow-up queries based on findings | 3 |
+
+#### Cross-Type Enrichment
+
+The planner enriches queries using facts from completed information types:
+- Criminal queries: Add counties from known addresses
+- Employment queries: Add name variants from identity verification
+- Adverse media queries: Use all known entities and locations
+- Network queries: Use discovered associated entities
+
+```python
+# Example: Criminal queries enriched with address counties
+# If KnowledgeBase has fact: "Subject lived in Los Angeles County"
+# Criminal query will include county-level search parameters
+
+# Check what check types map to each information type
+check_types = INFO_TYPE_TO_CHECK_TYPES[InformationType.CRIMINAL]
+# [CheckType.CRIMINAL_NATIONAL, CheckType.CRIMINAL_COUNTY, ...]
+```
+
+#### SearchQuery Structure
+
+```python
+@dataclass
+class SearchQuery:
+    query_id: UUID             # UUIDv7 identifier
+    provider_id: str           # Target provider
+    check_type: CheckType      # Type of check to perform
+    search_params: dict[str, Any]  # Provider-specific parameters
+    priority: int              # 1=high, 2=medium, 3=low
+    query_type: QueryType      # INITIAL, ENRICHED, GAP_FILL, REFINEMENT
+    parent_query_id: UUID | None  # For refinement chains
+    expected_info_types: list[InformationType]  # What info this query may return
+```
+
 ## Key Enums
 
 ### Service Configuration (`src/elile/agent/state.py`)
@@ -647,6 +807,13 @@ results = await router.route_batch(requests, parallel=True)
 | `InformationType` | identity, employment, criminal, etc. | Types of information searched |
 | `SearchPhase` | FOUNDATION, RECORDS, INTELLIGENCE, NETWORK, RECONCILIATION | Search workflow phases |
 | `InconsistencyType` | DATE_MINOR, EMPLOYMENT_GAP_HIDDEN, etc. | Risk levels of data inconsistencies |
+
+### Investigation Framework (`src/elile/investigation/models.py`)
+
+| Enum | Values | Purpose |
+|------|--------|---------|
+| `SARPhase` | SEARCH, ASSESS, REFINE, COMPLETE, CAPPED, DIMINISHED | SAR loop phases |
+| `CompletionReason` | CONFIDENCE_MET, MAX_ITERATIONS, DIMINISHING_RETURNS, SKIPPED, ERROR | Why type completed |
 
 ### Audit System (`src/elile/db/models/audit.py`)
 
@@ -805,6 +972,9 @@ tests/
 | `src/elile/providers/cache.py` | ProviderCacheService, CacheEntry, CacheFreshnessConfig | Task 4.4 |
 | `src/elile/providers/cost.py` | ProviderCostService, BudgetConfig, CostRecord, CostSummary | Task 4.5 |
 | `src/elile/providers/router.py` | RequestRouter, RoutedRequest, RoutedResult, RoutingConfig | Task 4.6 |
+| `src/elile/investigation/models.py` | SARPhase, CompletionReason, SARIterationState, SARTypeState, SARConfig, SARSummary | Task 5.1 |
+| `src/elile/investigation/sar_machine.py` | SARStateMachine, create_sar_machine, FOUNDATION_TYPES | Task 5.1 |
+| `src/elile/investigation/query_planner.py` | QueryPlanner, QueryPlanResult, SearchQuery, QueryType, INFO_TYPE_TO_CHECK_TYPES | Task 5.2 |
 
 ## Architecture References
 
