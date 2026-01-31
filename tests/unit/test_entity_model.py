@@ -1,6 +1,6 @@
 """Unit tests for Entity models."""
 
-from uuid import uuid4
+from uuid import uuid7
 
 import pytest
 
@@ -10,7 +10,7 @@ from elile.db.models.entity import Entity, EntityRelation, EntityType
 def test_entity_creation():
     """Test creating an Entity instance."""
     entity = Entity(
-        entity_id=uuid4(), entity_type=EntityType.INDIVIDUAL, canonical_identifiers={"ssn": "123"}
+        entity_id=uuid7(), entity_type=EntityType.INDIVIDUAL, canonical_identifiers={"ssn": "123"}
     )
     assert entity.entity_type == EntityType.INDIVIDUAL
     assert "ssn" in entity.canonical_identifiers
@@ -25,10 +25,10 @@ def test_entity_type_enum():
 
 def test_entity_relation_creation():
     """Test creating an EntityRelation instance."""
-    from_id = uuid4()
-    to_id = uuid4()
+    from_id = uuid7()
+    to_id = uuid7()
     relation = EntityRelation(
-        relation_id=uuid4(),
+        relation_id=uuid7(),
         from_entity_id=from_id,
         to_entity_id=to_id,
         relation_type="employer",
@@ -41,7 +41,7 @@ def test_entity_relation_creation():
 
 def test_entity_repr():
     """Test Entity __repr__ method."""
-    entity_id = uuid4()
+    entity_id = uuid7()
     entity = Entity(entity_id=entity_id, entity_type=EntityType.INDIVIDUAL)
     repr_str = repr(entity)
     assert "Entity" in repr_str

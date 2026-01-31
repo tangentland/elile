@@ -46,6 +46,11 @@ class AuditEventType(str, Enum):
     CONFIG_CHANGED = "config.changed"
     RULE_MODIFIED = "rule.modified"
 
+    # Tenant operations
+    TENANT_CREATED = "tenant.created"
+    TENANT_UPDATED = "tenant.updated"
+    TENANT_DEACTIVATED = "tenant.deactivated"
+
     # Data lifecycle
     DATA_RETENTION_APPLIED = "data.retention_applied"
     DATA_ERASED = "data.erased"

@@ -1,6 +1,6 @@
 """Unit tests for Audit Logging System."""
 
-from uuid import uuid4
+from uuid import uuid7
 
 import pytest
 
@@ -12,8 +12,8 @@ from elile.db.models.audit import AuditEventType, AuditSeverity
 async def test_log_event_basic(db_session):
     """Test creating a basic audit event."""
     logger = AuditLogger(db_session)
-    correlation_id = uuid4()
-    tenant_id = uuid4()
+    correlation_id = uuid7()
+    tenant_id = uuid7()
 
     event = await logger.log_event(
         event_type=AuditEventType.SCREENING_INITIATED,
@@ -36,8 +36,8 @@ async def test_log_event_basic(db_session):
 async def test_log_event_with_entity(db_session):
     """Test logging event with entity reference."""
     logger = AuditLogger(db_session)
-    entity_id = uuid4()
-    correlation_id = uuid4()
+    entity_id = uuid7()
+    correlation_id = uuid7()
 
     event = await logger.log_event(
         event_type=AuditEventType.ENTITY_CREATED,
@@ -54,7 +54,7 @@ async def test_log_event_with_entity(db_session):
 async def test_log_event_system_level(db_session):
     """Test system-level event without tenant."""
     logger = AuditLogger(db_session)
-    correlation_id = uuid4()
+    correlation_id = uuid7()
 
     event = await logger.log_event(
         event_type=AuditEventType.CONFIG_CHANGED,
@@ -72,9 +72,9 @@ async def test_log_event_system_level(db_session):
 async def test_query_events_by_tenant(db_session):
     """Test querying events by tenant."""
     logger = AuditLogger(db_session)
-    tenant1 = uuid4()
-    tenant2 = uuid4()
-    correlation_id = uuid4()
+    tenant1 = uuid7()
+    tenant2 = uuid7()
+    correlation_id = uuid7()
 
     # Create events for different tenants
     await logger.log_event(
@@ -98,7 +98,7 @@ async def test_query_events_by_tenant(db_session):
 async def test_query_events_by_event_type(db_session):
     """Test querying events by event type."""
     logger = AuditLogger(db_session)
-    correlation_id = uuid4()
+    correlation_id = uuid7()
 
     await logger.log_event(AuditEventType.SCREENING_INITIATED, correlation_id, {"test": 1})
     await logger.log_event(AuditEventType.SCREENING_COMPLETED, correlation_id, {"test": 2})
@@ -118,8 +118,8 @@ async def test_query_events_by_event_type(db_session):
 async def test_query_events_by_correlation_id(db_session):
     """Test querying events by correlation ID."""
     logger = AuditLogger(db_session)
-    correlation1 = uuid4()
-    correlation2 = uuid4()
+    correlation1 = uuid7()
+    correlation2 = uuid7()
 
     await logger.log_event(AuditEventType.SCREENING_INITIATED, correlation1, {"test": 1})
     await logger.log_event(AuditEventType.DATA_ACCESSED, correlation1, {"test": 2})
@@ -135,7 +135,7 @@ async def test_query_events_by_correlation_id(db_session):
 async def test_query_events_pagination(db_session):
     """Test query pagination."""
     logger = AuditLogger(db_session)
-    correlation_id = uuid4()
+    correlation_id = uuid7()
 
     # Create 25 events
     for i in range(25):
@@ -167,7 +167,7 @@ async def test_query_events_max_limit(db_session):
 @pytest.mark.asyncio
 async def test_audit_decorator_success(db_session):
     """Test audit decorator on successful function call."""
-    correlation_id = uuid4()
+    correlation_id = uuid7()
 
     @audit_operation(AuditEventType.DATA_ACCESSED)
     async def test_function(db, correlation_id):
@@ -187,7 +187,7 @@ async def test_audit_decorator_success(db_session):
 @pytest.mark.asyncio
 async def test_audit_decorator_error(db_session):
     """Test audit decorator on failed function call."""
-    correlation_id = uuid4()
+    correlation_id = uuid7()
 
     @audit_operation(AuditEventType.SCREENING_INITIATED, severity=AuditSeverity.INFO)
     async def failing_function(db, correlation_id):
@@ -209,7 +209,7 @@ async def test_audit_decorator_error(db_session):
 async def test_event_type_string_conversion(db_session):
     """Test that event types can be strings or enums."""
     logger = AuditLogger(db_session)
-    correlation_id = uuid4()
+    correlation_id = uuid7()
 
     # Using enum
     event1 = await logger.log_event(
@@ -225,7 +225,7 @@ async def test_event_type_string_conversion(db_session):
 async def test_large_event_data(db_session):
     """Test logging event with large JSON payload."""
     logger = AuditLogger(db_session)
-    correlation_id = uuid4()
+    correlation_id = uuid7()
 
     # Create 5KB of event data
     large_data = {"items": [f"item_{i}" for i in range(500)]}

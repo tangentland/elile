@@ -2,7 +2,7 @@
 
 import asyncio
 from datetime import datetime, timedelta, timezone
-from uuid import uuid4, uuid7
+from uuid import uuid7
 
 import pytest
 

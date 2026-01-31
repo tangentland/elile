@@ -1,6 +1,6 @@
 """Unit tests for Profile models."""
 
-from uuid import uuid4
+from uuid import uuid7
 
 import pytest
 
@@ -9,9 +9,9 @@ from elile.db.models.profile import EntityProfile, ProfileTrigger
 
 def test_profile_creation():
     """Test creating an EntityProfile instance."""
-    entity_id = uuid4()
+    entity_id = uuid7()
     profile = EntityProfile(
-        profile_id=uuid4(),
+        profile_id=uuid7(),
         entity_id=entity_id,
         version=1,
         trigger_type=ProfileTrigger.SCREENING,
@@ -37,7 +37,7 @@ def test_profile_trigger_enum():
 def test_profile_with_evolution():
     """Test creating a profile with evolution tracking."""
     profile = EntityProfile(
-        entity_id=uuid4(),
+        entity_id=uuid7(),
         version=2,
         trigger_type=ProfileTrigger.MONITORING,
         findings={},
@@ -57,8 +57,8 @@ def test_profile_with_evolution():
 
 def test_profile_repr():
     """Test EntityProfile __repr__ method."""
-    entity_id = uuid4()
-    profile_id = uuid4()
+    entity_id = uuid7()
+    profile_id = uuid7()
     profile = EntityProfile(
         profile_id=profile_id,
         entity_id=entity_id,

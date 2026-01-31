@@ -112,3 +112,50 @@ class ConsentScopeError(ElileError):
             f"ConsentScopeError: {self.args[0]} "
             f"(required={self.required_scope}, granted={sorted(self.granted_scope)})"
         )
+
+
+class TenantNotFoundError(ElileError):
+    """Raised when a tenant does not exist.
+
+    Attributes:
+        tenant_id: The identifier of the tenant that was not found
+    """
+
+    def __init__(self, tenant_id: UUID | str):
+        super().__init__(f"Tenant not found: {tenant_id}")
+        self.tenant_id = tenant_id
+
+    def __str__(self) -> str:
+        return f"TenantNotFoundError: {self.args[0]}"
+
+
+class TenantInactiveError(ElileError):
+    """Raised when attempting to use a deactivated tenant.
+
+    Attributes:
+        tenant_id: The identifier of the inactive tenant
+    """
+
+    def __init__(self, tenant_id: UUID | str):
+        super().__init__(f"Tenant is inactive: {tenant_id}")
+        self.tenant_id = tenant_id
+
+    def __str__(self) -> str:
+        return f"TenantInactiveError: {self.args[0]}"
+
+
+class TenantAccessDeniedError(ElileError):
+    """Raised when access to a tenant resource is denied.
+
+    Attributes:
+        tenant_id: The identifier of the tenant
+        resource: The resource that access was denied to
+    """
+
+    def __init__(self, tenant_id: UUID | str, resource: str):
+        super().__init__(f"Access denied to {resource} for tenant {tenant_id}")
+        self.tenant_id = tenant_id
+        self.resource = resource
+
+    def __str__(self) -> str:
+        return f"TenantAccessDeniedError: {self.args[0]}"

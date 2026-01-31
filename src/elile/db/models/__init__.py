@@ -5,6 +5,7 @@ from .base import Base, TimestampMixin
 from .cache import CachedDataSource, DataOrigin, FreshnessStatus
 from .entity import Entity, EntityRelation, EntityType
 from .profile import EntityProfile, ProfileTrigger
+from .tenant import Tenant
 
 __all__ = [
     "Base",
@@ -20,4 +21,5 @@ __all__ = [
     "AuditEvent",
     "AuditEventType",
     "AuditSeverity",
+    "Tenant",
 ]

@@ -18,7 +18,11 @@ from .exceptions import (
     ConsentExpiredError,
     ConsentScopeError,
     ContextNotSetError,
+    TenantAccessDeniedError,
+    TenantInactiveError,
+    TenantNotFoundError,
 )
+from .tenant import TenantService
 
 __all__ = [
     # Audit
@@ -41,4 +45,9 @@ __all__ = [
     "ConsentExpiredError",
     "ConsentScopeError",
     "ContextNotSetError",
+    "TenantAccessDeniedError",
+    "TenantInactiveError",
+    "TenantNotFoundError",
+    # Tenant
+    "TenantService",
 ]

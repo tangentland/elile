@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
-from uuid import uuid4
+from uuid import uuid7
 
 import pytest
 
@@ -11,10 +11,10 @@ from elile.db.models.cache import CachedDataSource, DataOrigin, FreshnessStatus
 
 def test_cache_creation():
     """Test creating a CachedDataSource instance."""
-    entity_id = uuid4()
+    entity_id = uuid7()
     now = datetime.now(timezone.utc)
     cache = CachedDataSource(
-        cache_id=uuid4(),
+        cache_id=uuid7(),
         entity_id=entity_id,
         provider_id="sterling",
         check_type="criminal_record",
@@ -48,10 +48,10 @@ def test_freshness_status_enum():
 
 def test_customer_provided_cache():
     """Test creating a customer-provided cache entry."""
-    customer_id = uuid4()
+    customer_id = uuid7()
     now = datetime.now(timezone.utc)
     cache = CachedDataSource(
-        entity_id=uuid4(),
+        entity_id=uuid7(),
         provider_id="customer_hris",
         check_type="employment_verification",
         data_origin=DataOrigin.CUSTOMER_PROVIDED,
@@ -71,8 +71,8 @@ def test_customer_provided_cache():
 
 def test_cache_repr():
     """Test CachedDataSource __repr__ method."""
-    cache_id = uuid4()
-    entity_id = uuid4()
+    cache_id = uuid7()
+    entity_id = uuid7()
     now = datetime.now(timezone.utc)
     cache = CachedDataSource(
         cache_id=cache_id,

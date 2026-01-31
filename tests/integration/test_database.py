@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
-from uuid import uuid4
+from uuid import uuid7
 
 import pytest
 from sqlalchemy import select

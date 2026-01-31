@@ -444,7 +444,7 @@ async def acquire_single_check(
     stale_until = datetime.utcnow() + freshness_config.stale_window
 
     cached_result = CachedDataSource(
-        cache_id=uuid4(),
+        cache_id=uuid7(),
         entity_id=entity.entity_id,
         provider_id=provider.provider_id,
         check_type=check_type,

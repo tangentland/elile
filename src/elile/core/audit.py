@@ -63,7 +63,7 @@ class AuditLogger:
             >>> logger = AuditLogger(db_session)
             >>> event = await logger.log_event(
             ...     AuditEventType.SCREENING_INITIATED,
-            ...     correlation_id=uuid4(),
+            ...     correlation_id=uuid7(),
             ...     event_data={"subject_name": "John Doe"},
             ...     tenant_id=tenant_uuid,
             ...     user_id=user_uuid

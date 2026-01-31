@@ -2,7 +2,7 @@
 
 import asyncio
 from datetime import datetime, timedelta, timezone
-from uuid import uuid4
+from uuid import uuid7
 
 import pytest
 from sqlalchemy import select
@@ -41,8 +41,8 @@ async def test_concurrent_audit_logging(db_session, test_engine):
     # Create 5 concurrent "requests"
     tasks = []
     for _ in range(5):
-        tenant_id = uuid4()
-        correlation_id = uuid4()
+        tenant_id = uuid7()
+        correlation_id = uuid7()
         correlation_ids.append(correlation_id)
         tasks.append(create_events(tenant_id, correlation_id, 3))
 
@@ -63,7 +63,7 @@ async def test_concurrent_audit_logging(db_session, test_engine):
 async def test_date_range_query(db_session):
     """Test querying events by date range."""
     logger = AuditLogger(db_session)
-    correlation_id = uuid4()
+    correlation_id = uuid7()
 
     # Create event
     event = await logger.log_event(
@@ -85,7 +85,7 @@ async def test_date_range_query(db_session):
 async def test_date_range_excludes_outside_events(db_session):
     """Test that date range properly filters events."""
     logger = AuditLogger(db_session)
-    correlation_id = uuid4()
+    correlation_id = uuid7()
 
     # Create event
     await logger.log_event(
@@ -106,9 +106,9 @@ async def test_date_range_excludes_outside_events(db_session):
 async def test_multi_filter_query(db_session):
     """Test querying with multiple filters combined."""
     logger = AuditLogger(db_session)
-    tenant_id = uuid4()
-    entity_id = uuid4()
-    correlation_id = uuid4()
+    tenant_id = uuid7()
+    entity_id = uuid7()
+    correlation_id = uuid7()
 
     # Create target event
     await logger.log_event(
@@ -122,13 +122,13 @@ async def test_multi_filter_query(db_session):
 
     # Create noise events with different attributes
     await logger.log_event(
-        AuditEventType.ENTITY_CREATED, uuid4(), {"test": "wrong correlation"}, tenant_id=tenant_id
+        AuditEventType.ENTITY_CREATED, uuid7(), {"test": "wrong correlation"}, tenant_id=tenant_id
     )
     await logger.log_event(
         AuditEventType.DATA_ACCESSED, correlation_id, {"test": "wrong type"}, tenant_id=tenant_id
     )
     await logger.log_event(
-        AuditEventType.ENTITY_CREATED, correlation_id, {"test": "wrong tenant"}, tenant_id=uuid4()
+        AuditEventType.ENTITY_CREATED, correlation_id, {"test": "wrong tenant"}, tenant_id=uuid7()
     )
 
     await db_session.commit()
@@ -149,7 +149,7 @@ async def test_multi_filter_query(db_session):
 async def test_query_ordering(db_session):
     """Test that events are returned in reverse chronological order."""
     logger = AuditLogger(db_session)
-    correlation_id = uuid4()
+    correlation_id = uuid7()
 
     # Create events in sequence
     event1 = await logger.log_event(
@@ -178,7 +178,7 @@ async def test_query_ordering(db_session):
 async def test_severity_filtering(db_session):
     """Test filtering events by severity."""
     logger = AuditLogger(db_session)
-    correlation_id = uuid4()
+    correlation_id = uuid7()
 
     await logger.log_event(
         AuditEventType.COMPLIANCE_CHECK,
@@ -210,7 +210,7 @@ async def test_severity_filtering(db_session):
 async def test_resource_tracking(db_session):
     """Test tracking resources in audit events."""
     logger = AuditLogger(db_session)
-    correlation_id = uuid4()
+    correlation_id = uuid7()
     report_id = "RPT-2026-001"
 
     event = await logger.log_event(
@@ -229,7 +229,7 @@ async def test_resource_tracking(db_session):
 async def test_ip_and_user_agent_tracking(db_session):
     """Test tracking IP address and user agent."""
     logger = AuditLogger(db_session)
-    correlation_id = uuid4()
+    correlation_id = uuid7()
 
     event = await logger.log_event(
         AuditEventType.USER_LOGIN,
@@ -252,7 +252,7 @@ async def test_audit_event_immutability(db_session):
     not modification or deletion of audit events.
     """
     logger = AuditLogger(db_session)
-    correlation_id = uuid4()
+    correlation_id = uuid7()
 
     event = await logger.log_event(
         AuditEventType.SCREENING_INITIATED, correlation_id, {"original": "data"}
@@ -282,7 +282,7 @@ async def test_audit_event_immutability(db_session):
 async def test_bulk_event_creation_performance(db_session):
     """Test performance of bulk event creation."""
     logger = AuditLogger(db_session)
-    correlation_id = uuid4()
+    correlation_id = uuid7()
     count = 100
 
     # Create 100 events
