@@ -63,6 +63,16 @@ from elile.providers.cache import (
     CacheStats,
     ProviderCacheService,
 )
+from elile.providers.cost import (
+    BudgetConfig,
+    BudgetExceededError,
+    BudgetStatus,
+    CostRecord,
+    CostSummary,
+    ProviderCostService,
+    get_cost_service,
+    reset_cost_service,
+)
 from elile.providers.health import (
     CircuitBreaker,
     CircuitBreakerConfig,
@@ -139,6 +149,15 @@ __all__ = [
     "CacheLookupResult",
     "CacheStats",
     "ProviderCacheService",
+    # Cost Tracking
+    "BudgetConfig",
+    "BudgetExceededError",
+    "BudgetStatus",
+    "CostRecord",
+    "CostSummary",
+    "ProviderCostService",
+    "get_cost_service",
+    "reset_cost_service",
     # Types
     "CostTier",
     "DataSourceCategory",

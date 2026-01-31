@@ -502,6 +502,69 @@ stats = cache.stats
 print(f"Hit rate: {stats.hit_rate:.1%}")
 ```
 
+### Cost Tracking
+```python
+from elile.providers import (
+    ProviderCostService,
+    get_cost_service,
+    BudgetConfig,
+    BudgetStatus,
+    BudgetExceededError,
+    CostRecord,
+    CostSummary,
+)
+
+# Get global cost service
+cost_service = get_cost_service()
+
+# Record query cost
+record = await cost_service.record_cost(
+    query_id=query_id,
+    provider_id="sterling",
+    check_type="criminal_national",
+    cost=Decimal("5.00"),
+    tenant_id=tenant_id,
+    screening_id=screening_id,
+)
+
+# Record cache savings (when cache hit avoids API call)
+await cost_service.record_cache_savings(
+    query_id=query_id,
+    provider_id="sterling",
+    saved_amount=Decimal("5.00"),
+    tenant_id=tenant_id,
+)
+
+# Configure tenant budget
+await cost_service.set_budget(BudgetConfig(
+    tenant_id=tenant_id,
+    monthly_limit=Decimal("10000.00"),
+    daily_limit=Decimal("500.00"),
+    warning_threshold=0.8,  # Warn at 80%
+    hard_limit=True,  # Block when exceeded
+))
+
+# Check budget before expensive query
+status = await cost_service.check_budget(tenant_id, estimated_cost=Decimal("10.00"))
+if status.would_exceed(Decimal("10.00")):
+    if status.hard_limit:
+        raise BudgetExceededError(tenant_id, status)
+
+# Or use check_budget_or_raise for automatic exception
+await cost_service.check_budget_or_raise(tenant_id, Decimal("10.00"))
+
+# Get cost analytics
+summary = await cost_service.get_tenant_costs(
+    tenant_id=tenant_id,
+    start_date=month_start,
+    end_date=month_end,
+)
+print(f"Total: ${summary.total_cost}")
+print(f"Cache savings: ${summary.cache_savings}")
+print(f"By provider: {summary.by_provider}")
+print(f"Cache hit rate: {summary.cache_hit_rate:.1%}")
+```
+
 ### Compliance Enums
 
 | Enum | Values | Purpose |
@@ -679,6 +742,7 @@ tests/
 | `src/elile/providers/health.py` | CircuitBreaker, HealthMonitor, ProviderMetrics | Task 4.2 |
 | `src/elile/providers/rate_limit.py` | TokenBucket, ProviderRateLimitRegistry, RateLimitConfig | Task 4.3 |
 | `src/elile/providers/cache.py` | ProviderCacheService, CacheEntry, CacheFreshnessConfig | Task 4.4 |
+| `src/elile/providers/cost.py` | ProviderCostService, BudgetConfig, CostRecord, CostSummary | Task 4.5 |
 
 ## Architecture References
 
