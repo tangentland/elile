@@ -119,6 +119,11 @@ class Settings(BaseSettings):
     ENVIRONMENT: Literal["development", "staging", "production", "test"] = "development"
     DEBUG: bool = True
 
+    # API Configuration
+    API_HOST: str = "0.0.0.0"
+    API_PORT: int = 8000
+    CORS_ORIGINS: list[str] = []
+
     # Multi-Tenancy
     DEFAULT_TENANT_ID: str = "00000000-0000-0000-0000-000000000000"
 
