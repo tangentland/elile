@@ -565,6 +565,67 @@ print(f"By provider: {summary.by_provider}")
 print(f"Cache hit rate: {summary.cache_hit_rate:.1%}")
 ```
 
+### Request Routing
+```python
+from elile.providers import (
+    RequestRouter,
+    RoutedRequest,
+    RoutedResult,
+    RoutingConfig,
+    FailureReason,
+    RouteFailure,
+)
+
+# Create router with all services
+router = RequestRouter(
+    registry=get_provider_registry(),
+    cache=ProviderCacheService(session),
+    rate_limiter=get_rate_limit_registry(),
+    circuit_registry=CircuitBreakerRegistry(),
+    cost_service=get_cost_service(),
+)
+
+# Route single request
+result = await router.route_request(
+    check_type=CheckType.CRIMINAL_NATIONAL,
+    subject=identifiers,
+    locale=Locale.US,
+    entity_id=entity_id,
+    tenant_id=tenant_id,
+    service_tier=ServiceTier.STANDARD,
+)
+
+if result.success:
+    print(f"Provider: {result.provider_id}")
+    print(f"Cache hit: {result.cache_hit}")
+    print(f"Attempts: {result.attempts}")
+    print(f"Cost: ${result.cost_incurred}")
+else:
+    print(f"Failed: {result.failure.reason}")
+    for provider_id, error in result.failure.provider_errors:
+        print(f"  {provider_id}: {error}")
+
+# Route batch of requests in parallel
+requests = [
+    RoutedRequest.create(
+        check_type=CheckType.CRIMINAL_NATIONAL,
+        subject=identifiers,
+        locale=Locale.US,
+        entity_id=entity_id,
+        tenant_id=tenant_id,
+    ),
+    RoutedRequest.create(
+        check_type=CheckType.CREDIT_REPORT,
+        subject=identifiers,
+        locale=Locale.US,
+        entity_id=entity_id,
+        tenant_id=tenant_id,
+    ),
+]
+
+results = await router.route_batch(requests, parallel=True)
+```
+
 ### Compliance Enums
 
 | Enum | Values | Purpose |
@@ -743,6 +804,7 @@ tests/
 | `src/elile/providers/rate_limit.py` | TokenBucket, ProviderRateLimitRegistry, RateLimitConfig | Task 4.3 |
 | `src/elile/providers/cache.py` | ProviderCacheService, CacheEntry, CacheFreshnessConfig | Task 4.4 |
 | `src/elile/providers/cost.py` | ProviderCostService, BudgetConfig, CostRecord, CostSummary | Task 4.5 |
+| `src/elile/providers/router.py` | RequestRouter, RoutedRequest, RoutedResult, RoutingConfig | Task 4.6 |
 
 ## Architecture References
 

@@ -102,6 +102,14 @@ from elile.providers.registry import (
     get_provider_registry,
     reset_provider_registry,
 )
+from elile.providers.router import (
+    FailureReason,
+    RequestRouter,
+    RouteFailure,
+    RoutedRequest,
+    RoutedResult,
+    RoutingConfig,
+)
 from elile.providers.types import (
     CostTier,
     DataSourceCategory,
@@ -158,6 +166,13 @@ __all__ = [
     "ProviderCostService",
     "get_cost_service",
     "reset_cost_service",
+    # Request Routing
+    "FailureReason",
+    "RequestRouter",
+    "RouteFailure",
+    "RoutedRequest",
+    "RoutedResult",
+    "RoutingConfig",
     # Types
     "CostTier",
     "DataSourceCategory",
