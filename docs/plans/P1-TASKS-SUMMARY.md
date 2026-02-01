@@ -4,9 +4,9 @@
 
 This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks are essential features for production use but are not on the critical MVP path.
 
-**Total P1 Tasks**: 74 tasks
+**Total P1 Tasks**: 75 tasks
 **Completed**: 17 tasks
-**Remaining**: 57 tasks
+**Remaining**: 58 tasks
 
 ## Task Status by Phase
 
@@ -111,7 +111,7 @@ This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks
 | 10.10 | Integration Testing Framework | ⏳ Pending | 10.1-10.4 |
 **Status: 0/6 Complete**
 
-### Phase 11 - User Interfaces (9 P1 tasks)
+### Phase 11 - User Interfaces (10 P1 tasks)
 | Task | Name | Status | Dependencies |
 |------|------|--------|--------------|
 | 11.3 | Security Console API | ⏳ Pending | 8.4, 10.3 |
@@ -123,7 +123,8 @@ This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks
 | 11.9 | Role-Based Access Control UI | ⏳ Pending | 10.2, 11.1 |
 | 11.10 | UI Component Library | ⏳ Pending | 11.1-11.6 |
 | 11.11 | Mobile-Responsive Design | ⏳ Pending | 11.10 |
-**Status: 0/9 Complete**
+| 11.12 | Graph Visualization Core | ⏳ Pending | 10.3, 10.4, 5.9, 6.6 |
+**Status: 0/10 Complete**
 
 ### Phase 12 - Production Readiness (15 P1 tasks)
 | Task | Name | Status | Dependencies |
@@ -161,9 +162,9 @@ This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks
 | 8 | 6 | 0 | 6 |
 | 9 | 8 | 0 | 8 |
 | 10 | 6 | 0 | 6 |
-| 11 | 9 | 0 | 9 |
+| 11 | 10 | 0 | 10 |
 | 12 | 15 | 0 | 15 |
-| **Total** | **74** | **17** | **57** |
+| **Total** | **75** | **17** | **58** |
 
 *Note: Task 6.12 (Risk Dashboard) is P2, not P1.*
 

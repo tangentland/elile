@@ -30,6 +30,7 @@ Phase 11 implements API endpoints for all 5 user-facing portals: Screening Porta
 | 11.9 | WebSocket Real-time Updates | P1 | Not Started | 1.5, Phase 9 | [task-11.9-websocket-updates.md](../tasks/task-11.9-websocket-updates.md) |
 | 11.10 | Rate Limiting (Per-user) | P1 | Not Started | 11.1, 1.10 | [task-11.10-rate-limiting.md](../tasks/task-11.10-rate-limiting.md) |
 | 11.11 | Session Management | P0 | Not Started | 11.1 | [task-11.11-session-management.md](../tasks/task-11.11-session-management.md) |
+| 11.12 | Graph Visualization Core | P1 | Not Started | 10.3, 10.4, 5.9, 6.6 | [task-11.12-graph-visualization-core.md](../tasks/task-11.12-graph-visualization-core.md) |
 
 ## Key API Endpoints
 
