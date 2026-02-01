@@ -666,7 +666,7 @@ Provider abstraction layer, rate limiting, response caching, cost tracking, requ
 
 ## Phase 5: Investigation Engine (SAR Loop) (P0 - Critical)
 
-**Status**: 🟡 In Progress (6/16 tasks complete)
+**Status**: 🟡 In Progress (7/16 tasks complete)
 **Dependencies**: Phase 4
 
 Search-Assess-Refine loop, query planning, result assessment, refinement.
@@ -814,8 +814,30 @@ Search-Assess-Refine loop, query planning, result assessment, refinement.
 - `src/elile/investigation/information_type_manager.py` - InformationTypeManager class
 - `tests/unit/test_information_type_manager.py` - Unit tests
 
+#### ✅ Task 5.7: Confidence Scorer
+**Priority**: P0
+**Status**: Complete
+**Completed**: 2026-01-31
+**Dependencies**: Task 5.4, 5.1
+
+**Deliverables**:
+- ✅ ConfidenceScorer class for standalone confidence calculation
+- ✅ ScorerConfig for configurable factor weights
+- ✅ ConfidenceScore dataclass with factor breakdown
+- ✅ FactorBreakdown for detailed per-factor analysis
+- ✅ Five weighted factors: completeness (30%), corroboration (25%), query_success (20%), fact_confidence (15%), source_diversity (10%)
+- ✅ DEFAULT_EXPECTED_FACTS per information type
+- ✅ FOUNDATION_TYPES for stricter threshold handling
+- ✅ Foundation type threshold boost (+0.05)
+- ✅ Aggregate confidence calculation across types
+- ✅ Configurable expected fact counts per type
+- ✅ 54 unit tests
+
+**Key Files**:
+- `src/elile/investigation/confidence_scorer.py` - ConfidenceScorer class
+- `tests/unit/test_confidence_scorer.py` - Unit tests
+
 ### Pending Tasks
-- 🔲 Task 5.7: Confidence Scorer
 - 🔲 Task 5.8: Iteration Controller
 - 🔲 Task 5.9: SAR Loop Orchestrator
 - 🔲 Task 5.10: Finding Extractor
@@ -894,7 +916,7 @@ Performance optimization, security hardening, compliance certification, document
 ## Overall Progress
 
 ### By Priority
-- **P0 (Critical)**: 30/85 tasks (35.3%)
+- **P0 (Critical)**: 31/85 tasks (36.5%)
 - **P1 (High)**: 4/45 tasks (8.9%)
 - **P2 (Medium)**: 0/10 tasks (0%)
 - **P3 (Low)**: 0/1 tasks (0%)
@@ -904,10 +926,10 @@ Performance optimization, security hardening, compliance certification, document
 - **Phase 2**: 5/5 tasks (100%) ✅
 - **Phase 3**: 5/5 tasks (100%) ✅
 - **Phase 4**: 6/6 tasks (100%) ✅
-- **Phase 5**: 6/16 tasks (38%) 🟡
+- **Phase 5**: 7/16 tasks (44%) 🟡
 - **Phase 6-12**: 0/97 tasks (0%)
 
-### Total: 34/141 tasks (24.1%)
+### Total: 35/141 tasks (24.8%)
 
 ---
 
@@ -915,9 +937,9 @@ Performance optimization, security hardening, compliance certification, document
 
 | Category | Tests |
 |----------|-------|
-| Unit Tests | 1110 |
+| Unit Tests | 1164 |
 | Integration Tests | 64 |
-| **Total** | **1174** |
+| **Total** | **1228** |
 
 All tests passing as of 2026-01-31.
 
@@ -1027,8 +1049,15 @@ Task 5.6 (Information Type Manager) complete:
 - Tier-based and compliance-based filtering
 - 43 new unit tests
 
-### Next: Task 5.7 - Confidence Scorer
-Implement confidence scorer for unified confidence calculation across information types with configurable weights.
+Task 5.7 (Confidence Scorer) complete:
+- ConfidenceScorer for standalone confidence calculation
+- Five weighted factors with configurable weights
+- Foundation type threshold boost
+- Aggregate confidence across types
+- 54 new unit tests
+
+### Next: Task 5.8 - Iteration Controller
+Implement iteration controller for SAR loop iteration management with continuation decisions.
 
 ---
 

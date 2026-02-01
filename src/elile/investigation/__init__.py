@@ -105,6 +105,14 @@ from elile.investigation.query_refiner import (
     RefinementResult,
     create_query_refiner,
 )
+from elile.investigation.confidence_scorer import (
+    ConfidenceScore,
+    ConfidenceScorer,
+    FactorBreakdown,
+    ScorerConfig,
+    create_confidence_scorer,
+    DEFAULT_EXPECTED_FACTS,
+)
 from elile.investigation.result_assessor import (
     AssessmentResult,
     ConfidenceFactors,
@@ -172,4 +180,11 @@ __all__ = [
     "PHASE_ORDER",
     "PHASE_TYPES",
     "TYPE_DEPENDENCIES",
+    # Confidence scorer
+    "ConfidenceScorer",
+    "create_confidence_scorer",
+    "ConfidenceScore",
+    "ScorerConfig",
+    "FactorBreakdown",
+    "DEFAULT_EXPECTED_FACTS",
 ]
