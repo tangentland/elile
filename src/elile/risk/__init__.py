@@ -73,6 +73,18 @@ from elile.risk.severity_calculator import (
     SeverityDecision,
     create_severity_calculator,
 )
+from elile.risk.temporal_risk_tracker import (
+    CategoryDelta,
+    create_temporal_risk_tracker,
+    EvolutionSignal,
+    EvolutionSignalType,
+    RiskDelta,
+    RiskSnapshot,
+    RiskTrend,
+    TemporalRiskTracker,
+    TrackerConfig,
+    TrendDirection,
+)
 
 __all__ = [
     # Analyzer
@@ -143,4 +155,15 @@ __all__ = [
     "RISK_DECAY_PER_HOP",
     "STRENGTH_MULTIPLIER",
     "RELATION_RISK_FACTOR",
+    # Temporal Risk Tracker
+    "TemporalRiskTracker",
+    "create_temporal_risk_tracker",
+    "TrackerConfig",
+    "RiskSnapshot",
+    "RiskDelta",
+    "RiskTrend",
+    "EvolutionSignal",
+    "EvolutionSignalType",
+    "TrendDirection",
+    "CategoryDelta",
 ]

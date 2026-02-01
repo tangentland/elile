@@ -7,7 +7,7 @@ Phase 6 implements multi-model risk scoring, finding categorization, connection 
 **Duration Estimate**: 3-4 weeks
 **Team Size**: 2-3 developers
 **Risk Level**: Medium (risk scoring accuracy critical)
-**Status**: 🟡 In Progress (5/12 tasks complete)
+**Status**: 🟡 In Progress (8/12 tasks complete)
 **Last Updated**: 2026-02-01
 
 ## Phase Goals
@@ -17,8 +17,8 @@ Phase 6 implements multi-model risk scoring, finding categorization, connection 
 - ✅ Determine finding severity with rule-based and role-adjusted scoring
 - ✅ Detect anomalous patterns in findings and behaviors
 - ✅ Recognize risk patterns across investigations
-- ⬜ Analyze network connections and risk propagation
-- ⬜ Aggregate multi-dimensional risk scores
+- ✅ Analyze network connections and risk propagation
+- ✅ Aggregate multi-dimensional risk scores
 
 ## Tasks
 
@@ -29,9 +29,9 @@ Phase 6 implements multi-model risk scoring, finding categorization, connection 
 | 6.3 | Severity Calculator | P0 | ✅ Complete | 6.1, 5.10 | [task-6.3-severity-calculator.md](../tasks/task-6.3-severity-calculator.md) |
 | 6.4 | Anomaly Detector | P0 | ✅ Complete | 6.1, 6.2 | [task-6.4-anomaly-detector.md](../tasks/task-6.4-anomaly-detector.md) |
 | 6.5 | Pattern Recognizer | P0 | ✅ Complete | 6.4 | [task-6.5-pattern-recognizer.md](../tasks/task-6.5-pattern-recognizer.md) |
-| 6.6 | Connection Analyzer | P0 | Not Started | 5.14 | [task-6.6-connection-analyzer.md](../tasks/task-6.6-connection-analyzer.md) |
-| 6.7 | Risk Aggregator | P0 | Not Started | 6.2, 6.3, 6.4 | [task-6.7-risk-aggregator.md](../tasks/task-6.7-risk-aggregator.md) |
-| 6.8 | Temporal Risk Tracker | P1 | Not Started | 6.7 | [task-6.8-temporal-risk-tracker.md](../tasks/task-6.8-temporal-risk-tracker.md) |
+| 6.6 | Connection Analyzer | P0 | ✅ Complete | 5.14 | [task-6.6-connection-analyzer.md](../tasks/task-6.6-connection-analyzer.md) |
+| 6.7 | Risk Aggregator | P0 | ✅ Complete | 6.2, 6.3, 6.4 | [task-6.7-risk-aggregator.md](../tasks/task-6.7-risk-aggregator.md) |
+| 6.8 | Temporal Risk Tracker | P1 | ✅ Complete | 6.7 | [task-6.8-temporal-risk-tracker.md](../tasks/task-6.8-temporal-risk-tracker.md) |
 | 6.9 | Risk Trends | P1 | Not Started | 6.8 | [task-6.9-risk-trends.md](../tasks/task-6.9-risk-trends.md) |
 | 6.10 | Risk Thresholds | P1 | Not Started | 6.7 | [task-6.10-risk-thresholds.md](../tasks/task-6.10-risk-thresholds.md) |
 | 6.11 | Risk Explanations | P1 | Not Started | 6.7 | [task-6.11-risk-explanations.md](../tasks/task-6.11-risk-explanations.md) |
