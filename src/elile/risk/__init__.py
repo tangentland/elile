@@ -113,6 +113,18 @@ from elile.risk.thresholds import (
     ThresholdScope,
     ThresholdSet,
 )
+from elile.risk.explanations import (
+    ContributingFactor,
+    create_risk_explainer,
+    ExplanationDepth,
+    ExplanationFormat,
+    ExplainerConfig,
+    FactorImpact,
+    RiskExplainer,
+    RiskExplanation,
+    ScoreBreakdown,
+    WhatIfScenario,
+)
 
 __all__ = [
     # Analyzer
@@ -220,4 +232,15 @@ __all__ = [
     "CONSERVATIVE_THRESHOLDS",
     "LENIENT_THRESHOLDS",
     "ROLE_THRESHOLD_TEMPLATES",
+    # Risk Explanations
+    "RiskExplainer",
+    "create_risk_explainer",
+    "ExplainerConfig",
+    "RiskExplanation",
+    "ScoreBreakdown",
+    "ContributingFactor",
+    "WhatIfScenario",
+    "ExplanationFormat",
+    "ExplanationDepth",
+    "FactorImpact",
 ]
