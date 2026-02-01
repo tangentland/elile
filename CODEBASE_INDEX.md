@@ -19,7 +19,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 | `src/elile/db/types/` | Custom SQLAlchemy types | `EncryptedString`, `EncryptedJSON` |
 | `src/elile/models/` | AI model adapters | `AnthropicAdapter`, `OpenAIAdapter`, `GeminiAdapter` |
 | `src/elile/search/` | Search query building and execution | `SearchEngine`, `QueryBuilder` |
-| `src/elile/risk/` | Risk analysis and scoring | `RiskAnalyzer`, `RiskScorer` |
+| `src/elile/risk/` | Risk analysis and scoring | `RiskScorer`, `FindingClassifier`, `SeverityCalculator`, `AnomalyDetector` |
 | `src/elile/utils/` | Shared utilities and base exceptions | `ElileError` |
 
 ## API Layer (`src/elile/api/`)
@@ -846,6 +846,578 @@ print(f"Cache hits: {summary.cache_hits}")
 | `NO_PROVIDER` | No provider available for check type |
 | `SKIPPED` | Query was skipped (e.g., duplicate) |
 
+### SAR Loop Orchestrator
+
+The orchestrator coordinates all SAR components to execute complete investigations:
+
+```python
+from elile.investigation import (
+    SARLoopOrchestrator,
+    OrchestratorConfig,
+    InvestigationResult,
+    TypeCycleResult,
+    ProgressEvent,
+    create_sar_orchestrator,
+)
+from elile.agent.state import KnowledgeBase, ServiceTier
+from elile.compliance.types import Locale, RoleCategory
+
+# Create orchestrator with all components
+orchestrator = SARLoopOrchestrator(
+    state_machine=state_machine,
+    query_planner=planner,
+    query_executor=executor,
+    result_assessor=assessor,
+    query_refiner=refiner,
+    iteration_controller=controller,
+    type_manager=type_manager,
+    config=OrchestratorConfig(
+        process_types_parallel=True,
+        max_parallel_types=5,
+        continue_on_type_error=True,
+    ),
+)
+
+# Register progress handler
+async def on_progress(event: ProgressEvent):
+    print(f"{event.event_type}: {event.message}")
+
+orchestrator.on_progress(on_progress)
+
+# Execute complete investigation
+kb = KnowledgeBase()
+result: InvestigationResult = await orchestrator.execute_investigation(
+    knowledge_base=kb,
+    subject_identifiers=identifiers,
+    locale=Locale.US,
+    tier=ServiceTier.STANDARD,
+    role_category=RoleCategory.STANDARD,
+    available_providers=["sterling", "checkr"],
+    entity_id=entity_id,
+    tenant_id=tenant_id,
+)
+
+# Check results
+if result.success:
+    print(f"Complete: {result.types_completed} types, {result.total_facts} facts")
+for info_type, type_result in result.type_results.items():
+    print(f"  {info_type.value}: {type_result.final_confidence:.1%} confidence")
+```
+
+#### Factory Function
+
+Use the factory for quick setup (requires injecting QueryExecutor):
+
+```python
+orchestrator = create_sar_orchestrator(
+    sar_config=SARConfig(confidence_threshold=0.85),
+    orchestrator_config=OrchestratorConfig(max_parallel_types=3),
+)
+# Note: You must inject a properly configured QueryExecutor
+```
+
+#### Progress Events
+
+| Event Type | When Emitted |
+|------------|--------------|
+| `investigation_started` | Investigation begins |
+| `phase_started` | New information phase begins |
+| `iteration_started` | SAR iteration begins for a type |
+| `iteration_completed` | SAR iteration completes |
+| `investigation_completed` | Full investigation completes |
+| `investigation_failed` | Investigation fails with error |
+
+### Finding Extractor
+
+Extracts structured findings from facts using AI or rule-based analysis:
+
+```python
+from elile.investigation import (
+    FindingExtractor,
+    Finding,
+    FindingCategory,
+    Severity,
+    ExtractionResult,
+    ExtractorConfig,
+)
+from elile.agent.state import InformationType
+from elile.compliance.types import RoleCategory
+
+# Create extractor (with or without AI model)
+extractor = FindingExtractor(
+    ai_model=claude_adapter,  # Optional - uses rules if None
+    config=ExtractorConfig(
+        min_confidence=0.5,
+        enable_corroboration=True,
+    ),
+)
+
+# Extract findings from facts
+result: ExtractionResult = await extractor.extract_findings(
+    facts=facts,
+    info_type=InformationType.CRIMINAL,
+    role_category=RoleCategory.FINANCIAL,
+    entity_id=entity_id,
+)
+
+for finding in result.findings:
+    print(f"{finding.severity}: {finding.summary}")
+    print(f"  Category: {finding.category}")
+    print(f"  Confidence: {finding.confidence:.1%}")
+    print(f"  Relevance: {finding.relevance_to_role:.1%}")
+    print(f"  Corroborated: {finding.corroborated}")
+```
+
+#### Finding Categories
+
+| Category | Description |
+|----------|-------------|
+| `CRIMINAL` | Criminal records, convictions, arrests |
+| `FINANCIAL` | Bankruptcy, liens, judgments |
+| `REGULATORY` | License issues, sanctions, compliance |
+| `REPUTATION` | Adverse media, references |
+| `VERIFICATION` | Identity, employment, education verification |
+| `BEHAVIORAL` | Social media concerns, patterns |
+| `NETWORK` | Connections to concerning entities |
+
+#### Severity Levels
+
+| Severity | Description |
+|----------|-------------|
+| `CRITICAL` | Immediate disqualifying factors |
+| `HIGH` | Significant concerns requiring review |
+| `MEDIUM` | Notable issues to consider |
+| `LOW` | Minor items for awareness |
+
+### Phase Handlers (`src/elile/investigation/phases/`)
+
+Phase-specific handlers coordinate SAR loop execution for groups of information types:
+
+#### Foundation Phase (Sequential Processing)
+```python
+from elile.investigation.phases import (
+    FoundationPhaseHandler,
+    FoundationConfig,
+    BaselineProfile,
+    VerificationStatus,
+    create_foundation_handler,
+)
+
+handler = create_foundation_handler(orchestrator=orchestrator)
+
+result = await handler.execute(
+    knowledge_base=kb,
+    subject_identifiers=identifiers,
+    locale=Locale.US,
+    tier=ServiceTier.STANDARD,
+    available_providers=["sterling"],
+    entity_id=entity_id,
+    tenant_id=tenant_id,
+)
+
+if result.can_proceed:
+    baseline = result.baseline_profile
+    print(f"Identity verified: {baseline.identity.name_verified}")
+```
+
+#### Records Phase (Parallel Processing)
+```python
+from elile.investigation.phases import (
+    RecordsPhaseHandler,
+    RecordsConfig,
+    RecordsProfile,
+    RecordSeverity,
+    create_records_handler,
+)
+
+handler = create_records_handler(
+    orchestrator=orchestrator,
+    config=RecordsConfig(
+        process_parallel=True,
+        require_sanctions_check=True,
+    ),
+)
+
+result = await handler.execute(
+    foundation_result=foundation_result,
+    knowledge_base=kb,
+    subject_identifiers=identifiers,
+    locale=Locale.US,
+    tier=ServiceTier.STANDARD,
+    role_category=RoleCategory.FINANCIAL,
+    available_providers=["sterling", "checkr"],
+    entity_id=entity_id,
+    tenant_id=tenant_id,
+)
+
+if result.records_profile.has_critical_findings:
+    print("ALERT: Critical findings detected")
+```
+
+#### Intelligence Phase (Parallel Processing, Tier-Aware)
+```python
+from elile.investigation.phases import (
+    IntelligencePhaseHandler,
+    IntelligenceConfig,
+    IntelligenceProfile,
+    RiskIndicator,
+    create_intelligence_handler,
+)
+
+handler = create_intelligence_handler(
+    orchestrator=orchestrator,
+    config=IntelligenceConfig(
+        include_digital_footprint=True,  # Requires Enhanced tier
+    ),
+)
+
+result = await handler.execute(
+    records_result=records_result,
+    knowledge_base=kb,
+    subject_identifiers=identifiers,
+    locale=Locale.US,
+    tier=ServiceTier.ENHANCED,
+    role_category=RoleCategory.EXECUTIVE,
+    available_providers=["newsapi", "socialmedia"],
+    entity_id=entity_id,
+    tenant_id=tenant_id,
+)
+
+if result.intelligence_profile.has_critical_findings:
+    print(f"ALERT: Adverse media detected ({result.intelligence_profile.adverse_media_count} items)")
+```
+
+#### Network Phase (Sequential Processing, Tier-Aware)
+```python
+from elile.investigation.phases import (
+    NetworkPhaseHandler,
+    NetworkConfig,
+    NetworkProfile,
+    RiskLevel,
+    create_network_handler,
+)
+
+handler = create_network_handler(
+    orchestrator=orchestrator,
+    config=NetworkConfig(
+        include_d3=True,  # Requires Enhanced tier
+    ),
+)
+
+result = await handler.execute(
+    intelligence_result=intelligence_result,
+    knowledge_base=kb,
+    subject_identifiers=identifiers,
+    locale=Locale.US,
+    tier=ServiceTier.ENHANCED,
+    role_category=RoleCategory.EXECUTIVE,
+    available_providers=["network_provider"],
+    entity_id=entity_id,
+    tenant_id=tenant_id,
+)
+
+if result.network_profile.has_critical_connections:
+    print(f"ALERT: Critical connections detected ({len(result.network_profile.risk_connections)} items)")
+```
+
+#### Reconciliation Phase (Cross-Source Deduplication)
+```python
+from elile.investigation.phases import (
+    ReconciliationPhaseHandler,
+    ReconciliationConfig,
+    ReconciliationProfile,
+    DeceptionRiskLevel,
+    create_reconciliation_handler,
+)
+
+handler = create_reconciliation_handler(
+    orchestrator=orchestrator,
+    config=ReconciliationConfig(
+        auto_resolve_low_severity=True,
+        systematic_pattern_threshold=4,  # 4+ inconsistencies = systematic pattern
+        deception_critical_threshold=0.8,
+    ),
+)
+
+result = await handler.execute(
+    network_result=network_result,
+    all_findings=all_findings_from_phases,
+    knowledge_base=kb,
+    subject_identifiers=identifiers,
+    locale=Locale.US,
+    tier=ServiceTier.ENHANCED,
+    role_category=RoleCategory.EXECUTIVE,
+    available_providers=["verification_provider"],
+    entity_id=entity_id,
+    tenant_id=tenant_id,
+)
+
+if result.reconciliation_profile.deception_analysis.deception_risk == DeceptionRiskLevel.CRITICAL:
+    print(f"ALERT: Critical deception risk detected (score: {result.reconciliation_profile.deception_analysis.deception_score})")
+```
+
+#### Phase Processing Order
+| Phase | Types | Processing Mode |
+|-------|-------|-----------------|
+| Foundation | identity, employment, education | Sequential |
+| Records | criminal, civil, financial, licenses, regulatory, sanctions | Parallel |
+| Intelligence | adverse_media, digital_footprint | Parallel |
+| Network | network_d2, network_d3 | Sequential |
+| Reconciliation | reconciliation | Single |
+
+## Risk Analysis (`src/elile/risk/`)
+
+The risk analysis module categorizes findings, calculates risk scores, and provides role-based relevance.
+
+### Finding Classifier
+
+Classifies findings into risk categories with AI validation and reclassification:
+
+```python
+from elile.risk import (
+    FindingClassifier,
+    ClassificationResult,
+    ClassifierConfig,
+    SubCategory,
+    create_finding_classifier,
+)
+from elile.investigation.finding_extractor import Finding, FindingCategory
+from elile.compliance.types import RoleCategory
+
+# Create classifier with default config
+classifier = create_finding_classifier()
+
+# Or with custom configuration
+classifier = FindingClassifier(config=ClassifierConfig(
+    min_validation_confidence=0.7,  # Keep AI category if >= 0.7 confidence
+    confidence_per_match=0.15,       # Boost per keyword match
+    max_keyword_confidence=0.9,      # Cap confidence from keywords
+    enable_subcategory=True,         # Enable sub-category detection
+    default_relevance=0.5,           # Default role relevance
+))
+
+# Classify a single finding
+finding = Finding(
+    summary="Felony conviction for theft",
+    details="Subject convicted of grand theft in 2020.",
+)
+
+result = classifier.classify_finding(
+    finding=finding,
+    role_category=RoleCategory.FINANCIAL,
+)
+
+print(f"Category: {result.assigned_category}")        # CRIMINAL
+print(f"Sub-category: {result.sub_category}")         # CRIMINAL_FELONY
+print(f"Confidence: {result.category_confidence}")    # 0.6
+print(f"Role relevance: {result.relevance_to_role}")  # 0.9
+print(f"Reclassified: {result.was_reclassified}")     # False/True
+
+# Batch classification
+findings = [finding1, finding2, finding3]
+results = classifier.classify_findings(findings, RoleCategory.EXECUTIVE)
+
+# Get distribution
+distribution = classifier.get_category_distribution(results)
+# {CRIMINAL: 2, FINANCIAL: 1}
+
+sub_distribution = classifier.get_subcategory_distribution(results)
+# {CRIMINAL_FELONY: 1, CRIMINAL_DUI: 1, FINANCIAL_BANKRUPTCY: 1}
+```
+
+### Finding Categories and Sub-Categories
+
+| Category | Sub-Categories |
+|----------|---------------|
+| CRIMINAL | felony, misdemeanor, traffic, dui, violent, financial, drug, sex |
+| FINANCIAL | bankruptcy, lien, judgment, foreclosure, collection, credit |
+| REGULATORY | license, sanction, enforcement, bar, pep |
+| REPUTATION | litigation, media, complaint, social |
+| VERIFICATION | identity, employment, education, discrepancy, gap |
+| BEHAVIORAL | pattern, deception |
+| NETWORK | association, shell, pep |
+
+### Role Relevance Matrix
+
+The classifier uses a complete role-relevance matrix. Example relevance scores:
+
+| Category | GOVERNMENT | FINANCIAL | HEALTHCARE | EXECUTIVE | STANDARD |
+|----------|------------|-----------|------------|-----------|----------|
+| CRIMINAL | 1.0 | 0.9 | 0.85 | 0.85 | 0.7 |
+| FINANCIAL | 0.8 | 1.0 | 0.65 | 0.9 | 0.5 |
+| REGULATORY | 0.95 | 1.0 | 1.0 | 0.85 | 0.5 |
+| VERIFICATION | 1.0 | 1.0 | 0.95 | 1.0 | 0.8 |
+
+### Risk Scorer
+
+Calculates composite risk scores (0-100) with severity weighting, recency decay, and corroboration:
+
+```python
+from elile.risk import (
+    RiskScorer,
+    RiskScore,
+    RiskLevel,
+    Recommendation,
+    ScorerConfig,
+    create_risk_scorer,
+)
+
+# Create scorer
+scorer = create_risk_scorer()
+
+# Calculate risk score
+score = scorer.calculate_risk_score(
+    findings=classified_findings,
+    role_category=RoleCategory.FINANCIAL,
+    entity_id=entity_id,
+)
+
+print(f"Overall Score: {score.overall_score}/100")
+print(f"Risk Level: {score.risk_level.value}")  # low/moderate/high/critical
+print(f"Recommendation: {score.recommendation.value}")  # proceed/review_required/etc.
+
+# Category breakdown
+for category, cat_score in score.category_scores.items():
+    print(f"  {category.value}: {cat_score}")
+
+# Contributing factors
+print(f"Critical findings: {score.contributing_factors['critical_findings']}")
+print(f"Corroborated: {score.contributing_factors['corroborated_findings']}")
+```
+
+### Scoring Components
+
+| Factor | Effect |
+|--------|--------|
+| Severity | Base score: LOW=10, MEDIUM=25, HIGH=50, CRITICAL=75 |
+| Recency | Decay: ≤1yr=1.0, 1-3yr=0.9, 3-7yr=0.7, 7+yr=0.5 |
+| Corroboration | Bonus: 1.2x for multi-source findings |
+| Category Weight | Criminal=1.5x, Regulatory=1.3x, Verification=1.2x |
+
+### Risk Levels and Recommendations
+
+| Level | Score Range | Recommendation |
+|-------|-------------|----------------|
+| LOW | 0-25 | PROCEED |
+| MODERATE | 26-50 | PROCEED_WITH_CAUTION |
+| HIGH | 51-75 | REVIEW_REQUIRED |
+| CRITICAL | 76-100 | DO_NOT_PROCEED |
+
+### Severity Calculator
+
+Determines finding severity using rule-based assessment with role and recency adjustments:
+
+```python
+from elile.risk import (
+    SeverityCalculator,
+    SeverityDecision,
+    CalculatorConfig,
+    create_severity_calculator,
+    SEVERITY_RULES,
+    SUBCATEGORY_SEVERITY,
+    ROLE_SEVERITY_ADJUSTMENTS,
+)
+from elile.investigation.finding_extractor import Severity
+
+# Create calculator
+calculator = create_severity_calculator()
+
+# Calculate severity for a finding
+severity, decision = calculator.calculate_severity(
+    finding=finding,
+    role_category=RoleCategory.FINANCIAL,
+    subcategory=SubCategory.CRIMINAL_FELONY,
+)
+
+print(f"Severity: {severity.value}")  # critical/high/medium/low
+print(f"Method: {decision.determination_method}")  # rule/subcategory/default
+print(f"Matched rules: {decision.matched_rules}")  # ['felony conviction']
+print(f"Role adjustment: {decision.role_adjustment}")  # +1 or 0
+print(f"Recency adjustment: {decision.recency_adjustment}")  # +1 or 0
+
+# Batch processing
+results = calculator.calculate_severities(
+    findings=findings,
+    role_category=RoleCategory.GOVERNMENT,
+    subcategories={finding_id: subcategory for ...},
+    update_findings=True,  # Update finding.severity in place
+)
+```
+
+### Severity Rules
+
+Rules match text patterns in finding summary, details, and finding_type:
+
+| Pattern | Severity |
+|---------|----------|
+| "felony conviction", "murder", "ofac sanction" | CRITICAL |
+| "recent bankruptcy", "dui conviction", "finra bar" | HIGH |
+| "misdemeanor conviction", "civil judgment", "employment discrepancy" | MEDIUM |
+| "employment gap", "address discrepancy", "parking violation" | LOW |
+
+### Severity Adjustments
+
+| Adjustment Type | Condition | Effect |
+|-----------------|-----------|--------|
+| Role (Criminal + Government) | Criminal finding for government role | +1 severity level |
+| Role (Financial + Financial) | Financial finding for finance role | +1 severity level |
+| Recency (≤365 days) | Finding within past year | +1 severity level |
+
+### Anomaly Detector
+
+Identifies unusual patterns, statistical outliers, and deception indicators:
+
+```python
+from elile.risk import (
+    AnomalyDetector,
+    Anomaly,
+    AnomalyType,
+    DeceptionAssessment,
+    DetectorConfig,
+    create_anomaly_detector,
+)
+from elile.investigation.result_assessor import Fact, DetectedInconsistency
+
+# Create detector
+detector = create_anomaly_detector()
+
+# Detect anomalies
+anomalies = detector.detect_anomalies(
+    facts=extracted_facts,
+    inconsistencies=detected_inconsistencies,
+)
+
+for anomaly in anomalies:
+    print(f"Type: {anomaly.anomaly_type.value}")
+    print(f"Severity: {anomaly.severity.value}")
+    print(f"Deception score: {anomaly.deception_score}")
+
+# Assess overall deception likelihood
+assessment = detector.assess_deception(anomalies, inconsistencies)
+print(f"Deception risk: {assessment.risk_level}")
+print(f"Overall score: {assessment.overall_score}")
+```
+
+### Anomaly Types
+
+| Category | Types |
+|----------|-------|
+| Statistical | outlier, unusual_frequency, improbable_value |
+| Inconsistency | systematic, cross_field, directional_bias |
+| Timeline | impossible, chronological_gap, overlapping |
+| Credential | inflation (education, title), qualification_gap |
+| Deception | pattern, concealment, fabrication |
+
+### Deception Risk Levels
+
+| Level | Score Range | Meaning |
+|-------|-------------|---------|
+| none | 0.0-0.1 | No deception signals |
+| low | 0.1-0.3 | Minor concerns |
+| moderate | 0.3-0.5 | Requires attention |
+| high | 0.5-0.75 | Significant deception risk |
+| critical | 0.75-1.0 | Strong deception indicators |
+
 ## Key Enums
 
 ### Service Configuration (`src/elile/agent/state.py`)
@@ -1027,6 +1599,22 @@ tests/
 | `src/elile/investigation/sar_machine.py` | SARStateMachine, create_sar_machine, FOUNDATION_TYPES | Task 5.1 |
 | `src/elile/investigation/query_planner.py` | QueryPlanner, QueryPlanResult, SearchQuery, QueryType, INFO_TYPE_TO_CHECK_TYPES | Task 5.2 |
 | `src/elile/investigation/query_executor.py` | QueryExecutor, QueryResult, QueryStatus, ExecutionSummary, ExecutorConfig | Task 5.3 |
+| `src/elile/investigation/result_assessor.py` | ResultAssessor, AssessmentResult, Fact, Gap, DetectedInconsistency, DiscoveredEntity | Task 5.4 |
+| `src/elile/investigation/query_refiner.py` | QueryRefiner, RefinerConfig, RefinementResult, GAP_STRATEGIES | Task 5.5 |
+| `src/elile/investigation/information_type_manager.py` | InformationTypeManager, InformationPhase, TypeDependency, TypeSequence | Task 5.6 |
+| `src/elile/investigation/confidence_scorer.py` | ConfidenceScorer, ConfidenceScore, ScorerConfig, FactorBreakdown, DEFAULT_EXPECTED_FACTS | Task 5.7 |
+| `src/elile/investigation/iteration_controller.py` | IterationController, IterationDecision, ControllerConfig, DecisionType | Task 5.8 |
+| `src/elile/investigation/sar_orchestrator.py` | SARLoopOrchestrator, InvestigationResult, TypeCycleResult, OrchestratorConfig, ProgressEvent, create_sar_orchestrator | Task 5.9 |
+| `src/elile/investigation/finding_extractor.py` | FindingExtractor, Finding, FindingCategory, Severity, ExtractionResult, ExtractorConfig, DataSourceRef | Task 5.10 |
+| `src/elile/investigation/phases/__init__.py` | Phase handler exports | Task 5.11 |
+| `src/elile/investigation/phases/foundation.py` | FoundationPhaseHandler, BaselineProfile, IdentityBaseline, EmploymentBaseline, EducationBaseline, VerificationStatus, FoundationConfig, FoundationPhaseResult | Task 5.11 |
+| `src/elile/investigation/phases/records.py` | RecordsPhaseHandler, RecordsProfile, RecordSeverity, RecordType, CriminalRecord, CivilRecord, FinancialRecord, LicenseRecord, RegulatoryRecord, SanctionsRecord, RecordsConfig, RecordsPhaseResult | Task 5.12 |
+| `src/elile/investigation/phases/intelligence.py` | IntelligencePhaseHandler, IntelligenceProfile, IntelligenceConfig, IntelligencePhaseResult, MediaMention, MediaSentiment, MediaCategory, SocialProfile, SocialPlatform, ProfessionalPresence, RiskIndicator | Task 5.13 |
+| `src/elile/investigation/phases/network.py` | NetworkPhaseHandler, NetworkProfile, NetworkConfig, NetworkPhaseResult, DiscoveredEntity, EntityRelation, RiskConnection, RelationType, EntityType, RiskLevel, ConnectionStrength | Task 5.14 |
+| `src/elile/investigation/phases/reconciliation.py` | ReconciliationPhaseHandler, ReconciliationProfile, ReconciliationConfig, ReconciliationPhaseResult, Inconsistency, InconsistencyType, ConflictResolution, ResolutionStatus, DeceptionAnalysis, DeceptionRiskLevel | Task 5.15 |
+| `src/elile/investigation/checkpoint.py` | InvestigationCheckpointManager, InvestigationCheckpoint, CheckpointConfig, CheckpointReason, CheckpointStatus, TypeStateSnapshot, ResumeResult, create_checkpoint_manager | Task 5.16 |
+| `src/elile/risk/finding_classifier.py` | FindingClassifier, ClassificationResult, ClassifierConfig, SubCategory, CATEGORY_KEYWORDS, SUBCATEGORY_KEYWORDS, ROLE_RELEVANCE_MATRIX, create_finding_classifier | Task 6.1 |
+| `src/elile/risk/risk_scorer.py` | RiskScorer, RiskScore, RiskLevel, Recommendation, ScorerConfig, create_risk_scorer | Task 6.2 |
 
 ## Architecture References
 
