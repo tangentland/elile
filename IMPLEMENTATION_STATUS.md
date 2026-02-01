@@ -1209,7 +1209,7 @@ Risk scoring, anomaly detection, pattern recognition, connection analysis.
 
 ## Phase 7: Screening Service (P0 - Critical)
 
-**Status**: 🟡 In Progress (1/11 tasks complete)
+**Status**: 🟡 In Progress (4/11 tasks complete)
 **Dependencies**: Phase 6
 
 Pre-employment screening workflow, degree support (D1-D3), tier selection.
@@ -1244,6 +1244,51 @@ Pre-employment screening workflow, degree support (D1-D3), tier selection.
 - `src/elile/screening/types.py` - Request/result models and enums
 - `src/elile/screening/orchestrator.py` - Screening orchestrator
 - `tests/unit/test_screening_orchestrator.py` - Unit tests
+
+---
+
+#### ✅ Tasks 7.2-7.3: Degree Handlers (D1/D2/D3)
+**Priority**: P0
+**Status**: Complete
+**Completed**: 2026-02-01
+**Dependencies**: Task 7.1
+
+**Deliverables**:
+- ✅ D1Handler for subject-only investigations
+- ✅ D2Handler for direct connections (1-hop network expansion)
+- ✅ D3Handler for extended network (2+ hops)
+- ✅ DegreeHandlerConfig for configuring limits and weights
+- ✅ D1Result, D2Result, D3Result dataclasses
+- ✅ Entity prioritization by relationship strength and risk
+- ✅ Connection graph building with risk analysis
+- ✅ Factory functions create_d1/d2/d3_handler()
+- ✅ 33 unit tests passing
+
+**Key Files**:
+- `src/elile/screening/degree_handlers.py` - Degree handlers
+- `tests/unit/test_degree_handlers.py` - Unit tests
+
+---
+
+#### ✅ Task 7.4: Tier Router
+**Priority**: P0
+**Status**: Complete
+**Completed**: 2026-02-01
+**Dependencies**: Task 2.1
+
+**Deliverables**:
+- ✅ TierRouter for service tier-based routing
+- ✅ TierCapabilities with limits per tier
+- ✅ DataSourceSpec for data source configuration
+- ✅ DataSourceTier enum (CORE vs PREMIUM)
+- ✅ RoutingResult with available sources and cost estimates
+- ✅ Tier validation and degree restrictions
+- ✅ Default data sources factory
+- ✅ 39 unit tests passing
+
+**Key Files**:
+- `src/elile/screening/tier_router.py` - Tier router
+- `tests/unit/test_tier_router.py` - Unit tests
 
 ---
 
@@ -1299,7 +1344,7 @@ Performance optimization, security hardening, compliance certification, document
 ## Overall Progress
 
 ### By Priority
-- **P0 (Critical)**: 39/85 tasks (45.9%)
+- **P0 (Critical)**: 42/85 tasks (49.4%)
 - **P1 (High)**: 13/45 tasks (28.9%)
 - **P2 (Medium)**: 0/10 tasks (0%)
 - **P3 (Low)**: 0/1 tasks (0%)
@@ -1311,10 +1356,10 @@ Performance optimization, security hardening, compliance certification, document
 - **Phase 4**: 6/6 tasks (100%) ✅
 - **Phase 5**: 16/16 tasks (100%) ✅
 - **Phase 6**: 11/12 tasks (91.7%)
-- **Phase 7**: 1/11 tasks (9.1%)
+- **Phase 7**: 4/11 tasks (36.4%)
 - **Phase 8-12**: 0/74 tasks (0%)
 
-### Total: 52/141 tasks (36.9%)
+### Total: 55/141 tasks (39.0%)
 
 ---
 
@@ -1322,9 +1367,9 @@ Performance optimization, security hardening, compliance certification, document
 
 | Category | Tests |
 |----------|-------|
-| Unit Tests | 1948 |
+| Unit Tests | 2020 |
 | Integration Tests | 70 |
-| **Total** | **2018** |
+| **Total** | **2090** |
 
 All tests passing as of 2026-02-01.
 

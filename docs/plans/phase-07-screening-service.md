@@ -19,10 +19,10 @@ Phase 7 implements the end-to-end screening workflow that orchestrates all previ
 
 | Seq | Task Name | Priority | Status | Dependencies | Plan Document |
 |-----|-----------|----------|--------|--------------|---------------|
-| 7.1 | Screening Request Model | P0 | ✅ Complete | Phase 2, 3 | [task-7.1-screening-request.md](../tasks/task-7.1-screening-request.md) |
-| 7.2 | Screening Orchestrator | P0 | Not Started | Phase 5, 6 | [task-7.2-screening-orchestrator.md](../tasks/task-7.2-screening-orchestrator.md) |
-| 7.3 | Data Acquisition Coordinator | P0 | Not Started | Phase 4, 3.6 | [task-7.3-data-acquisition.md](../tasks/task-7.3-data-acquisition.md) |
-| 7.4 | Screening Status Tracker | P0 | Not Started | 1.1 | [task-7.4-status-tracker.md](../tasks/task-7.4-status-tracker.md) |
+| 7.1 | Screening Request Model & Orchestrator | P0 | ✅ Complete | Phase 2, 3 | [task-7.1-screening-orchestrator.md](../tasks/task-7.1-screening-orchestrator.md) |
+| 7.2 | Degree D1 Handler | P0 | ✅ Complete | 7.1 | [task-7.2-degree-d1-handler.md](../tasks/task-7.2-degree-d1-handler.md) |
+| 7.3 | Degree D2/D3 Handlers | P0 | ✅ Complete | 7.2 | [task-7.3-degree-d2-handler.md](../tasks/task-7.3-degree-d2-handler.md) |
+| 7.4 | Tier Router | P0 | ✅ Complete | 2.1 | [task-7.4-tier-router.md](../tasks/task-7.4-tier-router.md) |
 | 7.5 | Basic Report Generator (Summary) | P0 | Not Started | 6.1 | [task-7.5-report-gen-summary.md](../tasks/task-7.5-report-gen-summary.md) |
 | 7.6 | Basic Report Generator (Audit) | P0 | Not Started | 1.2, 2.6 | [task-7.6-report-gen-audit.md](../tasks/task-7.6-report-gen-audit.md) |
 | 7.7 | Basic Report Generator (Disclosure) | P0 | Not Started | 2.9 | [task-7.7-report-gen-disclosure.md](../tasks/task-7.7-report-gen-disclosure.md) |
