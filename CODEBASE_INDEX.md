@@ -1640,6 +1640,51 @@ The orchestrator executes these phases in sequence:
 | `DISCLOSURE` | Subject | FCRA-compliant summary |
 | `PORTFOLIO` | Executive | Aggregate metrics |
 
+### Result Compiler
+
+The ResultCompiler aggregates screening results for report generation:
+
+```python
+from elile.screening import (
+    ResultCompiler,
+    CompilerConfig,
+    CompiledResult,
+    create_result_compiler,
+)
+
+# Create compiler
+compiler = create_result_compiler()
+
+# Compile results from SAR loop and risk assessment
+compiled = compiler.compile_results(
+    sar_results=sar_type_states,  # Dict[InformationType, SARTypeState]
+    findings=findings,             # List[Finding]
+    risk_assessment=assessment,    # ComprehensiveRiskAssessment
+    connections=connections,       # List[DiscoveredEntity]
+    relations=relations,          # List[EntityRelation]
+    risk_connections=risk_conns,  # List[RiskConnection]
+    screening_id=screening_id,
+)
+
+# Access compiled summaries
+print(f"Total findings: {compiled.findings_summary.total_findings}")
+print(f"Critical findings: {compiled.findings_summary.by_severity[Severity.CRITICAL]}")
+print(f"Types processed: {compiled.investigation_summary.types_processed}")
+print(f"Network entities: {compiled.connection_summary.entities_discovered}")
+
+# Convert to ScreeningResult for API response
+result = compiler.to_screening_result(compiled, screening_id=screening_id)
+```
+
+### Compiled Result Summaries
+
+| Summary Type | Contents |
+|--------------|----------|
+| `FindingsSummary` | Category breakdowns, severity counts, narrative |
+| `CategorySummary` | Per-category finding counts, key findings, corroboration |
+| `InvestigationSummary` | SAR loop stats, iterations, confidence metrics |
+| `ConnectionSummary` | D2/D3 entity counts, risk connections, PEP/sanctions |
+
 ## Key Enums
 
 ### Service Configuration (`src/elile/agent/state.py`)
@@ -1840,6 +1885,10 @@ tests/
 | `src/elile/screening/__init__.py` | Screening module exports | Task 7.1 |
 | `src/elile/screening/types.py` | ScreeningRequest, ScreeningResult, ScreeningStatus, ReportType, ScreeningPhaseResult, ScreeningCostSummary, GeneratedReport, ScreeningError | Task 7.1 |
 | `src/elile/screening/orchestrator.py` | ScreeningOrchestrator, OrchestratorConfig, create_screening_orchestrator | Task 7.1 |
+| `src/elile/screening/degree_handlers.py` | D1Handler, D2Handler, D3Handler, DegreeHandlerConfig, D1Result, D2Result, D3Result, create_d1_handler, create_d2_handler, create_d3_handler | Task 7.2-7.3 |
+| `src/elile/screening/tier_router.py` | TierRouter, TierRouterConfig, TierCapabilities, DataSourceSpec, DataSourceTier, RoutingResult, create_tier_router, create_default_data_sources | Task 7.4 |
+| `src/elile/screening/state_manager.py` | ScreeningStateManager, StateManagerConfig, ScreeningState, ScreeningPhase, ProgressEvent, ProgressEventType, StateStore, InMemoryStateStore, create_state_manager | Task 7.5 |
+| `src/elile/screening/result_compiler.py` | ResultCompiler, CompilerConfig, CompiledResult, FindingsSummary, CategorySummary, InvestigationSummary, SARSummary, ConnectionSummary, SummaryFormat, create_result_compiler | Task 7.6 |
 
 ## Architecture References
 

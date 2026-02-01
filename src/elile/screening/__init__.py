@@ -87,6 +87,18 @@ from elile.screening.state_manager import (
     StateStore,
     create_state_manager,
 )
+from elile.screening.result_compiler import (
+    CategorySummary,
+    CompiledResult,
+    CompilerConfig,
+    ConnectionSummary,
+    FindingsSummary,
+    InvestigationSummary,
+    ResultCompiler,
+    SARSummary,
+    SummaryFormat,
+    create_result_compiler,
+)
 
 __all__ = [
     # Orchestrator
@@ -123,6 +135,17 @@ __all__ = [
     "StateStore",
     "InMemoryStateStore",
     "create_state_manager",
+    # Result Compiler
+    "ResultCompiler",
+    "CompilerConfig",
+    "CompiledResult",
+    "FindingsSummary",
+    "CategorySummary",
+    "InvestigationSummary",
+    "SARSummary",
+    "ConnectionSummary",
+    "SummaryFormat",
+    "create_result_compiler",
     # Request/Response models
     "ScreeningRequest",
     "ScreeningRequestCreate",

@@ -19,17 +19,17 @@ Phase 7 implements the end-to-end screening workflow that orchestrates all previ
 
 | Seq | Task Name | Priority | Status | Dependencies | Plan Document |
 |-----|-----------|----------|--------|--------------|---------------|
-| 7.1 | Screening Request Model & Orchestrator | P0 | ✅ Complete | Phase 2, 3 | [task-7.1-screening-orchestrator.md](../tasks/task-7.1-screening-orchestrator.md) |
+| 7.1 | Screening Request Model & Orchestrator | P0 | ✅ Complete | Phase 2, 3, 5, 6 | [task-7.1-screening-orchestrator.md](../tasks/task-7.1-screening-orchestrator.md) |
 | 7.2 | Degree D1 Handler | P0 | ✅ Complete | 7.1 | [task-7.2-degree-d1-handler.md](../tasks/task-7.2-degree-d1-handler.md) |
 | 7.3 | Degree D2/D3 Handlers | P0 | ✅ Complete | 7.2 | [task-7.3-degree-d2-handler.md](../tasks/task-7.3-degree-d2-handler.md) |
 | 7.4 | Tier Router | P0 | ✅ Complete | 2.1 | [task-7.4-tier-router.md](../tasks/task-7.4-tier-router.md) |
-| 7.5 | Basic Report Generator (Summary) | P0 | Not Started | 6.1 | [task-7.5-report-gen-summary.md](../tasks/task-7.5-report-gen-summary.md) |
-| 7.6 | Basic Report Generator (Audit) | P0 | Not Started | 1.2, 2.6 | [task-7.6-report-gen-audit.md](../tasks/task-7.6-report-gen-audit.md) |
-| 7.7 | Basic Report Generator (Disclosure) | P0 | Not Started | 2.9 | [task-7.7-report-gen-disclosure.md](../tasks/task-7.7-report-gen-disclosure.md) |
-| 7.8 | Screening API Endpoints | P0 | Not Started | 7.2, 1.5 | [task-7.8-screening-api.md](../tasks/task-7.8-screening-api.md) |
-| 7.9 | Async Job Queue Integration | P0 | Not Started | 1.10 | [task-7.9-job-queue.md](../tasks/task-7.9-job-queue.md) |
-| 7.10 | Error Recovery & Retry | P1 | Not Started | 7.2 | [task-7.10-error-recovery.md](../tasks/task-7.10-error-recovery.md) |
-| 7.11 | Screening Result Persistence | P0 | Not Started | 1.1, 3.4 | [task-7.11-result-persistence.md](../tasks/task-7.11-result-persistence.md) |
+| 7.5 | Screening State Manager | P0 | ✅ Complete | 7.1 | [task-7.5-screening-state-manager.md](../tasks/task-7.5-screening-state-manager.md) |
+| 7.6 | Result Compiler | P0 | ✅ Complete | 5.9, 6.7 | [task-7.6-result-compiler.md](../tasks/task-7.6-result-compiler.md) |
+| 7.7 | Screening API Endpoints | P0 | Not Started | 7.2, 1.5 | [task-7.7-screening-api-endpoints.md](../tasks/task-7.7-screening-api-endpoints.md) |
+| 7.8 | Degree D3 Handler | P0 | Not Started | 7.3 | [task-7.8-degree-d3-handler.md](../tasks/task-7.8-degree-d3-handler.md) |
+| 7.9 | Screening Queue | P0 | Not Started | 1.10 | [task-7.9-screening-queue.md](../tasks/task-7.9-screening-queue.md) |
+| 7.10 | Cost Estimator | P1 | Not Started | 7.4 | [task-7.10-cost-estimator.md](../tasks/task-7.10-cost-estimator.md) |
+| 7.11 | Progress Tracker | P1 | Not Started | 7.5 | [task-7.11-progress-tracker.md](../tasks/task-7.11-progress-tracker.md) |
 
 ## Key Workflows
 
