@@ -97,6 +97,22 @@ from elile.risk.trends import (
     TrendAnalyzerConfig,
     VelocityMetrics,
 )
+from elile.risk.thresholds import (
+    BreachSeverity,
+    CONSERVATIVE_THRESHOLDS,
+    create_threshold_manager,
+    LENIENT_THRESHOLDS,
+    ROLE_THRESHOLD_TEMPLATES,
+    STANDARD_THRESHOLDS,
+    ThresholdAction,
+    ThresholdBreach,
+    ThresholdConfig,
+    ThresholdHistory,
+    ThresholdManager,
+    ThresholdManagerConfig,
+    ThresholdScope,
+    ThresholdSet,
+)
 
 __all__ = [
     # Analyzer
@@ -189,4 +205,19 @@ __all__ = [
     "RiskTrajectory",
     "PredictionConfidence",
     "PortfolioRiskLevel",
+    # Risk Thresholds
+    "ThresholdManager",
+    "create_threshold_manager",
+    "ThresholdManagerConfig",
+    "ThresholdSet",
+    "ThresholdConfig",
+    "ThresholdBreach",
+    "ThresholdHistory",
+    "ThresholdScope",
+    "BreachSeverity",
+    "ThresholdAction",
+    "STANDARD_THRESHOLDS",
+    "CONSERVATIVE_THRESHOLDS",
+    "LENIENT_THRESHOLDS",
+    "ROLE_THRESHOLD_TEMPLATES",
 ]
