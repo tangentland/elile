@@ -76,6 +76,17 @@ from elile.screening.tier_router import (
     create_tier_router,
     create_default_data_sources,
 )
+from elile.screening.state_manager import (
+    InMemoryStateStore,
+    ProgressEvent,
+    ProgressEventType,
+    ScreeningPhase,
+    ScreeningState,
+    ScreeningStateManager,
+    StateManagerConfig,
+    StateStore,
+    create_state_manager,
+)
 
 __all__ = [
     # Orchestrator
@@ -102,6 +113,16 @@ __all__ = [
     "RoutingResult",
     "create_tier_router",
     "create_default_data_sources",
+    # State Manager
+    "ScreeningStateManager",
+    "StateManagerConfig",
+    "ScreeningState",
+    "ScreeningPhase",
+    "ProgressEvent",
+    "ProgressEventType",
+    "StateStore",
+    "InMemoryStateStore",
+    "create_state_manager",
     # Request/Response models
     "ScreeningRequest",
     "ScreeningRequestCreate",
