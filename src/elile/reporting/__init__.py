@@ -39,7 +39,7 @@ from elile.reporting.report_generator import (
     ReportGenerator,
     create_report_generator,
 )
-from elile.reporting.templates import (
+from elile.reporting.template_definitions import (
     ReportTemplate,
     TemplateRegistry,
     create_template_registry,

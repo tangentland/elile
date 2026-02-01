@@ -20,7 +20,7 @@ from pydantic import BaseModel, Field
 
 from elile.core.context import RequestContext, get_current_context
 from elile.core.logging import get_logger
-from elile.reporting.templates import ReportTemplate, TemplateRegistry, create_template_registry
+from elile.reporting.template_definitions import ReportTemplate, TemplateRegistry, create_template_registry
 from elile.reporting.types import (
     GeneratedReport,
     GeneratedReportMetadata,

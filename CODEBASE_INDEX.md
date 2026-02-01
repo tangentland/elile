@@ -1910,8 +1910,10 @@ tests/
 | `src/elile/screening/result_compiler.py` | ResultCompiler, CompilerConfig, CompiledResult, FindingsSummary, CategorySummary, InvestigationSummary, SARSummary, ConnectionSummary, SummaryFormat, create_result_compiler | Task 7.6 |
 | `src/elile/reporting/__init__.py` | Reporting module exports | Task 8.1 |
 | `src/elile/reporting/types.py` | ReportPersona, OutputFormat, RedactionLevel, ReportSection, DisclosureType, GeneratedReport, GeneratedReportMetadata, ReportContent, ReportRequest, FieldRule, BrandingConfig, LayoutConfig | Task 8.1 |
-| `src/elile/reporting/templates.py` | ReportTemplate, TemplateRegistry, create_template_registry | Task 8.1 |
+| `src/elile/reporting/template_definitions.py` | ReportTemplate, TemplateRegistry, create_template_registry | Task 8.1 |
 | `src/elile/reporting/report_generator.py` | ReportGenerator, GeneratorConfig, create_report_generator | Task 8.1 |
+| `src/elile/reporting/templates/__init__.py` | Templates package exports, re-exports from template_definitions | Task 8.2 |
+| `src/elile/reporting/templates/hr_summary.py` | HRSummaryBuilder, HRSummaryConfig, HRSummaryContent, RiskAssessmentDisplay, FindingIndicator, CategoryScore, CategoryStatus, RecommendedAction | Task 8.2 |
 
 ## Architecture References
 

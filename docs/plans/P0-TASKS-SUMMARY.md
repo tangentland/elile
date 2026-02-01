@@ -5,8 +5,8 @@
 This document summarizes all P0 (Critical) tasks across 12 phases. P0 tasks are required for basic screening operations and form the critical path for MVP delivery.
 
 **Total P0 Tasks**: 76 tasks
-**Completed**: 59 tasks (Phases 1-7 P0, Phase 8.1)
-**Remaining**: 17 tasks
+**Completed**: 60 tasks (Phases 1-7 P0, Phase 8.1-8.2)
+**Remaining**: 16 tasks
 
 ## Task Status by Phase
 
@@ -111,10 +111,10 @@ This document summarizes all P0 (Critical) tasks across 12 phases. P0 tasks are 
 | Task | Name | Status | Dependencies |
 |------|------|--------|--------------|
 | 8.1 | Report Generator Framework | ✅ Complete | 7.6 |
-| 8.2 | Summary Report (HR) | ⏳ Pending | 8.1 |
+| 8.2 | Summary Report (HR) | ✅ Complete | 8.1 |
 | 8.3 | Audit Report (Compliance) | ⏳ Pending | 8.1 |
-| 8.4 | Investigation Report (Security) | ⏳ Pending | 8.1 |
-**Status: 1/4 Complete**
+| 8.6 | Disclosure Report (Subject) | ⏳ Pending | 8.1 |
+**Status: 2/4 Complete**
 
 ### Phase 9 - Monitoring & Vigilance (4 P0 tasks)
 | Task | Name | Status | Dependencies |
@@ -170,11 +170,11 @@ Phase 10 (Integration)┘
 
 ## Next P0 Tasks
 
-Task 8.1 (Report Generator Framework) is complete. The next P0 tasks are:
+Tasks 8.1 and 8.2 are complete. The next P0 tasks are:
 
-1. **Task 8.2**: Summary Report - HR (depends on 8.1) ← **NEXT**
-2. **Task 8.3**: Audit Report - Compliance (depends on 8.1)
-3. **Task 8.4**: Investigation Report - Security (depends on 8.1)
+1. **Task 8.3**: Audit Report - Compliance (depends on 8.1) ← **NEXT**
+2. **Task 8.6**: Disclosure Report - Subject (depends on 8.1)
+3. **Task 8.8**: Report Templates (depends on 8.1-8.7)
 
 ---
 
