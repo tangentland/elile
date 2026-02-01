@@ -22,6 +22,14 @@ from elile.risk.finding_classifier import (
     create_finding_classifier,
 )
 from elile.risk.inconsistency import InconsistencyAnalyzer
+from elile.risk.pattern_recognizer import (
+    create_pattern_recognizer,
+    Pattern,
+    PatternRecognizer,
+    PatternSummary,
+    PatternType,
+    RecognizerConfig,
+)
 from elile.risk.risk_scorer import (
     Recommendation,
     RiskLevel,
@@ -54,6 +62,13 @@ __all__ = [
     "DeceptionAssessment",
     "ANOMALY_TYPE_SEVERITY",
     "DECEPTION_LIKELIHOOD",
+    # Pattern Recognizer
+    "PatternRecognizer",
+    "create_pattern_recognizer",
+    "RecognizerConfig",
+    "Pattern",
+    "PatternSummary",
+    "PatternType",
     # Risk Scorer
     "RiskScorer",
     "create_risk_scorer",
