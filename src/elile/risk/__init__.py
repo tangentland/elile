@@ -11,6 +11,20 @@ from elile.risk.anomaly_detector import (
     DECEPTION_LIKELIHOOD,
     DetectorConfig,
 )
+from elile.risk.connection_analyzer import (
+    AnalyzerConfig,
+    ConnectionAnalysisResult,
+    ConnectionAnalyzer,
+    ConnectionEdge,
+    ConnectionGraph,
+    ConnectionNode,
+    ConnectionRiskType,
+    RELATION_RISK_FACTOR,
+    RISK_DECAY_PER_HOP,
+    RiskPropagationPath,
+    STRENGTH_MULTIPLIER,
+    create_connection_analyzer,
+)
 from elile.risk.finding_classifier import (
     CATEGORY_KEYWORDS,
     ClassificationResult,
@@ -95,4 +109,17 @@ __all__ = [
     "CATEGORY_KEYWORDS",
     "SUBCATEGORY_KEYWORDS",
     "ROLE_RELEVANCE_MATRIX",
+    # Connection Analyzer
+    "ConnectionAnalyzer",
+    "create_connection_analyzer",
+    "AnalyzerConfig",
+    "ConnectionAnalysisResult",
+    "ConnectionGraph",
+    "ConnectionNode",
+    "ConnectionEdge",
+    "ConnectionRiskType",
+    "RiskPropagationPath",
+    "RISK_DECAY_PER_HOP",
+    "STRENGTH_MULTIPLIER",
+    "RELATION_RISK_FACTOR",
 ]

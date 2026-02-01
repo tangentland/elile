@@ -1418,6 +1418,111 @@ print(f"Overall score: {assessment.overall_score}")
 | high | 0.5-0.75 | Significant deception risk |
 | critical | 0.75-1.0 | Strong deception indicators |
 
+### Pattern Recognizer
+
+Identifies behavioral patterns in findings including escalation, frequency, and cross-domain patterns:
+
+```python
+from elile.risk import (
+    PatternRecognizer,
+    Pattern,
+    PatternSummary,
+    PatternType,
+    RecognizerConfig,
+    create_pattern_recognizer,
+)
+
+# Create recognizer
+recognizer = create_pattern_recognizer()
+
+# Recognize patterns in findings
+patterns = recognizer.recognize_patterns(findings)
+
+for pattern in patterns:
+    print(f"{pattern.pattern_type.value}: {pattern.description}")
+    print(f"Severity: {pattern.severity}, Confidence: {pattern.confidence}")
+
+# Get pattern summary
+summary = recognizer.summarize_patterns(patterns, findings)
+print(f"Risk score: {summary.risk_score}")
+print(f"Key concerns: {summary.key_concerns}")
+```
+
+### Pattern Types
+
+| Category | Types |
+|----------|-------|
+| Escalation | severity_escalation, frequency_escalation |
+| Frequency | burst_activity, recurring_issues, periodic_pattern |
+| Cross-domain | multi_category, systemic_issues, correlated_findings |
+| Temporal | timeline_cluster, dormant_period, recent_concentration |
+| Behavioral | repeat_offender, progressive_degradation, improvement_trend |
+
+### Connection Analyzer
+
+Analyzes entity connections and network risk for D2/D3 investigations:
+
+```python
+from elile.risk import (
+    ConnectionAnalyzer,
+    ConnectionAnalysisResult,
+    ConnectionGraph,
+    AnalyzerConfig,
+    create_connection_analyzer,
+)
+from elile.agent.state import SearchDegree
+
+# Create analyzer
+analyzer = create_connection_analyzer()
+
+# Analyze connections
+result = analyzer.analyze_connections(
+    subject_entity=subject,
+    discovered_entities=entities,
+    relations=relations,
+    degree=SearchDegree.D2,
+)
+
+print(f"Total propagated risk: {result.total_propagated_risk:.2f}")
+print(f"Risk connections: {len(result.risk_connections_found)}")
+print(f"Highest risk: {result.highest_connection_risk.value}")
+
+# Get visualization data for graph rendering
+viz_data = analyzer.get_visualization_data(result)
+# Returns: {nodes: [...], edges: [...], metadata: {...}}
+
+# Analyze from NetworkProfile
+result = analyzer.analyze_from_network_profile(
+    network_profile=profile,
+    degree=SearchDegree.D3,
+)
+```
+
+### Connection Risk Types
+
+| Category | Types |
+|----------|-------|
+| Regulatory | sanctions_connection, pep_connection, watchlist_connection |
+| Structural | shell_company, circular_ownership, opaque_structure |
+| Behavioral | frequent_entity_changes, rapid_network_growth, unusual_concentration |
+| Association | criminal_association, fraud_association, high_risk_industry, adverse_media_association |
+
+### Risk Propagation
+
+Risk propagates through network connections with decay factors:
+- **CRITICAL**: 70% retained per hop
+- **HIGH**: 60% retained per hop
+- **MODERATE**: 50% retained per hop
+- **LOW**: 30% retained per hop
+
+Connection strength and relation type affect propagation:
+- **OWNERSHIP**: 100% risk factor
+- **FINANCIAL**: 95% risk factor
+- **BUSINESS/POLITICAL**: 90% risk factor
+- **FAMILY/LEGAL**: 80% risk factor
+- **EMPLOYMENT**: 60% risk factor
+- **SOCIAL/EDUCATIONAL**: 20-30% risk factor
+
 ## Key Enums
 
 ### Service Configuration (`src/elile/agent/state.py`)

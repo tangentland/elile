@@ -1042,7 +1042,7 @@ Search-Assess-Refine loop, query planning, result assessment, refinement.
 
 ## Phase 6: Risk Analysis (P0 - Critical)
 
-**Status**: 🟡 In Progress (5/12 tasks complete)
+**Status**: 🟡 In Progress (6/12 tasks complete)
 **Dependencies**: Phase 5
 
 Risk scoring, anomaly detection, pattern recognition, connection analysis.
@@ -1176,6 +1176,34 @@ Risk scoring, anomaly detection, pattern recognition, connection analysis.
 - `src/elile/risk/pattern_recognizer.py` - Pattern recognizer implementation
 - `src/elile/risk/__init__.py` - Updated exports
 - `tests/unit/test_pattern_recognizer.py` - Unit tests
+
+---
+
+#### ✅ Task 6.6: Connection Analyzer
+**Priority**: P0
+**Status**: Complete
+**Completed**: 2026-02-01
+**Dependencies**: Task 5.14 (Network Phase Handler)
+
+**Deliverables**:
+- ✅ ConnectionAnalyzer for entity network risk analysis
+- ✅ ConnectionGraph with nodes and edges representation
+- ✅ ConnectionNode with intrinsic/propagated/total risk scores
+- ✅ ConnectionEdge with relation type and strength
+- ✅ RiskPropagationPath for tracking risk through network
+- ✅ ConnectionRiskType enum (14 risk types: sanctions, PEP, shell company, etc.)
+- ✅ Risk propagation calculation with decay factors per hop
+- ✅ Centrality metrics (degree, betweenness)
+- ✅ D2/D3 analysis with depth-based entity limits
+- ✅ Visualization data generation for graph rendering
+- ✅ Integration with NetworkProfile from investigation phase
+- ✅ AnalyzerConfig for customizable analysis behavior
+- ✅ 50 unit tests passing
+
+**Key Files**:
+- `src/elile/risk/connection_analyzer.py` - Connection analyzer implementation
+- `src/elile/risk/__init__.py` - Updated exports
+- `tests/unit/test_connection_analyzer.py` - Unit tests
 
 ---
 
@@ -1484,7 +1512,15 @@ Task 6.5 (Pattern Recognizer) complete:
 - PatternSummary for overall analysis
 - 36 unit tests
 
-Next task: Task 6.6 - Connection Analyzer
+Task 6.6 (Connection Analyzer) complete:
+- ConnectionAnalyzer for entity network risk analysis
+- ConnectionGraph, ConnectionNode, ConnectionEdge for graph representation
+- Risk propagation through network with decay factors
+- ConnectionRiskType enum (14 types: sanctions, PEP, shell company, etc.)
+- Centrality metrics and visualization data generation
+- 50 unit tests
+
+Next task: Task 6.7 - Risk Aggregator
 
 ---
 
