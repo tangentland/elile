@@ -135,6 +135,15 @@ from elile.investigation.iteration_controller import (
     IterationDecision,
     create_iteration_controller,
 )
+from elile.investigation.sar_orchestrator import (
+    InvestigationResult,
+    OrchestratorConfig,
+    OrchestratorPhase,
+    ProgressEvent,
+    SARLoopOrchestrator,
+    TypeCycleResult,
+    create_sar_orchestrator,
+)
 
 __all__ = [
     # State machine
@@ -157,6 +166,14 @@ __all__ = [
     "CompletionReason",
     # Constants
     "FOUNDATION_TYPES",
+    # SAR orchestrator
+    "SARLoopOrchestrator",
+    "create_sar_orchestrator",
+    "InvestigationResult",
+    "TypeCycleResult",
+    "OrchestratorConfig",
+    "OrchestratorPhase",
+    "ProgressEvent",
     # Query planner
     "QueryPlanner",
     "QueryPlanResult",
