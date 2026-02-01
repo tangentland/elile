@@ -4,9 +4,9 @@
 
 This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks are essential features for production use but are not on the critical MVP path.
 
-**Total P1 Tasks**: 73 tasks
+**Total P1 Tasks**: 74 tasks
 **Completed**: 17 tasks
-**Remaining**: 56 tasks
+**Remaining**: 57 tasks
 
 ## Task Status by Phase
 
@@ -35,7 +35,7 @@ This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks
 | 3.11 | Cross-Screening Index Builder | ⏳ Pending | 3.1 |
 **Status: 1/4 Complete**
 
-### Phase 4 - Data Providers (5 P1 tasks)
+### Phase 4 - Data Providers (6 P1 tasks)
 | Task | Name | Status | Dependencies |
 |------|------|--------|--------------|
 | 4.11 | Sanctions Provider (T1) | ⏳ Pending | 4.4, 4.7 |
@@ -43,7 +43,8 @@ This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks
 | 4.13 | Dark Web Monitoring Provider (T2) | ⏳ Pending | 4.4, 4.7 |
 | 4.14 | OSINT Aggregator Provider (T2) | ⏳ Pending | 4.4, 4.7 |
 | 4.15 | Provider Circuit Breaker | ⏳ Pending | 4.1, 4.6 |
-**Status: 0/5 Complete**
+| 4.16 | LLM Synthesis Provider | ⏳ Pending | 4.1, 4.6, 5.10 |
+**Status: 0/6 Complete**
 
 ### Phase 5 - Investigation Engine (6 P1 tasks)
 | Task | Name | Status | Dependencies |
@@ -153,7 +154,7 @@ This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks
 | 1 | 4 | 4 | 0 |
 | 2 | 2 | 2 | 0 |
 | 3 | 4 | 1 | 3 |
-| 4 | 5 | 0 | 5 |
+| 4 | 6 | 0 | 6 |
 | 5 | 6 | 6 | 0 |
 | 6 | 4 | 4 | 0 |
 | 7 | 4 | 0 | 4 |
@@ -162,7 +163,7 @@ This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks
 | 10 | 6 | 0 | 6 |
 | 11 | 9 | 0 | 9 |
 | 12 | 15 | 0 | 15 |
-| **Total** | **73** | **17** | **56** |
+| **Total** | **74** | **17** | **57** |
 
 *Note: Task 6.12 (Risk Dashboard) is P2, not P1.*
 

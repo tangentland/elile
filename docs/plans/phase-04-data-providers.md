@@ -35,6 +35,7 @@ Phase 4 implements the provider gateway abstraction, mock providers for testing,
 | 4.13 | Regulatory/License Provider (FINRA/State Boards) | P1 | Not Started | 4.1 | [task-4.13-regulatory-provider.md](../tasks/task-4.13-regulatory-provider.md) |
 | 4.14 | Provider Response Normalizer | P0 | Not Started | 4.1 | [task-4.14-response-normalizer.md](../tasks/task-4.14-response-normalizer.md) |
 | 4.15 | Provider Failover Logic | P1 | Not Started | 4.2 | [task-4.15-provider-failover.md](../tasks/task-4.15-provider-failover.md) |
+| 4.16 | LLM Synthesis Provider | P1 | Not Started | 4.1, 4.6, 5.10 | [task-4.16-llm-synthesis-provider.md](../tasks/task-4.16-llm-synthesis-provider.md) |
 
 ## Key Interfaces
 
