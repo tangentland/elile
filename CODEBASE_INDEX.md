@@ -21,6 +21,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 | `src/elile/search/` | Search query building and execution | `SearchEngine`, `QueryBuilder` |
 | `src/elile/risk/` | Risk analysis and scoring | `RiskScorer`, `FindingClassifier`, `SeverityCalculator`, `AnomalyDetector` |
 | `src/elile/screening/` | End-to-end screening workflow orchestration | `ScreeningOrchestrator`, `ScreeningRequest`, `ScreeningResult` |
+| `src/elile/reporting/` | Persona-specific report generation | `ReportGenerator`, `TemplateRegistry`, `ReportPersona`, `OutputFormat` |
 | `src/elile/utils/` | Shared utilities and base exceptions | `ElileError` |
 
 ## API Layer (`src/elile/api/`)
@@ -1907,6 +1908,10 @@ tests/
 | `src/elile/screening/tier_router.py` | TierRouter, TierRouterConfig, TierCapabilities, DataSourceSpec, DataSourceTier, RoutingResult, create_tier_router, create_default_data_sources | Task 7.4 |
 | `src/elile/screening/state_manager.py` | ScreeningStateManager, StateManagerConfig, ScreeningState, ScreeningPhase, ProgressEvent, ProgressEventType, StateStore, InMemoryStateStore, create_state_manager | Task 7.5 |
 | `src/elile/screening/result_compiler.py` | ResultCompiler, CompilerConfig, CompiledResult, FindingsSummary, CategorySummary, InvestigationSummary, SARSummary, ConnectionSummary, SummaryFormat, create_result_compiler | Task 7.6 |
+| `src/elile/reporting/__init__.py` | Reporting module exports | Task 8.1 |
+| `src/elile/reporting/types.py` | ReportPersona, OutputFormat, RedactionLevel, ReportSection, DisclosureType, GeneratedReport, GeneratedReportMetadata, ReportContent, ReportRequest, FieldRule, BrandingConfig, LayoutConfig | Task 8.1 |
+| `src/elile/reporting/templates.py` | ReportTemplate, TemplateRegistry, create_template_registry | Task 8.1 |
+| `src/elile/reporting/report_generator.py` | ReportGenerator, GeneratorConfig, create_report_generator | Task 8.1 |
 
 ## Architecture References
 

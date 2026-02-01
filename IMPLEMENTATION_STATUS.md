@@ -1377,10 +1377,36 @@ Pre-employment screening workflow, degree support (D1-D3), tier selection.
 
 ## Phase 8: Reporting System (P1 - High)
 
-**Status**: 🔴 Not Started
+**Status**: 🟡 In Progress (1/10 tasks complete)
 **Dependencies**: Phase 7
 
 Six report types (Summary, Audit, Investigation, Case File, Disclosure, Portfolio).
+
+### Completed Tasks
+
+#### ✅ Task 8.1: Report Generator Framework
+**Priority**: P0
+**Status**: Complete
+**Completed**: 2026-02-01
+**Tag**: `phase8/task-8.1`
+**Dependencies**: Task 7.6
+
+**Deliverables**:
+- ✅ ReportGenerator class for persona-specific report generation
+- ✅ TemplateRegistry with default templates for all 6 personas
+- ✅ ReportTemplate with field visibility, redaction, and aggregation rules
+- ✅ Support for PDF, JSON, HTML output formats
+- ✅ RedactionLevel enum (NONE, MINIMAL, STANDARD, STRICT)
+- ✅ ReportPersona enum (HR_MANAGER, COMPLIANCE, SECURITY, INVESTIGATOR, SUBJECT, EXECUTIVE)
+- ✅ FCRA disclosure support for Subject persona
+- ✅ 51 unit tests
+
+**Key Files**:
+- `src/elile/reporting/__init__.py` - Module exports
+- `src/elile/reporting/types.py` - Enums, data models, error types
+- `src/elile/reporting/templates.py` - ReportTemplate, TemplateRegistry
+- `src/elile/reporting/report_generator.py` - ReportGenerator class
+- `tests/unit/test_report_generator.py` - Unit tests
 
 ---
 
@@ -1428,7 +1454,7 @@ Performance optimization, security hardening, compliance certification, document
 | Phase 1-5 | 44 | 44 | ✅ |
 | Phase 6 | 7 | 7 | ✅ |
 | Phase 7 | 7 | 7 | ✅ |
-| Phase 8 | 4 | 0 | **NEXT** |
+| Phase 8 | 4 | 1 | **IN PROGRESS** |
 | Phase 9 | 4 | 0 | Pending |
 | Phase 10 | 4 | 0 | Pending |
 | Phase 11 | 2 | 0 | Pending |

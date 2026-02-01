@@ -19,7 +19,7 @@ Phase 8 implements all 6 persona-specific report types, PDF generation, locale-b
 
 | Seq | Task Name | Priority | Status | Dependencies | Plan Document |
 |-----|-----------|----------|--------|--------------|---------------|
-| 8.1 | Report Template System | P0 | Not Started | Phase 7 | [task-8.1-report-templates.md](../tasks/task-8.1-report-templates.md) |
+| 8.1 | Report Generator Framework | P0 | Complete | Phase 7 | [task-8.1-report-generator-framework.md](../tasks/task-8.1-report-generator-framework.md) |
 | 8.2 | Persona Filter Engine | P0 | Not Started | 8.1 | [task-8.2-persona-filters.md](../tasks/task-8.2-persona-filters.md) |
 | 8.3 | Security Investigation Report | P1 | Not Started | 8.1, 6.7 | [task-8.3-security-report.md](../tasks/task-8.3-security-report.md) |
 | 8.4 | Investigator Case File | P1 | Not Started | 8.1 | [task-8.4-case-file.md](../tasks/task-8.4-case-file.md) |
