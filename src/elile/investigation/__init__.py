@@ -128,11 +128,24 @@ from elile.investigation.sar_machine import (
     SARStateMachine,
     create_sar_machine,
 )
+from elile.investigation.iteration_controller import (
+    ControllerConfig,
+    DecisionType,
+    IterationController,
+    IterationDecision,
+    create_iteration_controller,
+)
 
 __all__ = [
     # State machine
     "SARStateMachine",
     "create_sar_machine",
+    # Iteration controller
+    "IterationController",
+    "create_iteration_controller",
+    "IterationDecision",
+    "DecisionType",
+    "ControllerConfig",
     # Configuration
     "SARConfig",
     # State models
