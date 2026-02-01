@@ -136,38 +136,75 @@ src/elile/
 **Never explore blindly** - the index documents all modules, classes, and their purposes.
 
 ## Task Completion Workflow
-**IMPORTANT**: To determine the next task consult IMPLEMENTATION_STATUS.md**
 
-**IMPORTANT**: After completing each implementation task:
+**After completing each implementation task:**
 
-1. **Update CODEBASE_INDEX.md** with new module/class documentation
-2. **Update IMPLEMENTATION_STATUS.md** with task completion status
-3. **Update /docs/plans/phase-NN-description.md** with task completion status
-3. **Save implementation plan** to `implementation_plans/task-X.Y-description.md` documenting:
+1. **Update documentation**:
+   - `CODEBASE_INDEX.md` - Add new module/class documentation
+   - `IMPLEMENTATION_STATUS.md` - Mark task complete, update counts
+   - `docs/plans/phase-NN-*.md` - Update task status in phase plan
+
+2. **Save implementation plan** to `implementation_plans/task-X.Y-description.md`:
    - Overview and requirements
    - Files created/modified
    - Key patterns used
    - Test results
-5. **Update task tracker** if using tasks
-6. **Commit, merge, and tag** following branching rules, DO NOT DELETE feature branches
-7. **Automatically proceed to next task** - Once all documentation is updated, immediately begin the next task in sequence without waiting for user confirmation
 
-## Continuous Implementation Mode
+3. **Commit, merge, and tag**:
+   - Commit with descriptive message
+   - Merge feature branch to main
+   - Tag as `phaseN/task-X.Y`
+   - **DO NOT delete feature branches**
 
-When implementing tasks from `docs/tasks/`, operate in continuous mode:
+4. **Exit and emit handoff** - Print session handoff to stdout and exit:
 
-1. **Complete current task** - Implement, test, and document
-2. **Record completion** - Update CODEBASE_INDEX.md, IMPLEMENTATION_STATUS.md, and create implementation plan
-3. **Identify next task** - Check IMPLEMENTATION_STATUS.md for next pending task in the current phase
-4. **Proceed immediately** - Read the next task definition from `docs/tasks/task-X.Y-*.md` and begin implementation
-5. **Repeat** - Continue until phase is complete or user interrupts
+```
+---
+Session Handoff for Task X.Y
 
-**Do not stop to ask** "Should I proceed?" or "Ready for the next task?" - just continue working.
+Completed:
+- [Brief description of what was implemented]
+- [Key files created/modified]
+- [Number of tests added]
 
-**When to pause**:
+Git State:
+- Branch: main
+- Latest tag: phaseN/task-X.Y
+- Total tests: NNNN
+
+Next Task: Task X.Z - [Task Name]
+- Location: docs/tasks/task-X.Z-description.md
+- Dependencies: [list any dependencies]
+
+User Preferences:
+- [Any preferences learned during session, e.g., "don't delete branches"]
+
+Notes:
+- [Any blockers, pending decisions, or context for next session]
+---
+```
+
+This ensures each task gets a fresh context window while preserving critical handoff information.
+
+## Session Start
+
+When starting a new session after a handoff:
+
+1. **Read the handoff** provided by the user (from previous session's stdout)
+2. **Verify git state** matches handoff (branch, tag)
+3. **Read the next task** from `docs/tasks/task-X.Y-*.md`
+4. **Check dependencies** in `IMPLEMENTATION_STATUS.md`
+5. **Create feature branch** and begin implementation
+
+## When to Pause Mid-Task
+
+Only pause within a task if:
 - Blocking dependency not yet implemented
-- Ambiguous requirements that need clarification
+- Ambiguous requirements need user clarification
 - User explicitly requests a pause
+- Critical decision requires user input
+
+**Do not ask** "Should I proceed?" or "Ready for the next task?" - complete the task, emit handoff, and exit.
 
 ## Planning & Task Documentation
 
