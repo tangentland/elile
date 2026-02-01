@@ -127,7 +127,7 @@ src/elile/
 - Locate test files and patterns
 - Reduce context overhead by reading the index instead of exploring multiple files
 
-**Workflow**:
+**General Workflow Instructions**:
 1. Read `CODEBASE_INDEX.md` first when starting work on any task
 2. Use the index to identify which specific files to read
 3. Only read files directly when you need implementation details not in the index
@@ -135,30 +135,46 @@ src/elile/
 
 **Never explore blindly** - the index documents all modules, classes, and their purposes.
 
+## Session Start
+
+When starting a new session after a handoff:
+
+1. **Read handoff.md** provided by the user (from previous session's stdout)
+2. **Read docs/architecture/architecture.md** to understand the architecture
+2. **Verify git state** matches handoff (branch, tag)
+3. **Read the phase description** from `docs/plans/phase-NN-*.md`
+4. **Read the next task** from `docs/tasks/task-X.Y-*.md`
+5. **Check dependencies** in `IMPLEMENTATION_STATUS.md`
+6. **Create feature branch** and begin implementation
+
+## When to Pause Mid-Task
+
+Only pause within a task if:
+- Blocking dependency not yet implemented
+- Ambiguous requirements need user clarification
+- User explicitly requests a pause
+- Critical decision requires user input
+
+**Do not ask** "Should I proceed?" or "Ready for the next task?" - follow the Task Completion Workflow.
+
 ## Task Completion Workflow
 
-**After completing each implementation task:**
-
-1. **Update documentation**:
+**IMPORTANT** Operate in Continuous Implementation Mode:
+1. **Identify next task** 
+   - Check handoff.md for next pending task in the current phase
+   - Or, check IMPLEMENTATION_STATUS.md for next pending task in the current phase
+2. **Complete current task** - Implement, test, and document
+3. **Update documentation**:
    - `CODEBASE_INDEX.md` - Add new module/class documentation
    - `IMPLEMENTATION_STATUS.md` - Mark task complete, update counts
    - `docs/plans/phase-NN-*.md` - Update task status in phase plan
-
-2. **Save implementation plan** to `implementation_plans/task-X.Y-description.md`:
+4. **Save implementation plan** to `implementation_plans/task-X.Y-description.md`:
    - Overview and requirements
    - Files created/modified
    - Key patterns used
    - Test results
-
-3. **Commit, merge, and tag**:
-   - Commit with descriptive message
-   - Merge feature branch to main
-   - Tag as `phaseN/task-X.Y`
-   - **DO NOT delete feature branches**
-   
-4. **Delete ./handoff.md**
-
-5. **Output session handoff** to `./handoff.md` using this format:
+5. **Delete ./handoff.md**
+6. **Save session handoff** to `./handoff.md` using this format:
 ```
 ---
 Session Handoff for:
@@ -186,33 +202,14 @@ Notes:
 - [Any blockers, pending decisions, or context for next session]
 ---
 ```
-
-6. **Check context window utilization** 
+7. **Commit, merge, and tag**:
+   - Commit with descriptive message
+   - Merge feature branch to main
+   - Tag as `phaseN/task-X.Y`
+   - **DO NOT delete feature branches**
+8. **Check context window utilization** 
    - If the context window is above 75% capacity, exit/quit.  This insures a clean context window while preserving critical handoff information.
-
-7. **Move on to the next task**
-
-## Session Start
-
-When starting a new session after a handoff:
-
-1. **Read handoff.md** provided by the user (from previous session's stdout)
-2. **Read docs/architecture/architecture.md** to understand the architecture
-2. **Verify git state** matches handoff (branch, tag)
-3. **Read the phase description** from `docs/plans/phase-NN-*.md`
-4. **Read the next task** from `docs/tasks/task-X.Y-*.md`
-5. **Check dependencies** in `IMPLEMENTATION_STATUS.md`
-6. **Create feature branch** and begin implementation
-
-## When to Pause Mid-Task
-
-Only pause within a task if:
-- Blocking dependency not yet implemented
-- Ambiguous requirements need user clarification
-- User explicitly requests a pause
-- Critical decision requires user input
-
-**Do not ask** "Should I proceed?" or "Ready for the next task?" - follow the Task Completion Workflow.
+9. **Move on to the next task**
 
 ## Planning & Task Documentation
 
