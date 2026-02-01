@@ -83,7 +83,7 @@ black . --line-length 100 --target-version py314
 ```bash
 ruff check .
 ```
-
+q
 ### Type Checking
 ```bash
 mypy src/elile
@@ -91,7 +91,7 @@ mypy src/elile
 
 ### Testing
 ```bash
-pytest -v
+uv run pytest -v
 ```
 
 ## Project Structure
@@ -136,18 +136,123 @@ src/elile/
 **Never explore blindly** - the index documents all modules, classes, and their purposes.
 
 ## Task Completion Workflow
+**IMPORTANT**: To determine the next task consult IMPLEMENTATION_STATUS.md**
 
 **IMPORTANT**: After completing each implementation task:
 
 1. **Update CODEBASE_INDEX.md** with new module/class documentation
 2. **Update IMPLEMENTATION_STATUS.md** with task completion status
+3. **Update /docs/plans/phase-NN-description.md** with task completion status
 3. **Save implementation plan** to `implementation_plans/task-X.Y-description.md` documenting:
    - Overview and requirements
    - Files created/modified
    - Key patterns used
    - Test results
-4. **Commit, merge, and tag** following branching rules
 5. **Update task tracker** if using tasks
+6. **Commit, merge, and tag** following branching rules, DO NOT DELETE feature branches
+7. **Automatically proceed to next task** - Once all documentation is updated, immediately begin the next task in sequence without waiting for user confirmation
+
+## Continuous Implementation Mode
+
+When implementing tasks from `docs/tasks/`, operate in continuous mode:
+
+1. **Complete current task** - Implement, test, and document
+2. **Record completion** - Update CODEBASE_INDEX.md, IMPLEMENTATION_STATUS.md, and create implementation plan
+3. **Identify next task** - Check IMPLEMENTATION_STATUS.md for next pending task in the current phase
+4. **Proceed immediately** - Read the next task definition from `docs/tasks/task-X.Y-*.md` and begin implementation
+5. **Repeat** - Continue until phase is complete or user interrupts
+
+**Do not stop to ask** "Should I proceed?" or "Ready for the next task?" - just continue working.
+
+**When to pause**:
+- Blocking dependency not yet implemented
+- Ambiguous requirements that need clarification
+- User explicitly requests a pause
+
+## Planning & Task Documentation
+
+### Document Hierarchy
+
+```
+docs/plans/vast-hatching-hickey.md          <- ROOT: Master implementation plan
+├── docs/plans/P0-TASKS-SUMMARY.md          <- Priority summaries by P-level
+├── docs/plans/P1-TASKS-SUMMARY.md
+├── docs/plans/P2-TASKS-SUMMARY.md
+├── docs/plans/phase-01-core-infrastructure.md    <- Phase plans with task lists
+├── docs/plans/phase-02-service-configuration.md
+├── ...
+├── docs/plans/phase-12-production-readiness.md
+└── docs/tasks/task-X.Y-description.md      <- Individual task specifications
+```
+
+### Root Planning Document
+
+**`docs/plans/vast-hatching-hickey.md`** is the master implementation plan containing:
+- All 12 development phases with priorities and dependencies
+- Phase dependency tree (which phases depend on others)
+- Priority definitions (P0-P3)
+- Development principles and task tracking format
+
+**Always start here** to understand the overall implementation roadmap.
+
+### Priority Task Summaries
+
+Task summaries organized by priority level for quick reference:
+
+| Document | Content |
+|----------|---------|
+| `docs/plans/P0-TASKS-SUMMARY.md` | Critical path tasks required for basic screening |
+| `docs/plans/P1-TASKS-SUMMARY.md` | Essential features for production use |
+| `docs/plans/P2-TASKS-SUMMARY.md` | Important but incrementally deliverable |
+| `docs/plans/P3-TASKS-SUMMARY.md` | Nice-to-have features for future iterations |
+
+### Phase Plans
+
+Each phase has a dedicated plan document in `docs/plans/phase-NN-description.md`:
+
+| Phase | Document | Status |
+|-------|----------|--------|
+| 1 | `phase-01-core-infrastructure.md` | Complete |
+| 2 | `phase-02-service-configuration.md` | Complete |
+| 3 | `phase-03-entity-management.md` | Complete |
+| 4 | `phase-04-data-providers.md` | Complete |
+| 5 | `phase-05-investigation-engine.md` | Complete |
+| 6 | `phase-06-risk-analysis.md` | In Progress |
+| 7-12 | `phase-07-*.md` through `phase-12-*.md` | Not Started |
+
+### Task Definitions
+
+Individual task specifications in `docs/tasks/task-X.Y-description.md`:
+
+- **Phase 5**: `task-5.1` through `task-5.16` (Investigation Engine)
+- **Phase 6**: `task-6.1` through `task-6.12` (Risk Analysis)
+- **Phase 7**: `task-7.1` through `task-7.11` (Screening Service)
+- **Phase 8**: `task-8.1` through `task-8.10` (Reporting System)
+- **Phase 9**: `task-9.1` through `task-9.12` (Monitoring & Vigilance)
+- **Phase 10**: `task-10.1` through `task-10.10` (Integration Layer)
+- **Phase 11**: `task-11.1` through `task-11.11` (User Interfaces)
+- **Phase 12**: `task-12.1` through `task-12.19` (Production Readiness)
+
+Each task file includes: overview, dependencies, implementation checklist, key code, testing requirements, and acceptance criteria.
+
+### Task Execution Order
+
+Tasks are executed based on **priority** and **dependencies**:
+
+1. **Priority Order**: P0 (Critical) → P1 (High) → P2 (Medium) → P3 (Low)
+2. **Dependency Order**: Within a priority level, tasks are ordered by their dependencies
+3. **Phase Order**: Phases must respect the dependency tree in the root planning document
+
+**Example execution flow**:
+```
+P0 tasks in Phase 5 (all dependencies met)
+  → P0 tasks in Phase 6 (depends on Phase 5)
+    → P0 tasks in Phase 7 (depends on Phase 6)
+      → P1 tasks in Phase 5-7 (after P0 complete)
+        → P1 tasks in Phase 8-10 (after Phase 7 P0)
+```
+
+**To determine the next task**: Check `IMPLEMENTATION_STATUS.md` for the next pending P0 task with all dependencies satisfied. If all P0 tasks in current phases are complete, move to P1 tasks.
 
 ## Architecture Documentation
 
