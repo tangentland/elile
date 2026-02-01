@@ -13,7 +13,7 @@ from elile.api.middleware import (
     RequestLoggingMiddleware,
     TenantValidationMiddleware,
 )
-from elile.api.routers import health_router
+from elile.api.routers import health_router, v1_router
 from elile.config.settings import Settings, get_settings
 
 
@@ -163,8 +163,8 @@ def _configure_routers(app: FastAPI) -> None:
     # Health check endpoints (no prefix - at root level)
     app.include_router(health_router)
 
-    # Future: Add versioned API routers
-    # app.include_router(v1_router, prefix="/v1")
+    # API v1 routers (screenings, etc.)
+    app.include_router(v1_router)
 
 
 # Convenience for running directly

@@ -1209,7 +1209,7 @@ Risk scoring, anomaly detection, pattern recognition, connection analysis.
 
 ## Phase 7: Screening Service (P0 - Critical)
 
-**Status**: 🟡 In Progress (6/11 tasks complete)
+**Status**: 🟡 In Progress (7/11 tasks complete)
 **Dependencies**: Phase 6
 
 Pre-employment screening workflow, degree support (D1-D3), tier selection.
@@ -1344,6 +1344,33 @@ Pre-employment screening workflow, degree support (D1-D3), tier selection.
 
 ---
 
+#### ✅ Task 7.7: Screening API Endpoints
+**Priority**: P0
+**Status**: Complete
+**Completed**: 2026-02-01
+**Dependencies**: Task 7.1, Task 1.5
+
+**Deliverables**:
+- ✅ POST /v1/screenings/ - Initiate screening with full validation
+- ✅ GET /v1/screenings/{id} - Get screening status and results
+- ✅ DELETE /v1/screenings/{id} - Cancel screening in progress
+- ✅ GET /v1/screenings/ - List screenings with pagination and filtering
+- ✅ ScreeningCreateRequest schema with subject info, locale, tier, consent
+- ✅ ScreeningResponse schema with status, progress, risk score, findings
+- ✅ D3 search degree requires Enhanced tier validation
+- ✅ Date of birth format validation (YYYY-MM-DD)
+- ✅ Tenant isolation with X-Tenant-ID header
+- ✅ UUID type compatibility fixes for uuid_utils vs uuid.UUID
+- ✅ 32 integration tests passing
+
+**Key Files**:
+- `src/elile/api/routers/v1/__init__.py` - v1 router setup
+- `src/elile/api/routers/v1/screening.py` - Screening API endpoints
+- `src/elile/api/schemas/screening.py` - API request/response schemas
+- `tests/integration/test_screening_api.py` - Integration tests
+
+---
+
 ### Pending Tasks
 
 ---
@@ -1408,10 +1435,10 @@ Performance optimization, security hardening, compliance certification, document
 - **Phase 4**: 6/6 tasks (100%) ✅
 - **Phase 5**: 16/16 tasks (100%) ✅
 - **Phase 6**: 11/12 tasks (91.7%)
-- **Phase 7**: 6/11 tasks (54.5%)
+- **Phase 7**: 7/11 tasks (63.6%)
 - **Phase 8-12**: 0/74 tasks (0%)
 
-### Total: 55/141 tasks (39.0%)
+### Total: 56/141 tasks (39.7%)
 
 ---
 
@@ -1420,8 +1447,8 @@ Performance optimization, security hardening, compliance certification, document
 | Category | Tests |
 |----------|-------|
 | Unit Tests | 2020 |
-| Integration Tests | 70 |
-| **Total** | **2090** |
+| Integration Tests | 103 |
+| **Total** | **2123** |
 
 All tests passing as of 2026-02-01.
 

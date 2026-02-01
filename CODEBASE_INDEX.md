@@ -46,6 +46,24 @@ app = create_app()  # Configures all middleware and routers
 | `GET /health/db` | Database connectivity | No |
 | `GET /health/ready` | Full readiness | No |
 
+### Screening API (`/v1/screenings/`)
+| Endpoint | Purpose | Auth Required |
+|----------|---------|---------------|
+| `POST /v1/screenings/` | Initiate a new screening | Yes |
+| `GET /v1/screenings/{id}` | Get screening status and results | Yes |
+| `DELETE /v1/screenings/{id}` | Cancel a screening | Yes |
+| `GET /v1/screenings/` | List screenings (paginated) | Yes |
+
+**Key schemas:**
+- `ScreeningCreateRequest` - Request body for POST (subject info, locale, tier, consent)
+- `ScreeningResponse` - Response with status, progress, risk score, findings
+- `ScreeningListResponse` - Paginated list of screenings
+
+**Validation rules:**
+- D3 search degree requires Enhanced service tier
+- Date of birth must be in YYYY-MM-DD format
+- Subject full_name is required
+
 ## Core Framework (`src/elile/core/`)
 
 ### Request Context

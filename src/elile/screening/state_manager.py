@@ -7,17 +7,17 @@ This module implements state management for screenings, including:
 - Status updates and notifications
 """
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
-from typing import Any, Callable
+from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, Field
 from uuid_utils import uuid7
 
 from elile.screening.types import ScreeningPhaseResult, ScreeningResult, ScreeningStatus
-
 
 # =============================================================================
 # Enums
@@ -124,7 +124,9 @@ class ScreeningState:
                 phase_results[k] = ScreeningPhaseResult(
                     phase_name=v["phase_name"],
                     started_at=datetime.fromisoformat(v["started_at"]),
-                    completed_at=datetime.fromisoformat(v["completed_at"]) if v.get("completed_at") else None,
+                    completed_at=(
+                        datetime.fromisoformat(v["completed_at"]) if v.get("completed_at") else None
+                    ),
                     status=v["status"],
                     error_message=v.get("error_message"),
                     details=v.get("details", {}),
@@ -145,10 +147,22 @@ class ScreeningState:
             max_retries=data.get("max_retries", 3),
             checkpoint_data=data.get("checkpoint_data", {}),
             checkpoint_version=data.get("checkpoint_version", 0),
-            created_at=datetime.fromisoformat(data["created_at"]) if data.get("created_at") else datetime.now(UTC),
-            updated_at=datetime.fromisoformat(data["updated_at"]) if data.get("updated_at") else datetime.now(UTC),
-            started_at=datetime.fromisoformat(data["started_at"]) if data.get("started_at") else None,
-            completed_at=datetime.fromisoformat(data["completed_at"]) if data.get("completed_at") else None,
+            created_at=(
+                datetime.fromisoformat(data["created_at"])
+                if data.get("created_at")
+                else datetime.now(UTC)
+            ),
+            updated_at=(
+                datetime.fromisoformat(data["updated_at"])
+                if data.get("updated_at")
+                else datetime.now(UTC)
+            ),
+            started_at=(
+                datetime.fromisoformat(data["started_at"]) if data.get("started_at") else None
+            ),
+            completed_at=(
+                datetime.fromisoformat(data["completed_at"]) if data.get("completed_at") else None
+            ),
         )
 
 
@@ -238,21 +252,25 @@ class InMemoryStateStore(StateStore):
     """In-memory state store for testing."""
 
     def __init__(self) -> None:
-        self._states: dict[UUID, ScreeningState] = {}
+        # Use string keys to avoid uuid_utils.UUID vs uuid.UUID type mismatch
+        self._states: dict[str, ScreeningState] = {}
 
     async def save(self, screening_id: UUID, state: ScreeningState) -> None:
         """Save screening state."""
         state.updated_at = datetime.now(UTC)
-        self._states[screening_id] = state
+        # Convert to string for consistent key type
+        self._states[str(screening_id)] = state
 
     async def load(self, screening_id: UUID) -> ScreeningState | None:
         """Load screening state."""
-        return self._states.get(screening_id)
+        # Convert to string for lookup
+        return self._states.get(str(screening_id))
 
     async def delete(self, screening_id: UUID) -> bool:
         """Delete screening state."""
-        if screening_id in self._states:
-            del self._states[screening_id]
+        key = str(screening_id)
+        if key in self._states:
+            del self._states[key]
             return True
         return False
 
@@ -263,10 +281,12 @@ class InMemoryStateStore(StateStore):
     ) -> list[ScreeningState]:
         """List states by status."""
         results = []
+        tenant_str = str(tenant_id) if tenant_id else None
         for state in self._states.values():
-            if state.status == status:
-                if tenant_id is None or state.tenant_id == tenant_id:
-                    results.append(state)
+            if state.status == status and (
+                tenant_str is None or str(state.tenant_id) == tenant_str
+            ):
+                results.append(state)
         return results
 
 
@@ -788,11 +808,11 @@ class ScreeningStateManager:
             details=details or {},
         )
 
+        import contextlib
+
         for callback in self._progress_callbacks:
-            try:
+            with contextlib.suppress(Exception):  # Don't let callback errors break the flow
                 callback(event)
-            except Exception:
-                pass  # Don't let callback errors break the flow
 
     # =========================================================================
     # Queries
