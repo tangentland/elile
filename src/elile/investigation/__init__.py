@@ -144,6 +144,18 @@ from elile.investigation.sar_orchestrator import (
     TypeCycleResult,
     create_sar_orchestrator,
 )
+from elile.investigation.checkpoint import (
+    CheckpointConfig,
+    CheckpointData,
+    CheckpointManager,
+    CheckpointReason,
+    CheckpointStatus,
+    CheckpointStorage,
+    InMemoryCheckpointStorage,
+    ResumeResult,
+    ResumeStrategy,
+    create_checkpoint_manager,
+)
 
 __all__ = [
     # State machine
@@ -217,4 +229,15 @@ __all__ = [
     "ScorerConfig",
     "FactorBreakdown",
     "DEFAULT_EXPECTED_FACTS",
+    # Checkpoint manager
+    "CheckpointManager",
+    "create_checkpoint_manager",
+    "CheckpointData",
+    "CheckpointConfig",
+    "CheckpointReason",
+    "CheckpointStatus",
+    "CheckpointStorage",
+    "InMemoryCheckpointStorage",
+    "ResumeResult",
+    "ResumeStrategy",
 ]
