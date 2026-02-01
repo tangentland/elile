@@ -54,12 +54,35 @@ from elile.screening.orchestrator import (
     ScreeningOrchestrator,
     create_screening_orchestrator,
 )
+from elile.screening.degree_handlers import (
+    D1Handler,
+    D1Result,
+    D2Handler,
+    D2Result,
+    D3Handler,
+    D3Result,
+    DegreeHandlerConfig,
+    create_d1_handler,
+    create_d2_handler,
+    create_d3_handler,
+)
 
 __all__ = [
     # Orchestrator
     "ScreeningOrchestrator",
     "create_screening_orchestrator",
     "OrchestratorConfig",
+    # Degree Handlers
+    "D1Handler",
+    "D1Result",
+    "D2Handler",
+    "D2Result",
+    "D3Handler",
+    "D3Result",
+    "DegreeHandlerConfig",
+    "create_d1_handler",
+    "create_d2_handler",
+    "create_d3_handler",
     # Request/Response models
     "ScreeningRequest",
     "ScreeningRequestCreate",
