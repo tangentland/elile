@@ -503,7 +503,7 @@ class ConnectionAnalyzer:
         subject = DiscoveredEntity(
             entity_id=network_profile.entity_id,
             name="Subject",
-            discovery_depth=1,
+            discovery_degree=1,
             entity_type=EntityType.INDIVIDUAL,
         )
 
@@ -623,24 +623,24 @@ class ConnectionAnalyzer:
         # Add discovered entity nodes
         for entity in discovered_entities:
             # Respect limits
-            if entity.discovery_depth == 2 and len(
+            if entity.discovery_degree == 2 and len(
                 [n for n in graph.nodes.values() if n.depth == 2]
             ) >= self.config.max_d2_entities:
                 continue
-            if entity.discovery_depth == 3 and len(
+            if entity.discovery_degree == 3 and len(
                 [n for n in graph.nodes.values() if n.depth == 3]
             ) >= self.config.max_d3_entities:
                 continue
 
             # Skip D3 if not requested
-            if entity.discovery_depth == 3 and degree != SearchDegree.D3:
+            if entity.discovery_degree == 3 and degree != SearchDegree.D3:
                 continue
 
             node = ConnectionNode(
                 entity_id=entity.entity_id,
                 entity=entity,
                 is_subject=False,
-                depth=entity.discovery_depth,
+                depth=entity.discovery_degree,
                 intrinsic_risk=self._entity_risk_to_score(entity.risk_level),
                 risk_level=entity.risk_level,
                 risk_factors=list(entity.risk_factors),

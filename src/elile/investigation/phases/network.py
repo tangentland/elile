@@ -37,6 +37,7 @@ class EntityType(str, Enum):
     """Types of entities discovered in network analysis."""
 
     PERSON = "person"
+    INDIVIDUAL = "person"  # Alias for backwards compatibility
     COMPANY = "company"
     ORGANIZATION = "organization"
     TRUST = "trust"
@@ -155,6 +156,37 @@ class DiscoveredEntity:
     # Additional data
     metadata: dict[str, Any] = field(default_factory=dict)
 
+    @property
+    def discovery_depth(self) -> int:
+        """Alias for discovery_degree (backwards compatibility)."""
+        return self.discovery_degree
+
+    @property
+    def risk_level(self) -> "RiskLevel":
+        """Compute risk level from indicators (backwards compatibility)."""
+        if self.is_sanctioned:
+            return RiskLevel.CRITICAL
+        if self.is_pep:
+            return RiskLevel.HIGH
+        if self.entity_type == EntityType.SHELL_COMPANY:
+            return RiskLevel.HIGH
+        if self.risk_indicators:
+            # Check for high-risk indicators
+            indicators_lower = [r.lower() for r in self.risk_indicators]
+            if any("sanction" in i for i in indicators_lower):
+                return RiskLevel.CRITICAL
+            if any("pep" in i or "criminal" in i for i in indicators_lower):
+                return RiskLevel.HIGH
+            if any("shell" in i or "offshore" in i for i in indicators_lower):
+                return RiskLevel.MODERATE
+            return RiskLevel.LOW
+        return RiskLevel.NONE
+
+    @property
+    def risk_factors(self) -> list[str]:
+        """Alias for risk_indicators (backwards compatibility)."""
+        return self.risk_indicators
+
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -259,6 +291,11 @@ class RiskConnection:
         requires_review: Whether manual review is required.
         confidence: Confidence in risk assessment (0.0-1.0).
         identified_at: When the risk was identified.
+        entity: The risky entity (backwards compat).
+        relation: The relation to the entity (backwards compat).
+        risk_category: Category of risk (backwards compat).
+        risk_description: Human-readable description (backwards compat).
+        recommended_action: Single recommended action (backwards compat).
     """
 
     connection_id: UUID = field(default_factory=uuid7)
@@ -283,6 +320,13 @@ class RiskConnection:
 
     # Timing
     identified_at: datetime = field(default_factory=lambda: datetime.now(UTC))
+
+    # Backwards compatibility fields (used by connection_analyzer)
+    entity: "DiscoveredEntity | None" = None
+    relation: "EntityRelation | None" = None
+    risk_category: str = ""
+    risk_description: str = ""
+    recommended_action: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
@@ -352,6 +396,21 @@ class NetworkProfile:
         self.high_risk_count = sum(
             1 for rc in self.risk_connections if rc.risk_level in (RiskLevel.HIGH, RiskLevel.CRITICAL)
         )
+
+    @property
+    def entity_id(self) -> UUID | None:
+        """Alias for subject_entity_id (backwards compatibility)."""
+        return self.subject_entity_id
+
+    @property
+    def d2_entities(self) -> list[DiscoveredEntity]:
+        """Get D2 (depth 2) entities."""
+        return [e for e in self.entities if e.discovery_degree == 2]
+
+    @property
+    def d3_entities(self) -> list[DiscoveredEntity]:
+        """Get D3 (depth 3) entities."""
+        return [e for e in self.entities if e.discovery_degree == 3]
 
     def get_entity(self, entity_id: UUID) -> DiscoveredEntity | None:
         """Get entity by ID."""

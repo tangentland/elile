@@ -44,6 +44,17 @@ from elile.risk.pattern_recognizer import (
     PatternType,
     RecognizerConfig,
 )
+from elile.risk.risk_aggregator import (
+    AggregatorConfig,
+    AssessmentConfidence,
+    ANOMALY_SEVERITY_WEIGHT,
+    CONNECTION_RISK_WEIGHT,
+    ComprehensiveRiskAssessment,
+    PATTERN_SEVERITY_WEIGHT,
+    RiskAdjustment,
+    RiskAggregator,
+    create_risk_aggregator,
+)
 from elile.risk.risk_scorer import (
     Recommendation,
     RiskLevel,
@@ -90,6 +101,16 @@ __all__ = [
     "RiskScore",
     "RiskLevel",
     "Recommendation",
+    # Risk Aggregator
+    "RiskAggregator",
+    "create_risk_aggregator",
+    "AggregatorConfig",
+    "ComprehensiveRiskAssessment",
+    "RiskAdjustment",
+    "AssessmentConfidence",
+    "PATTERN_SEVERITY_WEIGHT",
+    "ANOMALY_SEVERITY_WEIGHT",
+    "CONNECTION_RISK_WEIGHT",
     # Severity Calculator
     "SeverityCalculator",
     "create_severity_calculator",

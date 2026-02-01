@@ -694,7 +694,7 @@ class TestBatchClassification:
 
         # Finding should not be updated (remains at default values)
         assert findings[0].category is None
-        assert findings[0].relevance_to_role == 0.0  # Default value
+        assert findings[0].relevance_to_role == 0.5  # Default value in Finding dataclass
 
         # But result should have the category
         assert results[0].assigned_category == FindingCategory.CRIMINAL

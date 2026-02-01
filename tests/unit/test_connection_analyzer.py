@@ -1,5 +1,6 @@
 """Unit tests for Connection Analyzer."""
 
+from datetime import UTC, datetime
 from uuid import uuid7
 
 import pytest
@@ -47,8 +48,8 @@ def subject_entity() -> DiscoveredEntity:
         entity_id=uuid7(),
         name="John Smith",
         entity_type=EntityType.INDIVIDUAL,
-        discovery_depth=1,
-        risk_level=RiskLevel.NONE,
+        discovery_degree=1,
+        # risk_level computed from flags
     )
 
 
@@ -60,24 +61,22 @@ def d2_entities() -> list[DiscoveredEntity]:
             entity_id=uuid7(),
             name="Acme Corp",
             entity_type=EntityType.ORGANIZATION,
-            discovery_depth=2,
-            risk_level=RiskLevel.LOW,
-            risk_factors=["large_employer"],
+            discovery_degree=2,
+            risk_indicators=["large_employer"],
         ),
         DiscoveredEntity(
             entity_id=uuid7(),
             name="Jane Doe",
             entity_type=EntityType.INDIVIDUAL,
-            discovery_depth=2,
-            risk_level=RiskLevel.NONE,
+            discovery_degree=2,
         ),
         DiscoveredEntity(
             entity_id=uuid7(),
             name="Bob Johnson",
             entity_type=EntityType.INDIVIDUAL,
-            discovery_depth=2,
-            risk_level=RiskLevel.HIGH,
-            risk_factors=["sanctions_list", "pep"],
+            discovery_degree=2,
+            is_pep=True,
+            risk_indicators=["sanctions_list", "pep"],
         ),
     ]
 
@@ -90,16 +89,16 @@ def d3_entities() -> list[DiscoveredEntity]:
             entity_id=uuid7(),
             name="Global Holdings Ltd",
             entity_type=EntityType.ORGANIZATION,
-            discovery_depth=3,
-            risk_level=RiskLevel.CRITICAL,
-            risk_factors=["shell_company", "offshore_jurisdiction"],
+            discovery_degree=3,
+            is_sanctioned=True,  # CRITICAL risk
+            risk_indicators=["shell_company", "offshore_jurisdiction"],
         ),
         DiscoveredEntity(
             entity_id=uuid7(),
             name="Mary Williams",
             entity_type=EntityType.INDIVIDUAL,
-            discovery_depth=3,
-            risk_level=RiskLevel.NONE,
+            discovery_degree=3,
+            # risk_level computed from flags
         ),
     ]
 
@@ -117,7 +116,7 @@ def relations(
             target_entity_id=d2_entities[0].entity_id,
             relation_type=RelationType.EMPLOYMENT,
             strength=ConnectionStrength.DIRECT,
-            is_current=True,
+            
         ),
         # Subject -> Jane Doe (family)
         EntityRelation(
@@ -125,7 +124,7 @@ def relations(
             target_entity_id=d2_entities[1].entity_id,
             relation_type=RelationType.FAMILY,
             strength=ConnectionStrength.STRONG,
-            is_current=True,
+            
         ),
         # Subject -> Bob Johnson (business partner)
         EntityRelation(
@@ -133,7 +132,7 @@ def relations(
             target_entity_id=d2_entities[2].entity_id,
             relation_type=RelationType.BUSINESS,
             strength=ConnectionStrength.MODERATE,
-            is_current=False,
+            end_date=datetime.now(UTC),  # Not current (has end date)
         ),
     ]
 
@@ -151,7 +150,7 @@ def d3_relations(
             target_entity_id=d3_entities[0].entity_id,
             relation_type=RelationType.OWNERSHIP,
             strength=ConnectionStrength.DIRECT,
-            is_current=True,
+            
         ),
         # Jane Doe -> Mary Williams (social)
         EntityRelation(
@@ -159,7 +158,7 @@ def d3_relations(
             target_entity_id=d3_entities[1].entity_id,
             relation_type=RelationType.SOCIAL,
             strength=ConnectionStrength.WEAK,
-            is_current=True,
+            
         ),
     ]
 
@@ -560,7 +559,7 @@ class TestGraphBuilding:
         subject = DiscoveredEntity(
             entity_id=uuid7(),
             name="Subject",
-            discovery_depth=1,
+            discovery_degree=1,
         )
 
         # Create 5 D2 entities
@@ -568,7 +567,7 @@ class TestGraphBuilding:
             DiscoveredEntity(
                 entity_id=uuid7(),
                 name=f"Entity {i}",
-                discovery_depth=2,
+                discovery_degree=2,
             )
             for i in range(5)
         ]
@@ -651,9 +650,9 @@ class TestRiskAnalysis:
             entity_id=uuid7(),
             name="Sanctioned Entity",
             entity_type=EntityType.ORGANIZATION,
-            discovery_depth=2,
-            risk_level=RiskLevel.CRITICAL,
-            risk_factors=["sanctions_list", "ofac"],
+            discovery_degree=2,
+            is_sanctioned=True,  # CRITICAL risk
+            risk_indicators=["sanctions_list", "ofac"],
         )
 
         relation = EntityRelation(
@@ -695,9 +694,9 @@ class TestRiskAnalysis:
             entity = DiscoveredEntity(
                 entity_id=uuid7(),
                 name="Test Entity",
-                discovery_depth=2,
-                risk_level=RiskLevel.HIGH,
-                risk_factors=risk_factors,
+                discovery_degree=2,
+                is_pep=True,  # HIGH risk
+                risk_indicators=risk_factors,
             )
 
             relation = EntityRelation(
@@ -728,15 +727,15 @@ class TestRiskAnalysis:
             DiscoveredEntity(
                 entity_id=uuid7(),
                 name="Low Risk",
-                discovery_depth=2,
-                risk_level=RiskLevel.LOW,
+                discovery_degree=2,
+                risk_indicators=["low_risk"],  # LOW risk
             ),
             DiscoveredEntity(
                 entity_id=uuid7(),
                 name="Critical Risk",
-                discovery_depth=2,
-                risk_level=RiskLevel.CRITICAL,
-                risk_factors=["sanctions"],
+                discovery_degree=2,
+                is_sanctioned=True,  # CRITICAL risk
+                risk_indicators=["sanctions"],
             ),
         ]
 
@@ -782,9 +781,9 @@ class TestRiskPropagation:
         risky_entity = DiscoveredEntity(
             entity_id=uuid7(),
             name="Risky Person",
-            discovery_depth=2,
-            risk_level=RiskLevel.HIGH,
-            risk_factors=["criminal_association"],
+            discovery_degree=2,
+            is_pep=True,  # HIGH risk
+            risk_indicators=["criminal_association"],
         )
 
         relation = EntityRelation(
@@ -854,21 +853,21 @@ class TestRiskPropagation:
             DiscoveredEntity(
                 entity_id=entity1_id,
                 name="Entity 1",
-                discovery_depth=2,
-                risk_level=RiskLevel.NONE,
+                discovery_degree=2,
+                # risk_level computed from flags
             ),
             DiscoveredEntity(
                 entity_id=entity2_id,
                 name="Entity 2",
-                discovery_depth=3,
-                risk_level=RiskLevel.NONE,
+                discovery_degree=3,
+                # risk_level computed from flags
             ),
             DiscoveredEntity(
                 entity_id=risky_id,
                 name="Risky Entity",
-                discovery_depth=3,
-                risk_level=RiskLevel.CRITICAL,
-                risk_factors=["sanctions"],
+                discovery_degree=3,
+                is_sanctioned=True,  # CRITICAL risk
+                risk_indicators=["sanctions"],
             ),
         ]
 
@@ -1002,22 +1001,20 @@ class TestNetworkProfileIntegration:
     ):
         """Test analyzing from a NetworkProfile."""
         profile = NetworkProfile(
-            entity_id=uuid7(),
-            d2_entities=[
+            subject_entity_id=uuid7(),
+            entities=[
                 DiscoveredEntity(
                     entity_id=uuid7(),
                     name="D2 Entity",
-                    discovery_depth=2,
-                    risk_level=RiskLevel.LOW,
+                    discovery_degree=2,
+                    risk_indicators=["low_risk"],  # LOW risk
                 ),
-            ],
-            d3_entities=[
                 DiscoveredEntity(
                     entity_id=uuid7(),
                     name="D3 Entity",
-                    discovery_depth=3,
-                    risk_level=RiskLevel.HIGH,
-                    risk_factors=["pep"],
+                    discovery_degree=3,
+                    is_pep=True,  # HIGH risk
+                    risk_indicators=["pep"],
                 ),
             ],
             relations=[],
@@ -1090,23 +1087,23 @@ class TestVisualizationData:
         subject = DiscoveredEntity(
             entity_id=uuid7(),
             name="Subject",
-            discovery_depth=1,
-            risk_level=RiskLevel.NONE,
+            discovery_degree=1,
+            # risk_level computed from flags
         )
 
         entities = [
             DiscoveredEntity(
                 entity_id=uuid7(),
                 name="Low Risk",
-                discovery_depth=2,
-                risk_level=RiskLevel.LOW,
+                discovery_degree=2,
+                risk_indicators=["low_risk"],  # LOW risk
             ),
             DiscoveredEntity(
                 entity_id=uuid7(),
                 name="Critical Risk",
-                discovery_depth=2,
-                risk_level=RiskLevel.CRITICAL,
-                risk_factors=["sanctions"],
+                discovery_degree=2,
+                is_sanctioned=True,  # CRITICAL risk
+                risk_indicators=["sanctions"],
             ),
         ]
 
@@ -1167,9 +1164,9 @@ class TestRecommendations:
         critical = DiscoveredEntity(
             entity_id=uuid7(),
             name="Sanctioned Entity",
-            discovery_depth=2,
-            risk_level=RiskLevel.CRITICAL,
-            risk_factors=["sanctions_list"],
+            discovery_degree=2,
+            is_sanctioned=True,  # CRITICAL risk
+            risk_indicators=["sanctions_list"],
         )
 
         relation = EntityRelation(
@@ -1199,9 +1196,9 @@ class TestRecommendations:
         pep = DiscoveredEntity(
             entity_id=uuid7(),
             name="Government Official",
-            discovery_depth=2,
-            risk_level=RiskLevel.HIGH,
-            risk_factors=["pep", "government_official"],
+            discovery_degree=2,
+            is_pep=True,  # HIGH risk
+            risk_indicators=["pep", "government_official"],
         )
 
         relation = EntityRelation(
@@ -1230,8 +1227,8 @@ class TestRecommendations:
         low_risk = DiscoveredEntity(
             entity_id=uuid7(),
             name="Low Risk Entity",
-            discovery_depth=2,
-            risk_level=RiskLevel.NONE,
+            discovery_degree=2,
+            # risk_level computed from flags
         )
 
         relation = EntityRelation(
@@ -1330,7 +1327,7 @@ class TestEdgeCases:
         entity = DiscoveredEntity(
             entity_id=uuid7(),
             name="Entity",
-            discovery_depth=2,
+            discovery_degree=2,
         )
 
         result = analyzer.analyze_connections(
@@ -1353,7 +1350,7 @@ class TestEdgeCases:
         entity = DiscoveredEntity(
             entity_id=uuid7(),
             name="Entity",
-            discovery_depth=2,
+            discovery_degree=2,
         )
 
         self_relation = EntityRelation(
