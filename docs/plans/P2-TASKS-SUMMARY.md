@@ -4,13 +4,21 @@
 
 This document summarizes all P2 (Medium Priority) tasks. P2 tasks are important features that can be delivered incrementally after core functionality is complete.
 
-**Total P2 Tasks**: 0 tasks (not yet defined)
-**Completed**: N/A
-**Remaining**: N/A
+**Total P2 Tasks**: 1 task
+**Completed**: 0
+**Remaining**: 1
+
+## Task Status by Phase
+
+### Phase 6 - Risk Analysis (1 P2 task)
+| Task | Name | Status | Dependencies |
+|------|------|--------|--------------|
+| 6.12 | Risk Dashboard | ⏳ Pending | 6.7-6.11 |
+**Status: 0/1 Complete**
 
 ## Current Status
 
-No P2 tasks have been defined in the current implementation plan. All tasks are currently categorized as either P0 (Critical) or P1 (High Priority).
+Task 6.12 (Risk Dashboard) is the only defined P2 task. It is deferred until after MVP.
 
 ## Candidate P2 Tasks
 

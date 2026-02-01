@@ -5,8 +5,8 @@
 This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks are essential features for production use but are not on the critical MVP path.
 
 **Total P1 Tasks**: 73 tasks
-**Completed**: 13 tasks
-**Remaining**: 60 tasks
+**Completed**: 17 tasks
+**Remaining**: 56 tasks
 
 ## Task Status by Phase
 
@@ -56,14 +56,15 @@ This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks
 | 5.16 | Investigation Resume/Pause | ✅ Complete | 5.9 |
 **Status: 6/6 Complete**
 
-### Phase 6 - Risk Analysis (4 P1 tasks)
+### Phase 6 - Risk Analysis (5 P1 tasks)
 | Task | Name | Status | Dependencies |
 |------|------|--------|--------------|
-| 6.9 | Historical Risk Trends | ⏳ Pending | 6.8 |
-| 6.10 | Risk Threshold Manager | ⏳ Pending | 6.7 |
-| 6.11 | Risk Explanation Generator | ⏳ Pending | 6.7 |
-| 6.12 | Risk Dashboard Metrics | ⏳ Pending | 6.7-6.11 |
-**Status: 0/4 Complete**
+| 6.8 | Temporal Risk Tracker | ✅ Complete | 6.7 |
+| 6.9 | Risk Trends | ✅ Complete | 6.8 |
+| 6.10 | Risk Thresholds | ✅ Complete | 6.7 |
+| 6.11 | Risk Explanations | ✅ Complete | 6.7 |
+| 6.12 | Risk Dashboard | ⏳ Pending (P2) | 6.7-6.11 |
+**Status: 4/4 P1 Complete** *(Task 6.12 is P2, not P1)*
 
 ### Phase 7 - Screening Service (4 P1 tasks)
 | Task | Name | Status | Dependencies |
@@ -154,32 +155,41 @@ This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks
 | 3 | 4 | 1 | 3 |
 | 4 | 5 | 0 | 5 |
 | 5 | 6 | 6 | 0 |
-| 6 | 4 | 0 | 4 |
+| 6 | 4 | 4 | 0 |
 | 7 | 4 | 0 | 4 |
 | 8 | 6 | 0 | 6 |
 | 9 | 8 | 0 | 8 |
 | 10 | 6 | 0 | 6 |
 | 11 | 9 | 0 | 9 |
 | 12 | 15 | 0 | 15 |
-| **Total** | **73** | **13** | **60** |
+| **Total** | **73** | **17** | **56** |
+
+*Note: Task 6.12 (Risk Dashboard) is P2, not P1.*
 
 ## Execution Strategy
 
-P1 tasks are executed **after** all P0 tasks in their phase are complete:
+P1 tasks are executed **after** all P0 tasks (Phases 1-12) are complete.
 
+**Milestone 1** = All P0 tasks across Phases 1-12
+**Milestone 2** = All P1 tasks
+
+Current status:
 1. Phase 1-2 P1 tasks: ✅ Complete
-2. Phase 3 P1 tasks: Can start (3 remaining)
-3. Phase 4 P1 tasks: Can start after P0 complete
+2. Phase 3 P1 tasks: 1/4 complete (3 remaining)
+3. Phase 4 P1 tasks: Not started
 4. Phase 5 P1 tasks: ✅ Complete
-5. Phase 6-12 P1 tasks: Blocked by P0 tasks
+5. Phase 6 P1 tasks: ✅ Complete
+6. Phase 7-12 P1 tasks: Not started
 
 ## Next P1 Tasks
 
-Available P1 tasks (all P0 dependencies satisfied):
+**Note**: Complete all P0 tasks (Phases 8-12) before starting P1 tasks.
+
+After P0 complete, the next P1 tasks are:
 1. **Task 3.9**: Data Retention Manager
-2. **Task 3.11**: Cross-Screening Index Builder
-3. **Task 4.11**: Sanctions Provider (after Phase 4 P0)
-4. **Task 4.15**: Provider Circuit Breaker (after Phase 4 P0)
+2. **Task 3.10**: GDPR Erasure Process
+3. **Task 3.11**: Cross-Screening Index Builder
+4. **Task 4.11**: Sanctions Provider
 
 ---
 

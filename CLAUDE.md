@@ -74,24 +74,31 @@ Elile is an employee risk assessment platform for organizations with critical ro
 
 ## Development Commands
 
+**IMPORTANT**: Always use `uv run` or the project venv for all Python commands.
+
 ### Code Formatting
 ```bash
-black . --line-length 100 --target-version py314
+uv run black . --line-length 100 --target-version py314
 ```
 
 ### Linting
 ```bash
-ruff check .
+uv run ruff check .
 ```
-q
+
 ### Type Checking
 ```bash
-mypy src/elile
+uv run mypy src/elile
 ```
 
 ### Testing
 ```bash
 uv run pytest -v
+```
+
+### Test Count
+```bash
+uv run python -m pytest --collect-only -q 2>&1 | tail -3
 ```
 
 ## Project Structure
@@ -163,14 +170,16 @@ Only pause within a task if:
 ## Task Completion Workflow
 
 **IMPORTANT** Operate in Continuous Implementation Mode:
-1. **Identify next task** 
+1. **Identify next task**
    - Check handoff.md for next pending task in the current phase
    - Or, check IMPLEMENTATION_STATUS.md for next pending task in the current phase
 2. **Complete current task** - Implement, test, and document
-3. **Update documentation**:
+3. **Update ALL documentation** (see Documentation Synchronization below):
    - `CODEBASE_INDEX.md` - Add new module/class documentation
    - `IMPLEMENTATION_STATUS.md` - Mark task complete, update counts
    - `docs/plans/phase-NN-*.md` - Update task status in phase plan
+   - `docs/plans/PN-TASKS-SUMMARY.md` - Update the relevant priority summary (P0, P1, P2, or P3)
+   - `docs/plans/MASTER_IMPLEMENTATION_PLAN.md` - Update phase status and counts
 4. **Save implementation plan** to `implementation_plans/task-X.Y-description.md`:
    - Overview and requirements
    - Files created/modified
@@ -213,6 +222,57 @@ Notes:
 8. **Check context window utilization** 
    - If the context window is above 75% capacity, exit/quit.  This insures a clean context window while preserving critical handoff information.
 9. **Move on to the next task**
+
+## Documentation Synchronization (CRITICAL)
+
+**All these files must stay synchronized** when tasks are completed:
+
+| File | What to Update |
+|------|----------------|
+| `IMPLEMENTATION_STATUS.md` | Task status, test counts, overall progress |
+| `docs/plans/phase-NN-*.md` | Task status within that phase |
+| `docs/plans/P0-TASKS-SUMMARY.md` | P0 task status, counts, "Next P0 Tasks" section |
+| `docs/plans/P1-TASKS-SUMMARY.md` | P1 task status and counts |
+| `docs/plans/P2-TASKS-SUMMARY.md` | P2 task status and counts |
+| `docs/plans/P3-TASKS-SUMMARY.md` | P3 task status and counts (if applicable) |
+| `docs/plans/MASTER_IMPLEMENTATION_PLAN.md` | Phase status, "Current Status" table |
+| `handoff.md` | Next task, progress, notes |
+
+**Note**: Update the priority summary that matches the completed task's priority level. Most tasks are P0 or P1.
+
+### Source of Truth Hierarchy
+
+When there's a conflict, trust in this order:
+1. **Individual task files** (`docs/tasks/task-X.Y-*.md`) - Priority field is authoritative
+2. **IMPLEMENTATION_STATUS.md** - Current implementation status is authoritative
+3. **Phase plans** (`docs/plans/phase-NN-*.md`) - Task status within phase
+4. **P0-TASKS-SUMMARY.md** - Aggregated P0 tracking (derived from above)
+5. **MASTER_IMPLEMENTATION_PLAN.md** - High-level phase status (derived from above)
+
+### P0 Task Tracking
+
+**Milestone 1 = All P0 tasks across Phases 1-12** (76 total)
+
+| Phase | P0 Tasks |
+|-------|----------|
+| 1-5 | 44 |
+| 6 | 7 (Task 6.8 is P1, not P0) |
+| 7 | 7 (Tasks 7.8-7.11 are P1) |
+| 8 | 4 |
+| 9 | 4 |
+| 10 | 4 |
+| 11 | 2 |
+| 12 | 4 |
+| **Total** | **76** |
+
+### Common Documentation Errors to Avoid
+
+1. **Priority mismatches**: Always check the task file's Priority field
+2. **Stale "Next Task" in handoff.md**: Must match actual next P0 task
+3. **Incorrect counts**: Cross-reference P0-TASKS-SUMMARY with phase plans
+4. **Task name discrepancies**: Task files are authoritative for names
+
+---
 
 ## Planning & Task Documentation
 
@@ -262,8 +322,9 @@ Each phase has a dedicated plan document in `docs/plans/phase-NN-description.md`
 | 3 | `phase-03-entity-management.md` | Complete |
 | 4 | `phase-04-data-providers.md` | Complete |
 | 5 | `phase-05-investigation-engine.md` | Complete |
-| 6 | `phase-06-risk-analysis.md` | In Progress |
-| 7-12 | `phase-07-*.md` through `phase-12-*.md` | Not Started |
+| 6 | `phase-06-risk-analysis.md` | Complete (11/12, P2 deferred) |
+| 7 | `phase-07-screening-service.md` | P0 Complete (7/11) |
+| 8-12 | `phase-08-*.md` through `phase-12-*.md` | Not Started |
 
 ### Task Definitions
 
