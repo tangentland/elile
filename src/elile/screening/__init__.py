@@ -66,6 +66,16 @@ from elile.screening.degree_handlers import (
     create_d2_handler,
     create_d3_handler,
 )
+from elile.screening.tier_router import (
+    DataSourceSpec,
+    DataSourceTier,
+    TierCapabilities,
+    TierRouter,
+    TierRouterConfig,
+    RoutingResult,
+    create_tier_router,
+    create_default_data_sources,
+)
 
 __all__ = [
     # Orchestrator
@@ -83,6 +93,15 @@ __all__ = [
     "create_d1_handler",
     "create_d2_handler",
     "create_d3_handler",
+    # Tier Router
+    "TierRouter",
+    "TierRouterConfig",
+    "TierCapabilities",
+    "DataSourceSpec",
+    "DataSourceTier",
+    "RoutingResult",
+    "create_tier_router",
+    "create_default_data_sources",
     # Request/Response models
     "ScreeningRequest",
     "ScreeningRequestCreate",
