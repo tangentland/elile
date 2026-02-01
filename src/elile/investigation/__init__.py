@@ -89,6 +89,16 @@ from elile.investigation.query_planner import (
     QueryType,
     SearchQuery,
 )
+from elile.investigation.information_type_manager import (
+    PHASE_ORDER,
+    PHASE_TYPES,
+    TYPE_DEPENDENCIES,
+    InformationPhase,
+    InformationTypeManager,
+    TypeDependency,
+    TypeSequence,
+    create_information_type_manager,
+)
 from elile.investigation.query_refiner import (
     QueryRefiner,
     RefinerConfig,
@@ -153,4 +163,13 @@ __all__ = [
     "create_query_refiner",
     "RefinerConfig",
     "RefinementResult",
+    # Information type manager
+    "InformationTypeManager",
+    "create_information_type_manager",
+    "InformationPhase",
+    "TypeDependency",
+    "TypeSequence",
+    "PHASE_ORDER",
+    "PHASE_TYPES",
+    "TYPE_DEPENDENCIES",
 ]

@@ -666,7 +666,7 @@ Provider abstraction layer, rate limiting, response caching, cost tracking, requ
 
 ## Phase 5: Investigation Engine (SAR Loop) (P0 - Critical)
 
-**Status**: 🟡 In Progress (5/16 tasks complete)
+**Status**: 🟡 In Progress (6/16 tasks complete)
 **Dependencies**: Phase 4
 
 Search-Assess-Refine loop, query planning, result assessment, refinement.
@@ -791,8 +791,30 @@ Search-Assess-Refine loop, query planning, result assessment, refinement.
 - `src/elile/investigation/query_refiner.py` - QueryRefiner class
 - `tests/unit/test_query_refiner.py` - Unit tests
 
+#### ✅ Task 5.6: Information Type Manager
+**Priority**: P0
+**Status**: Complete
+**Completed**: 2026-01-31
+**Dependencies**: Task 5.1, 2.1, 2.6
+
+**Deliverables**:
+- ✅ InformationTypeManager class for type sequencing
+- ✅ InformationPhase enum (FOUNDATION, RECORDS, INTELLIGENCE, NETWORK, RECONCILIATION)
+- ✅ TypeDependency dataclass for dependency specification
+- ✅ TypeSequence dataclass for sequencing results
+- ✅ Phase-based type grouping (PHASE_TYPES)
+- ✅ Type dependency graph (TYPE_DEPENDENCIES)
+- ✅ Dependency-aware next type calculation
+- ✅ Tier-based type filtering (Enhanced-only types)
+- ✅ Compliance engine integration for type filtering
+- ✅ Phase completion detection
+- ✅ 43 unit tests
+
+**Key Files**:
+- `src/elile/investigation/information_type_manager.py` - InformationTypeManager class
+- `tests/unit/test_information_type_manager.py` - Unit tests
+
 ### Pending Tasks
-- 🔲 Task 5.6: Information Type Manager
 - 🔲 Task 5.7: Confidence Scorer
 - 🔲 Task 5.8: Iteration Controller
 - 🔲 Task 5.9: SAR Loop Orchestrator
@@ -872,7 +894,7 @@ Performance optimization, security hardening, compliance certification, document
 ## Overall Progress
 
 ### By Priority
-- **P0 (Critical)**: 29/85 tasks (34.1%)
+- **P0 (Critical)**: 30/85 tasks (35.3%)
 - **P1 (High)**: 4/45 tasks (8.9%)
 - **P2 (Medium)**: 0/10 tasks (0%)
 - **P3 (Low)**: 0/1 tasks (0%)
@@ -882,10 +904,10 @@ Performance optimization, security hardening, compliance certification, document
 - **Phase 2**: 5/5 tasks (100%) ✅
 - **Phase 3**: 5/5 tasks (100%) ✅
 - **Phase 4**: 6/6 tasks (100%) ✅
-- **Phase 5**: 5/16 tasks (31%) 🟡
+- **Phase 5**: 6/16 tasks (38%) 🟡
 - **Phase 6-12**: 0/97 tasks (0%)
 
-### Total: 33/141 tasks (23.4%)
+### Total: 34/141 tasks (24.1%)
 
 ---
 
@@ -893,9 +915,9 @@ Performance optimization, security hardening, compliance certification, document
 
 | Category | Tests |
 |----------|-------|
-| Unit Tests | 1067 |
+| Unit Tests | 1110 |
 | Integration Tests | 64 |
-| **Total** | **1131** |
+| **Total** | **1174** |
 
 All tests passing as of 2026-01-31.
 
@@ -998,8 +1020,15 @@ Task 5.5 (Query Refiner) complete:
 - GAP_STRATEGIES for gap-specific handling
 - 29 new unit tests
 
-### Next: Task 5.6 - Information Type Manager
-Implement information type manager to coordinate SAR loops across all information types with proper sequencing and dependencies.
+Task 5.6 (Information Type Manager) complete:
+- InformationTypeManager for type sequencing
+- Phase-based type grouping (Foundation, Records, Intelligence, Network, Reconciliation)
+- Dependency-aware next type calculation
+- Tier-based and compliance-based filtering
+- 43 new unit tests
+
+### Next: Task 5.7 - Confidence Scorer
+Implement confidence scorer for unified confidence calculation across information types with configurable weights.
 
 ---
 
