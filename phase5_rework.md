@@ -36,10 +36,6 @@ Phase 5 (Investigation Engine) is marked as complete in `IMPLEMENTATION_STATUS.m
 | 5.15 | `investigation/phases/reconciliation.py` | ❌ Missing |
 | 5.16 | `investigation/checkpoint.py` | ❌ Missing |
 
-### Critical Blocker
-`investigation/phases/network.py` is imported by:
-- `src/elile/risk/connection_analyzer.py` (Task 6.6)
-- `src/elile/investigation/phases/__init__.py`
 
 **All tests fail to run** until this module exists.
 
@@ -54,7 +50,7 @@ Implement tasks in this order (respects dependencies):
 3. **Task 5.11**: Foundation Phase Handler
 4. **Task 5.12**: Records Phase Handler
 5. **Task 5.13**: Intelligence Phase Handler
-6. **Task 5.14**: Network Phase Handler ⚠️ CRITICAL
+6. **Task 5.14**: Network Phase Handler
 7. **Task 5.15**: Reconciliation Phase Handler
 8. **Task 5.16**: Investigation Checkpoint Manager
 
@@ -216,7 +212,7 @@ git push origin feature/task-5.X-description
 
 ---
 
-### Task 5.14: Network Phase Handler ⚠️ CRITICAL
+### Task 5.14: Network Phase Handler
 **File**: `src/elile/investigation/phases/network.py`
 **Test**: `tests/unit/test_network_phase.py`
 **Spec**: `docs/tasks/task-5.14-network-phase-handler.md`

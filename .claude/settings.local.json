@@ -8,10 +8,13 @@
       "Bash(alembic init:*)",
       "Bash(pip install:*)",
       "Bash(pytest:*)",
-      "Bash(python3.12 -m pytest:*)",
+      "Bash(python3.14 -m pytest:*)",
       "Bash(python:*)",
+      "Bash(mypy:*)",
+      "Bash(uv:*)",
       "Bash(black:*)",
-      "Bash(git add:*)"
+      "Bash(git:*)",
+      "Bash(ls:*)"
     ]
   }
 }

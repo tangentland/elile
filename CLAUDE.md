@@ -119,6 +119,9 @@ src/elile/
 - Comprehensive audit logging for all data access
 - Rate limiting and retry logic for external APIs
 
+## Permissions
+**IMPORTANT - You are allowed to execute any command within the elile project directory**
+
 ## Context Management (CRITICAL)
 
 **CODEBASE_INDEX.md is your primary reference** - always consult it first to:
@@ -316,13 +319,3 @@ See `docs/architecture/` for detailed system design, organized by domain:
 | [11-interfaces.md](docs/architecture/11-interfaces.md) | User interfaces (5 portals/dashboards) |
 | [12-roadmap.md](docs/architecture/12-roadmap.md) | Open questions, implementation phases |
 
-## Report Types
-
-| Persona | Report | Purpose |
-|---------|--------|---------|
-| HR Manager | Summary Report | Risk level, recommendation, key flags for hiring decisions |
-| Compliance | Audit Report | Data sources, consent, compliance checks for audit trail |
-| Security | Investigation Report | Detailed findings, connections, threat assessment |
-| Investigator | Case File | Complete findings with raw data for deep investigation |
-| Subject | Disclosure Report | FCRA-compliant summary for candidates (adverse action) |
-| Executive | Portfolio Report | Aggregate metrics, trends, organizational risk posture |
