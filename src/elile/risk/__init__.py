@@ -85,6 +85,18 @@ from elile.risk.temporal_risk_tracker import (
     TrackerConfig,
     TrendDirection,
 )
+from elile.risk.trends import (
+    create_risk_trend_analyzer,
+    PortfolioRiskLevel,
+    PortfolioRiskSummary,
+    PredictionConfidence,
+    RiskPrediction,
+    RiskTrendAnalyzer,
+    RiskTrajectory,
+    SubjectTrendSummary,
+    TrendAnalyzerConfig,
+    VelocityMetrics,
+)
 
 __all__ = [
     # Analyzer
@@ -166,4 +178,15 @@ __all__ = [
     "EvolutionSignalType",
     "TrendDirection",
     "CategoryDelta",
+    # Risk Trends Analyzer
+    "RiskTrendAnalyzer",
+    "create_risk_trend_analyzer",
+    "TrendAnalyzerConfig",
+    "VelocityMetrics",
+    "RiskPrediction",
+    "SubjectTrendSummary",
+    "PortfolioRiskSummary",
+    "RiskTrajectory",
+    "PredictionConfidence",
+    "PortfolioRiskLevel",
 ]
