@@ -174,7 +174,7 @@ When implementing tasks from `docs/tasks/`, operate in continuous mode:
 ### Document Hierarchy
 
 ```
-docs/plans/vast-hatching-hickey.md          <- ROOT: Master implementation plan
+docs/plans/MASTER_IMPLEMENTATION_PLAN.md    <- ROOT: Master implementation plan
 ├── docs/plans/P0-TASKS-SUMMARY.md          <- Priority summaries by P-level
 ├── docs/plans/P1-TASKS-SUMMARY.md
 ├── docs/plans/P2-TASKS-SUMMARY.md
@@ -187,7 +187,7 @@ docs/plans/vast-hatching-hickey.md          <- ROOT: Master implementation plan
 
 ### Root Planning Document
 
-**`docs/plans/vast-hatching-hickey.md`** is the master implementation plan containing:
+**`docs/plans/MASTER_IMPLEMENTATION_PLAN.md`** is the master implementation plan containing:
 - All 12 development phases with priorities and dependencies
 - Phase dependency tree (which phases depend on others)
 - Priority definitions (P0-P3)
