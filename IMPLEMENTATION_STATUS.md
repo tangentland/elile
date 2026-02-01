@@ -666,7 +666,7 @@ Provider abstraction layer, rate limiting, response caching, cost tracking, requ
 
 ## Phase 5: Investigation Engine (SAR Loop) (P0 - Critical)
 
-**Status**: 🟡 In Progress (4/16 tasks complete)
+**Status**: 🟡 In Progress (5/16 tasks complete)
 **Dependencies**: Phase 4
 
 Search-Assess-Refine loop, query planning, result assessment, refinement.
@@ -769,10 +769,29 @@ Search-Assess-Refine loop, query planning, result assessment, refinement.
 - `src/elile/investigation/result_assessor.py` - ResultAssessor class
 - `tests/unit/test_result_assessor.py` - Unit tests
 
-### Pending Tasks
+#### ✅ Task 5.5: Query Refiner
+**Priority**: P0
+**Status**: Complete
+**Completed**: 2026-01-31
+**Dependencies**: Task 5.4, 5.2, 5.1
 
-- 🔲 Task 5.5: Query Refiner
-- 🔲 Task 5.5: Query Refiner
+**Deliverables**:
+- ✅ QueryRefiner class for gap-targeted query generation
+- ✅ RefinerConfig for customizable refinement behavior
+- ✅ RefinementResult for refinement outcomes
+- ✅ GAP_STRATEGIES dictionary for gap-specific query strategies
+- ✅ Gap prioritization by criticality (no_* > missing_* > other)
+- ✅ Type-specific search param enrichment from KnowledgeBase
+- ✅ Query deduplication by signature
+- ✅ Max queries per gap and total query limits
+- ✅ Iteration number incrementing for next iteration
+- ✅ 29 unit tests
+
+**Key Files**:
+- `src/elile/investigation/query_refiner.py` - QueryRefiner class
+- `tests/unit/test_query_refiner.py` - Unit tests
+
+### Pending Tasks
 - 🔲 Task 5.6: Information Type Manager
 - 🔲 Task 5.7: Confidence Scorer
 - 🔲 Task 5.8: Iteration Controller
@@ -853,7 +872,7 @@ Performance optimization, security hardening, compliance certification, document
 ## Overall Progress
 
 ### By Priority
-- **P0 (Critical)**: 28/85 tasks (32.9%)
+- **P0 (Critical)**: 29/85 tasks (34.1%)
 - **P1 (High)**: 4/45 tasks (8.9%)
 - **P2 (Medium)**: 0/10 tasks (0%)
 - **P3 (Low)**: 0/1 tasks (0%)
@@ -863,10 +882,10 @@ Performance optimization, security hardening, compliance certification, document
 - **Phase 2**: 5/5 tasks (100%) ✅
 - **Phase 3**: 5/5 tasks (100%) ✅
 - **Phase 4**: 6/6 tasks (100%) ✅
-- **Phase 5**: 4/16 tasks (25%) 🟡
+- **Phase 5**: 5/16 tasks (31%) 🟡
 - **Phase 6-12**: 0/97 tasks (0%)
 
-### Total: 32/141 tasks (22.7%)
+### Total: 33/141 tasks (23.4%)
 
 ---
 
@@ -874,9 +893,9 @@ Performance optimization, security hardening, compliance certification, document
 
 | Category | Tests |
 |----------|-------|
-| Unit Tests | 1038 |
+| Unit Tests | 1067 |
 | Integration Tests | 64 |
-| **Total** | **1102** |
+| **Total** | **1131** |
 
 All tests passing as of 2026-01-31.
 
@@ -971,8 +990,16 @@ Task 5.4 (Result Assessor) complete:
 - Entity discovery for network expansion
 - 32 new unit tests
 
-### Next: Task 5.5 - Query Refiner
-Implement query refiner to generate refinement queries targeting identified gaps and low-confidence areas.
+Task 5.5 (Query Refiner) complete:
+- QueryRefiner for gap-targeted query generation
+- Gap prioritization by criticality
+- Type-specific search param enrichment
+- Query deduplication and limits
+- GAP_STRATEGIES for gap-specific handling
+- 29 new unit tests
+
+### Next: Task 5.6 - Information Type Manager
+Implement information type manager to coordinate SAR loops across all information types with proper sequencing and dependencies.
 
 ---
 

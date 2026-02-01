@@ -89,6 +89,12 @@ from elile.investigation.query_planner import (
     QueryType,
     SearchQuery,
 )
+from elile.investigation.query_refiner import (
+    QueryRefiner,
+    RefinerConfig,
+    RefinementResult,
+    create_query_refiner,
+)
 from elile.investigation.result_assessor import (
     AssessmentResult,
     ConfidenceFactors,
@@ -142,4 +148,9 @@ __all__ = [
     "Gap",
     "DetectedInconsistency",
     "DiscoveredEntity",
+    # Query refiner
+    "QueryRefiner",
+    "create_query_refiner",
+    "RefinerConfig",
+    "RefinementResult",
 ]
