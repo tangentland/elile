@@ -19,7 +19,7 @@ Phase 7 implements the end-to-end screening workflow that orchestrates all previ
 
 | Seq | Task Name | Priority | Status | Dependencies | Plan Document |
 |-----|-----------|----------|--------|--------------|---------------|
-| 7.1 | Screening Request Model | P0 | Not Started | Phase 2, 3 | [task-7.1-screening-request.md](../tasks/task-7.1-screening-request.md) |
+| 7.1 | Screening Request Model | P0 | ✅ Complete | Phase 2, 3 | [task-7.1-screening-request.md](../tasks/task-7.1-screening-request.md) |
 | 7.2 | Screening Orchestrator | P0 | Not Started | Phase 5, 6 | [task-7.2-screening-orchestrator.md](../tasks/task-7.2-screening-orchestrator.md) |
 | 7.3 | Data Acquisition Coordinator | P0 | Not Started | Phase 4, 3.6 | [task-7.3-data-acquisition.md](../tasks/task-7.3-data-acquisition.md) |
 | 7.4 | Screening Status Tracker | P0 | Not Started | 1.1 | [task-7.4-status-tracker.md](../tasks/task-7.4-status-tracker.md) |

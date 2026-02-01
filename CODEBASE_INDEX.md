@@ -20,6 +20,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 | `src/elile/models/` | AI model adapters | `AnthropicAdapter`, `OpenAIAdapter`, `GeminiAdapter` |
 | `src/elile/search/` | Search query building and execution | `SearchEngine`, `QueryBuilder` |
 | `src/elile/risk/` | Risk analysis and scoring | `RiskScorer`, `FindingClassifier`, `SeverityCalculator`, `AnomalyDetector` |
+| `src/elile/screening/` | End-to-end screening workflow orchestration | `ScreeningOrchestrator`, `ScreeningRequest`, `ScreeningResult` |
 | `src/elile/utils/` | Shared utilities and base exceptions | `ElileError` |
 
 ## API Layer (`src/elile/api/`)
@@ -1523,6 +1524,122 @@ Connection strength and relation type affect propagation:
 - **EMPLOYMENT**: 60% risk factor
 - **SOCIAL/EDUCATIONAL**: 20-30% risk factor
 
+## Screening Service (`src/elile/screening/`)
+
+The screening service orchestrates end-to-end background screening workflows.
+
+### Screening Orchestrator
+
+```python
+from elile.screening import (
+    ScreeningOrchestrator,
+    ScreeningRequest,
+    ScreeningResult,
+    ScreeningStatus,
+    OrchestratorConfig,
+    create_screening_orchestrator,
+)
+from elile.entity.types import SubjectIdentifiers
+from elile.compliance.types import Locale, RoleCategory
+from elile.agent.state import ServiceTier, SearchDegree, VigilanceLevel
+
+# Create orchestrator
+orchestrator = create_screening_orchestrator()
+
+# Create screening request
+request = ScreeningRequest(
+    tenant_id=tenant_id,
+    subject=SubjectIdentifiers(
+        full_name="John Smith",
+        date_of_birth=date(1985, 3, 15),
+        ssn="123-45-6789",
+    ),
+    locale=Locale.US,
+    service_tier=ServiceTier.STANDARD,
+    search_degree=SearchDegree.D1,
+    vigilance_level=VigilanceLevel.V0,
+    role_category=RoleCategory.STANDARD,
+    consent_token="consent-abc123",
+)
+
+# Execute screening
+result = await orchestrator.execute_screening(request)
+
+if result.status == ScreeningStatus.COMPLETE:
+    print(f"Risk score: {result.risk_score}")
+    print(f"Risk level: {result.risk_level}")
+    print(f"Recommendation: {result.recommendation}")
+```
+
+### Screening Request
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `screening_id` | UUID | Auto-generated UUIDv7 |
+| `tenant_id` | UUID | Tenant requesting the screening |
+| `subject` | SubjectIdentifiers | Subject information (name, DOB, SSN, etc.) |
+| `locale` | Locale | Geographic jurisdiction |
+| `service_tier` | ServiceTier | STANDARD or ENHANCED |
+| `search_degree` | SearchDegree | D1 (subject), D2 (connections), D3 (extended) |
+| `vigilance_level` | VigilanceLevel | Ongoing monitoring frequency |
+| `role_category` | RoleCategory | Job role for relevance weighting |
+| `consent_token` | str | Proof of subject consent |
+| `report_types` | list[ReportType] | Reports to generate |
+| `priority` | ScreeningPriority | Processing priority |
+
+### Screening Result
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `result_id` | UUID | Result identifier |
+| `screening_id` | UUID | Reference to request |
+| `status` | ScreeningStatus | Current status |
+| `risk_assessment_id` | UUID | Reference to risk assessment |
+| `risk_score` | int | Overall risk score (0-100) |
+| `risk_level` | str | low/moderate/high/critical |
+| `recommendation` | str | proceed/review_required/do_not_proceed |
+| `reports` | list[GeneratedReport] | Generated reports |
+| `phases` | list[ScreeningPhaseResult] | Phase timing and status |
+| `cost_summary` | ScreeningCostSummary | Cost breakdown |
+
+### Screening Phases
+
+The orchestrator executes these phases in sequence:
+
+| Phase | Description |
+|-------|-------------|
+| Validation | Validate request and subject identifiers |
+| Compliance | Check locale-specific compliance rules |
+| Consent | Verify consent token validity |
+| Investigation | Execute SAR loop for all information types |
+| Risk Analysis | Calculate risk score and assessment |
+| Report Generation | Generate requested report types |
+
+### Screening Status Values
+
+| Status | Description |
+|--------|-------------|
+| `PENDING` | Request received, not started |
+| `VALIDATING` | Validating request |
+| `IN_PROGRESS` | Investigation running |
+| `ANALYZING` | Risk analysis in progress |
+| `GENERATING_REPORT` | Report generation |
+| `COMPLETE` | Successfully completed |
+| `FAILED` | Failed due to error |
+| `CANCELLED` | Cancelled |
+| `COMPLIANCE_BLOCKED` | Blocked by compliance rules |
+
+### Report Types
+
+| Type | Audience | Purpose |
+|------|----------|---------|
+| `SUMMARY` | HR Manager | Risk level and recommendation |
+| `AUDIT` | Compliance | Data sources and consent trail |
+| `INVESTIGATION` | Security | Detailed findings |
+| `CASE_FILE` | Investigator | Complete raw data |
+| `DISCLOSURE` | Subject | FCRA-compliant summary |
+| `PORTFOLIO` | Executive | Aggregate metrics |
+
 ## Key Enums
 
 ### Service Configuration (`src/elile/agent/state.py`)
@@ -1720,6 +1837,9 @@ tests/
 | `src/elile/investigation/checkpoint.py` | InvestigationCheckpointManager, InvestigationCheckpoint, CheckpointConfig, CheckpointReason, CheckpointStatus, TypeStateSnapshot, ResumeResult, create_checkpoint_manager | Task 5.16 |
 | `src/elile/risk/finding_classifier.py` | FindingClassifier, ClassificationResult, ClassifierConfig, SubCategory, CATEGORY_KEYWORDS, SUBCATEGORY_KEYWORDS, ROLE_RELEVANCE_MATRIX, create_finding_classifier | Task 6.1 |
 | `src/elile/risk/risk_scorer.py` | RiskScorer, RiskScore, RiskLevel, Recommendation, ScorerConfig, create_risk_scorer | Task 6.2 |
+| `src/elile/screening/__init__.py` | Screening module exports | Task 7.1 |
+| `src/elile/screening/types.py` | ScreeningRequest, ScreeningResult, ScreeningStatus, ReportType, ScreeningPhaseResult, ScreeningCostSummary, GeneratedReport, ScreeningError | Task 7.1 |
+| `src/elile/screening/orchestrator.py` | ScreeningOrchestrator, OrchestratorConfig, create_screening_orchestrator | Task 7.1 |
 
 ## Architecture References
 
