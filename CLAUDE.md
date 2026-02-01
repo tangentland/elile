@@ -155,12 +155,15 @@ src/elile/
    - Merge feature branch to main
    - Tag as `phaseN/task-X.Y`
    - **DO NOT delete feature branches**
+   
+4. **Delete ./handoff.md**
 
-4. **Exit and emit handoff** - Print session handoff to stdout and exit:
-
+5. **Output session handoff** to `./handoff.md` using this format:
 ```
 ---
-Session Handoff for Task X.Y
+Session Handoff for:
+Phase-NN-* in `docs/plans/phase-NN-*.md` 
+Task X.Y in `docs/tasks/task-X.Y-*.md`
 
 Completed:
 - [Brief description of what was implemented]
@@ -184,17 +187,22 @@ Notes:
 ---
 ```
 
-This ensures each task gets a fresh context window while preserving critical handoff information.
+6. **Check context window utilization** 
+   - If the context window is above 75% capacity, exit/quit.  This insures a clean context window while preserving critical handoff information.
+
+7. **Move on to the next task**
 
 ## Session Start
 
 When starting a new session after a handoff:
 
-1. **Read the handoff** provided by the user (from previous session's stdout)
+1. **Read handoff.md** provided by the user (from previous session's stdout)
+2. **Read docs/architecture/architecture.md** to understand the architecture
 2. **Verify git state** matches handoff (branch, tag)
-3. **Read the next task** from `docs/tasks/task-X.Y-*.md`
-4. **Check dependencies** in `IMPLEMENTATION_STATUS.md`
-5. **Create feature branch** and begin implementation
+3. **Read the phase description** from `docs/plans/phase-NN-*.md`
+4. **Read the next task** from `docs/tasks/task-X.Y-*.md`
+5. **Check dependencies** in `IMPLEMENTATION_STATUS.md`
+6. **Create feature branch** and begin implementation
 
 ## When to Pause Mid-Task
 
@@ -204,7 +212,7 @@ Only pause within a task if:
 - User explicitly requests a pause
 - Critical decision requires user input
 
-**Do not ask** "Should I proceed?" or "Ready for the next task?" - complete the task, emit handoff, and exit.
+**Do not ask** "Should I proceed?" or "Ready for the next task?" - follow the Task Completion Workflow.
 
 ## Planning & Task Documentation
 
