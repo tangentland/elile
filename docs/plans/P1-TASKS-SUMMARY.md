@@ -4,9 +4,9 @@
 
 This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks are essential features for production use but are not on the critical MVP path.
 
-**Total P1 Tasks**: 75 tasks
+**Total P1 Tasks**: 72 tasks
 **Completed**: 17 tasks
-**Remaining**: 58 tasks
+**Remaining**: 55 tasks
 
 ## Task Status by Phase
 
@@ -100,16 +100,15 @@ This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks
 | 9.12 | Monitoring Cost Optimizer | ⏳ Pending | 9.1, 4.5 |
 **Status: 0/8 Complete**
 
-### Phase 10 - Integration Layer (6 P1 tasks)
+### Phase 10 - Integration Layer (3 P1 tasks)
 | Task | Name | Status | Dependencies |
 |------|------|--------|--------------|
-| 10.5 | HRIS Gateway | ⏳ Pending | 10.1, 10.2 |
-| 10.6 | Workday Connector | ⏳ Pending | 10.5 |
-| 10.7 | Rate Limiting Middleware | ⏳ Pending | 10.1 |
-| 10.8 | API Versioning Strategy | ⏳ Pending | 10.1 |
-| 10.9 | Webhook Retry Logic | ⏳ Pending | 10.4 |
-| 10.10 | Integration Testing Framework | ⏳ Pending | 10.1-10.4 |
-**Status: 0/6 Complete**
+| 10.5 | Webhook Retry Logic | ⏳ Pending | 10.4 |
+| 10.9 | Generic Webhook Adapter | ⏳ Pending | 10.1 |
+| 10.10 | HRIS Configuration Manager | ⏳ Pending | 1.4, 10.1 |
+**Status: 0/3 Complete**
+
+*Note: External HRIS adapters (Workday, SAP, ADP) are P2 - deferred to post-MVP.*
 
 ### Phase 11 - User Interfaces (10 P1 tasks)
 | Task | Name | Status | Dependencies |
@@ -161,12 +160,14 @@ This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks
 | 7 | 4 | 0 | 4 |
 | 8 | 6 | 0 | 6 |
 | 9 | 8 | 0 | 8 |
-| 10 | 6 | 0 | 6 |
+| 10 | 3 | 0 | 3 |
 | 11 | 10 | 0 | 10 |
 | 12 | 15 | 0 | 15 |
-| **Total** | **75** | **17** | **58** |
+| **Total** | **72** | **17** | **55** |
 
-*Note: Task 6.12 (Risk Dashboard) is P2, not P1.*
+*Notes:*
+- *Task 6.12 (Risk Dashboard) is P2, not P1*
+- *External HRIS adapters (10.6, 10.7, 10.8) are P2*
 
 ## Execution Strategy
 

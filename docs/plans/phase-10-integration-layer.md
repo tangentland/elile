@@ -23,12 +23,14 @@ Phase 10 implements the HRIS integration gateway for receiving hire events, cons
 | 10.2 | Webhook Receiver | P0 | Not Started | 10.1 | [task-10.2-webhook-receiver.md](../tasks/task-10.2-webhook-receiver.md) |
 | 10.3 | Event Processor | P0 | Not Started | 10.2, Phase 7 | [task-10.3-event-processor.md](../tasks/task-10.3-event-processor.md) |
 | 10.4 | Result Publisher | P0 | Not Started | 10.1 | [task-10.4-result-publisher.md](../tasks/task-10.4-result-publisher.md) |
-| 10.5 | Webhook Retry Logic | P0 | Not Started | 10.4 | [task-10.5-webhook-retry.md](../tasks/task-10.5-webhook-retry.md) |
-| 10.6 | Workday Adapter | P1 | Not Started | 10.1 | [task-10.6-workday-adapter.md](../tasks/task-10.6-workday-adapter.md) |
+| 10.5 | Webhook Retry Logic | P1 | Not Started | 10.4 | [task-10.5-webhook-retry.md](../tasks/task-10.5-webhook-retry.md) |
+| 10.6 | Workday Adapter | P2 | Not Started | 10.1 | [task-10.6-workday-adapter.md](../tasks/task-10.6-workday-adapter.md) |
 | 10.7 | SAP SuccessFactors Adapter | P2 | Not Started | 10.1 | [task-10.7-sap-adapter.md](../tasks/task-10.7-sap-adapter.md) |
 | 10.8 | ADP Adapter | P2 | Not Started | 10.1 | [task-10.8-adp-adapter.md](../tasks/task-10.8-adp-adapter.md) |
 | 10.9 | Generic Webhook Adapter | P1 | Not Started | 10.1 | [task-10.9-generic-adapter.md](../tasks/task-10.9-generic-adapter.md) |
 | 10.10 | HRIS Configuration Manager | P1 | Not Started | 1.4, 10.1 | [task-10.10-hris-config.md](../tasks/task-10.10-hris-config.md) |
+
+**Note**: External HRIS adapters (Workday, SAP, ADP) are P2 - deferred until after MVP. Core integration infrastructure (gateway, webhooks, event processing) remains P0/P1.
 
 ## Key Workflows
 

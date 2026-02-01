@@ -128,11 +128,13 @@ This document summarizes all P0 (Critical) tasks across 12 phases. P0 tasks are 
 ### Phase 10 - Integration Layer (4 P0 tasks)
 | Task | Name | Status | Dependencies |
 |------|------|--------|--------------|
-| 10.1 | API Gateway | ⏳ Pending | 1.5 |
-| 10.2 | Authentication Middleware | ⏳ Pending | 10.1 |
-| 10.3 | Screening API Endpoints | ⏳ Pending | 7.7, 10.2 |
-| 10.4 | Webhook System | ⏳ Pending | 10.1 |
+| 10.1 | HRIS Integration Gateway (Core) | ⏳ Pending | 1.5 |
+| 10.2 | Webhook Receiver | ⏳ Pending | 10.1 |
+| 10.3 | Event Processor | ⏳ Pending | 10.2, Phase 7 |
+| 10.4 | Result Publisher | ⏳ Pending | 10.1 |
 **Status: 0/4 Complete**
+
+*Note: External HRIS adapters (Workday, SAP, ADP) are P2 - deferred to post-MVP.*
 
 ### Phase 11 - User Interfaces (2 P0 tasks)
 | Task | Name | Status | Dependencies |
@@ -183,7 +185,8 @@ Phase 7 P0 tasks are complete. The next P0 tasks are in Phase 8 (Reporting Syste
 
 - Complete all 76 P0 tasks before starting any P1 tasks
 - This ensures MVP screening functionality is complete
-- P1 tasks enhance but are not required for basic operation
+- P1/P2 tasks enhance but are not required for basic operation
+- External HRIS adapters (Workday, SAP, ADP) are P2, deferred to post-MVP
 
 ---
 

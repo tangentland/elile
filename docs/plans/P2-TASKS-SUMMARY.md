@@ -4,9 +4,9 @@
 
 This document summarizes all P2 (Medium Priority) tasks. P2 tasks are important features that can be delivered incrementally after core functionality is complete.
 
-**Total P2 Tasks**: 1 task
+**Total P2 Tasks**: 4 tasks
 **Completed**: 0
-**Remaining**: 1
+**Remaining**: 4
 
 ## Task Status by Phase
 
@@ -16,9 +16,21 @@ This document summarizes all P2 (Medium Priority) tasks. P2 tasks are important 
 | 6.12 | Risk Dashboard | ⏳ Pending | 6.7-6.11 |
 **Status: 0/1 Complete**
 
+### Phase 10 - Integration Layer (3 P2 tasks)
+| Task | Name | Status | Dependencies |
+|------|------|--------|--------------|
+| 10.6 | Workday Adapter | ⏳ Pending | 10.1 |
+| 10.7 | SAP SuccessFactors Adapter | ⏳ Pending | 10.1 |
+| 10.8 | ADP Adapter | ⏳ Pending | 10.1 |
+**Status: 0/3 Complete**
+
+*Note: External HRIS adapters are deferred to post-MVP. Core integration infrastructure (10.1-10.5) remains P0/P1.*
+
 ## Current Status
 
-Task 6.12 (Risk Dashboard) is the only defined P2 task. It is deferred until after MVP.
+P2 tasks are deferred until after MVP. These include:
+- Task 6.12: Risk Dashboard (UI visualization)
+- Tasks 10.6-10.8: External HRIS platform adapters (Workday, SAP, ADP)
 
 ## Candidate P2 Tasks
 
