@@ -284,7 +284,8 @@ Hand-Off Notes:
    - Merge feature branch to main
    - Tag as `phaseN/task-X.Y`
    - **DO NOT delete feature branches**
-9. **Compact context** using '/compact Read handoff.md and continue'
+9. **Read handoff.md and run /continue'**
+10. **Continue to next task**
    
 ## Documentation Synchronization (CRITICAL)
 

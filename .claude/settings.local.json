@@ -1,20 +1,75 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch",
-      "WebFetch(domain:docs.langchain.com)",
       "Bash(ruff check:*)",
-      "Bash(python3:*)",
-      "Bash(alembic init:*)",
-      "Bash(pip install:*)",
-      "Bash(pytest:*)",
-      "Bash(python3.14 -m pytest:*)",
       "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(python3.14:*)",
+      "Bash(alembic init:*)",
+      "Bash(pip:*)",
+      "Bash(pip3:*)",
+      "Bash(pytest:*)",
       "Bash(mypy:*)",
       "Bash(uv:*)",
+      "Bash(uvx:*)",
       "Bash(black:*)",
       "Bash(git:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(done)",
+      "Bash(curl:*)",
+      "Bash(mkdir:*)",
+      "Bash(rsync:*)",
+      "Bash(sed:*)",
+      "Bash(.venv/bin/*:*)",
+      "Bash(.venv/bin/python -m pytest:*)",
+      "Bash(.venv/bin/mypy src/elile/reporting/templates --strict)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(egrep:*)",
+      "Bash(pnpm:*)",
+      "Bash(npm:*)",
+      "Edit(*)",
+      "WebSearch",
+      "WebFetch(domain:docs.langchain.com)",
+      "Bash(.venv/bin/pytest:*)",
+      "Bash(PYTHONPATH=\"\" .venv/bin/python -m pytest:*)",
+      "Bash(PYTHONPATH=\"\" .venv/bin/python:*)",
+      "Bash(for f in /Users/tholley/github/atollogy/bdep/elile/docs/tasks/task-12.{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19}-*.md)",
+      "Bash(do sed -i '' 's/^\\\\*\\\\*Priority\\\\*\\\\*: P1/\\\\*\\\\*Priority\\\\*\\\\*: P2/' \"$f\")",
+      "Bash(echo:*)",
+      "Bash(for f in /Users/tholley/github/atollogy/bdep/elile/docs/tasks/task-11.{3,4,5,6,7,8,9,10,11,12}-*.md)"
     ]
+  },
+  "defaultMode": "bypassPermissions",
+  "allowedTools": [
+    "Task",
+    "Bash",
+    "Glob",
+    "Grep",
+    "LS",
+    "Read",
+    "Edit",
+    "MultiEdit",
+    "Write",
+    "WebFetch",
+    "WebSearch"
+  ],
+  "additionalDirectories": [],
+  "mcpServers": {
+    "postgres": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "DATABASE_URI",
+        "crystaldba/postgres-mcp",
+        "--access-mode=restricted"
+      ],
+      "env": {
+        "DATABASE_URI": "postgresql://mcp:mcp@host.docker.internal:5432/elile"
+      }
+    }
   }
 }
