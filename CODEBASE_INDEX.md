@@ -1916,11 +1916,12 @@ tests/
 | `src/elile/reporting/templates/__init__.py` | Templates package exports, re-exports from template_definitions | Task 8.2-8.3 |
 | `src/elile/reporting/templates/hr_summary.py` | HRSummaryBuilder, HRSummaryConfig, HRSummaryContent, RiskAssessmentDisplay, FindingIndicator, CategoryScore, CategoryStatus, RecommendedAction | Task 8.2 |
 | `src/elile/reporting/templates/compliance_audit.py` | ComplianceAuditBuilder, ComplianceAuditConfig, ComplianceAuditContent, ComplianceStatus, ConsentVerificationSection, ConsentRecord, DisclosureRecord, ComplianceRulesSection, AppliedRule, DataSourcesSection, DataSourceAccess, AuditTrailSection, AuditTrailEvent, DataHandlingSection, DataHandlingAttestation, DataHandlingStatus | Task 8.3 |
-| `src/elile/monitoring/__init__.py` | Monitoring module exports | Task 9.1-9.3 |
+| `src/elile/monitoring/__init__.py` | Monitoring module exports | Task 9.1-9.4 |
 | `src/elile/monitoring/types.py` | MonitoringConfig, MonitoringCheck, MonitoringStatus, CheckType, CheckStatus, LifecycleEvent, LifecycleEventType, ProfileDelta, DeltaSeverity, MonitoringAlert, AlertSeverity, ScheduleResult, MonitoringError | Task 9.1 |
 | `src/elile/monitoring/scheduler.py` | MonitoringScheduler, SchedulerConfig, MonitoringStore, InMemoryMonitoringStore, AUTO_ALERT_THRESHOLDS, HUMAN_REVIEW_THRESHOLDS, create_monitoring_scheduler | Task 9.1 |
 | `src/elile/monitoring/vigilance_manager.py` | VigilanceManager, ManagerConfig, VigilanceDecision, VigilanceUpdate, VigilanceChangeReason, EscalationAction, RoleVigilanceMapping, SchedulerProtocol, ROLE_DEFAULT_VIGILANCE, RISK_THRESHOLD_V2, RISK_THRESHOLD_V3, create_vigilance_manager | Task 9.2 |
 | `src/elile/monitoring/delta_detector.py` | DeltaDetector, DetectorConfig, DeltaResult, DeltaType, FindingChange, ConnectionChange, RiskScoreChange, create_delta_detector, severity_rank, severity_to_delta_severity | Task 9.3 |
+| `src/elile/monitoring/alert_generator.py` | AlertGenerator, AlertConfig, AlertStatus, GeneratedAlert, EscalationTrigger, NotificationChannel, NotificationChannelType, NotificationResult, MockEmailChannel, MockWebhookChannel, MockSMSChannel, AUTO_ALERT_THRESHOLDS, create_alert_generator | Task 9.4 |
 
 ## Architecture References
 

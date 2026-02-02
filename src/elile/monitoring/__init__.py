@@ -4,6 +4,21 @@ This module provides scheduling and execution of periodic monitoring checks
 based on vigilance levels (V1/V2/V3) for ongoing employee surveillance.
 """
 
+from elile.monitoring.alert_generator import (
+    AUTO_ALERT_THRESHOLDS,
+    AlertConfig,
+    AlertGenerator,
+    AlertStatus,
+    EscalationTrigger,
+    GeneratedAlert,
+    MockEmailChannel,
+    MockSMSChannel,
+    MockWebhookChannel,
+    NotificationChannel,
+    NotificationChannelType,
+    NotificationResult,
+    create_alert_generator,
+)
 from elile.monitoring.delta_detector import (
     ConnectionChange,
     DeltaDetector,
@@ -45,6 +60,20 @@ from elile.monitoring.vigilance_manager import (
 )
 
 __all__ = [
+    # Alert Generator
+    "AlertGenerator",
+    "AlertConfig",
+    "AlertStatus",
+    "GeneratedAlert",
+    "EscalationTrigger",
+    "NotificationChannel",
+    "NotificationChannelType",
+    "NotificationResult",
+    "MockEmailChannel",
+    "MockWebhookChannel",
+    "MockSMSChannel",
+    "AUTO_ALERT_THRESHOLDS",
+    "create_alert_generator",
     # Delta Detector
     "DeltaDetector",
     "DetectorConfig",

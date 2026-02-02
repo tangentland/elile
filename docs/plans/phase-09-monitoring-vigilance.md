@@ -22,7 +22,7 @@ Phase 9 implements ongoing employee monitoring with vigilance levels (V1/V2/V3),
 | 9.1 | Monitoring Scheduler | P0 | ✅ Complete | Phase 7 | [task-9.1-monitoring-scheduler.md](../tasks/task-9.1-monitoring-scheduler.md) |
 | 9.2 | Vigilance Level Manager | P0 | ✅ Complete | 9.1 | [task-9.2-vigilance-level-manager.md](../tasks/task-9.2-vigilance-level-manager.md) |
 | 9.3 | Delta Detector | P0 | ✅ Complete | 3.5, 9.1 | [task-9.3-delta-detector.md](../tasks/task-9.3-delta-detector.md) |
-| 9.4 | Alert Generator | P0 | Not Started | 9.3 | [task-9.4-alert-generator.md](../tasks/task-9.4-alert-generator.md) |
+| 9.4 | Alert Generator | P0 | ✅ Complete | 9.3 | [task-9.4-alert-generator.md](../tasks/task-9.4-alert-generator.md) |
 | 9.5 | V1 Scheduler (Annual Re-screen) | P1 | Not Started | 9.2 | [task-9.5-v1-scheduler.md](../tasks/task-9.5-v1-scheduler.md) |
 | 9.6 | V2 Scheduler (Monthly Delta) | P1 | Not Started | 9.2 | [task-9.6-v2-scheduler.md](../tasks/task-9.6-v2-scheduler.md) |
 | 9.7 | V3 Scheduler (Bi-monthly + Real-time) | P1 | Not Started | 9.2 | [task-9.7-v3-scheduler.md](../tasks/task-9.7-v3-scheduler.md) |
