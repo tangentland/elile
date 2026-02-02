@@ -2,6 +2,7 @@
 
 from fastapi import APIRouter
 
+from .compliance import router as compliance_router
 from .dashboard import router as dashboard_router
 from .hris_webhook import router as hris_webhook_router
 from .screening import router as screening_router
@@ -12,5 +13,12 @@ router = APIRouter(prefix="/v1")
 router.include_router(screening_router)
 router.include_router(hris_webhook_router)
 router.include_router(dashboard_router)
+router.include_router(compliance_router)
 
-__all__ = ["router", "screening_router", "hris_webhook_router", "dashboard_router"]
+__all__ = [
+    "router",
+    "screening_router",
+    "hris_webhook_router",
+    "dashboard_router",
+    "compliance_router",
+]

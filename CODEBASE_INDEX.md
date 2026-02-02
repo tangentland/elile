@@ -1947,6 +1947,8 @@ tests/
 | `src/elile/hris/result_publisher.py` | HRISResultPublisher, PublisherConfig, PublishResult, PublishStatus, PublishEventType, DeliveryRecord, create_result_publisher | Task 10.4 |
 | `src/elile/api/routers/v1/dashboard.py` | HR Dashboard API endpoints (portfolio, screenings, alerts, risk-distribution) | Task 11.1 |
 | `src/elile/api/schemas/dashboard.py` | HRPortfolioResponse, HRScreeningsListResponse, HRAlertsListResponse, RiskDistributionResponse, PortfolioMetrics, RiskDistribution, RiskDistributionItem, AlertSummary, ScreeningSummary | Task 11.1 |
+| `src/elile/api/routers/v1/compliance.py` | Compliance Portal API endpoints (audit-log, consent-tracking, data-erasure, reports, metrics) | Task 11.2 |
+| `src/elile/api/schemas/compliance.py` | AuditLogResponse, ConsentTrackingResponse, DataErasureRequest, DataErasureResponse, ComplianceReportsListResponse, ComplianceMetricsResponse, ErasureStatus, ComplianceStatus | Task 11.2 |
 
 ## Architecture References
 
