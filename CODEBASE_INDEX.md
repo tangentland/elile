@@ -23,7 +23,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 | `src/elile/screening/` | End-to-end screening workflow orchestration | `ScreeningOrchestrator`, `ScreeningRequest`, `ScreeningResult` |
 | `src/elile/reporting/` | Persona-specific report generation | `ReportGenerator`, `TemplateRegistry`, `ReportPersona`, `OutputFormat` |
 | `src/elile/monitoring/` | Ongoing employee vigilance and monitoring | `MonitoringScheduler`, `VigilanceManager`, `MonitoringConfig`, `MonitoringCheck`, `LifecycleEvent` |
-| `src/elile/hris/` | HRIS integration gateway for bidirectional platform communication | `HRISGateway`, `HRISAdapter`, `HRISEvent`, `GatewayConfig` |
+| `src/elile/hris/` | HRIS integration gateway and event processing | `HRISGateway`, `HRISAdapter`, `HRISEvent`, `HRISEventProcessor`, `GatewayConfig` |
 | `src/elile/utils/` | Shared utilities and base exceptions | `ElileError` |
 
 ## API Layer (`src/elile/api/`)
@@ -1943,6 +1943,7 @@ tests/
 | `src/elile/hris/gateway.py` | HRISGateway, GatewayConfig, HRISAdapter, BaseHRISAdapter, MockHRISAdapter, HRISEvent, HRISEventType, HRISPlatform, HRISConnection, HRISConnectionStatus, ScreeningUpdate, AlertUpdate, EmployeeInfo, WebhookValidationResult, create_hris_gateway | Task 10.1 |
 | `src/elile/api/routers/v1/hris_webhook.py` | HRIS webhook receiver endpoints (POST /{tenant_id}, /test, GET /status) | Task 10.2 |
 | `src/elile/api/schemas/hris_webhook.py` | WebhookResponse, WebhookTestResponse, WebhookConnectionStatus, WebhookErrorCode | Task 10.2 |
+| `src/elile/hris/event_processor.py` | HRISEventProcessor, ProcessorConfig, ProcessingResult, ProcessingStatus, ProcessingAction, EventStore, InMemoryEventStore, create_event_processor | Task 10.3 |
 
 ## Architecture References
 

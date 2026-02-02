@@ -26,14 +26,23 @@ class WebhookResponse(BaseModel):
     event_id: UUID = Field(description="Unique identifier for this event")
     timestamp: datetime = Field(description="Time the event was received")
     message: str | None = Field(default=None, description="Optional status message")
+    processing_result: dict[str, Any] | None = Field(
+        default=None,
+        description="Details of event processing result",
+    )
 
     model_config = {
         "json_schema_extra": {
             "example": {
-                "status": "received",
+                "status": "processed",
                 "event_id": "01234567-89ab-cdef-0123-456789abcdef",
                 "timestamp": "2026-01-30T12:00:00Z",
-                "message": None,
+                "message": "Event hire.initiated processed: screening_initiated",
+                "processing_result": {
+                    "status": "success",
+                    "action": "screening_initiated",
+                    "screening_id": "01234567-89ab-cdef-0123-456789abcdef",
+                },
             }
         }
     }

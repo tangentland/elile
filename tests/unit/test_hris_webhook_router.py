@@ -91,10 +91,13 @@ class TestReceiveWebhook:
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
-        assert data["status"] == "received"
+        # Event processor returns "processed" for successfully processed events
+        assert data["status"] == "processed"
         assert "event_id" in data
         assert "timestamp" in data
-        assert "EMP-001" in data["message"]
+        assert "processing_result" in data
+        # Message includes the processing action
+        assert "screening_initiated" in data["message"]
 
     def test_receive_webhook_with_event_type_header(
         self, client: TestClient, tenant_id: UUID
@@ -117,8 +120,9 @@ class TestReceiveWebhook:
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
+        # consent.granted without pending screening is skipped
         assert data["status"] == "received"
-        assert "consent.granted" in data["message"]
+        assert "no action required" in data["message"].lower()
 
     def test_receive_webhook_unknown_tenant(self, client: TestClient) -> None:
         """Test webhook for unknown tenant returns 404."""
@@ -343,7 +347,10 @@ class TestWebhookEventTypes:
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
-        assert data["status"] == "received"
+        # Event processor returns different statuses based on event type:
+        # - hire.initiated and rehire.initiated: "processed" (creates pending screening)
+        # - Others without subject mapping or pending screening: "received"
+        assert data["status"] in ["received", "processed"]
 
     @pytest.mark.parametrize(
         "header_name",

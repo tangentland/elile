@@ -22,7 +22,10 @@ from elile.api.schemas.hris_webhook import (
     WebhookTestResponse,
 )
 from elile.hris import (
+    HRISEventProcessor,
     HRISGateway,
+    ProcessingStatus,
+    create_event_processor,
     create_hris_gateway,
 )
 
@@ -36,8 +39,9 @@ router = APIRouter(prefix="/hris/webhooks", tags=["hris-webhooks"])
 # =============================================================================
 
 
-# Module-level gateway singleton
+# Module-level singletons
 _gateway: HRISGateway | None = None
+_event_processor: HRISEventProcessor | None = None
 
 
 def get_hris_gateway() -> HRISGateway:
@@ -50,6 +54,18 @@ def get_hris_gateway() -> HRISGateway:
     if _gateway is None:
         _gateway = create_hris_gateway(include_mock_adapter=True)
     return _gateway
+
+
+def get_event_processor() -> HRISEventProcessor:
+    """Get the HRIS event processor instance.
+
+    Returns a singleton event processor. In production, this would be
+    configured with screening and monitoring services during app startup.
+    """
+    global _event_processor
+    if _event_processor is None:
+        _event_processor = create_event_processor()
+    return _event_processor
 
 
 # =============================================================================
@@ -90,6 +106,7 @@ async def receive_webhook(
     tenant_id: UUID,
     request: Request,
     gateway: Annotated[HRISGateway, Depends(get_hris_gateway)],
+    event_processor: Annotated[HRISEventProcessor, Depends(get_event_processor)],
 ) -> WebhookResponse:
     """Receive and process an HRIS webhook.
 
@@ -296,14 +313,42 @@ async def receive_webhook(
         request_id=request_id,
     )
 
-    # TODO: Task 10.3 - Route event to Event Processor
-    # For now, just acknowledge receipt
+    # Route event to Event Processor
+    processing_result = await event_processor.process_event(event)
+
+    # Log processing result
+    logger.info(
+        "AUDIT: hris_event_processing_complete",
+        audit_event_type="hris.event_processing_complete",
+        event_id=str(event.event_id),
+        event_type=event.event_type.value,
+        processing_status=processing_result.status.value,
+        processing_action=processing_result.action.value,
+        request_id=request_id,
+    )
+
+    # Determine response status based on processing result
+    if processing_result.status == ProcessingStatus.SUCCESS:
+        response_status = WebhookStatus.PROCESSED
+        message = (
+            f"Event {event.event_type.value} processed: {processing_result.action.value}"
+        )
+    elif processing_result.status == ProcessingStatus.QUEUED:
+        response_status = WebhookStatus.RECEIVED
+        message = f"Event {event.event_type.value} queued for processing"
+    elif processing_result.status == ProcessingStatus.SKIPPED:
+        response_status = WebhookStatus.RECEIVED
+        message = f"Event {event.event_type.value} received (no action required)"
+    else:
+        response_status = WebhookStatus.RECEIVED
+        message = f"Event {event.event_type.value} received"
 
     return WebhookResponse(
-        status=WebhookStatus.RECEIVED,
+        status=response_status,
         event_id=event.event_id,
         timestamp=event.received_at,
-        message=f"Event {event.event_type.value} received for employee {event.employee_id}",
+        message=message,
+        processing_result=processing_result.to_dict() if processing_result else None,
     )
 
 
@@ -447,3 +492,21 @@ def reset_gateway() -> None:
     """
     global _gateway
     _gateway = None
+
+
+def reset_event_processor() -> None:
+    """Reset the global event processor singleton.
+
+    Used for testing to ensure a fresh processor is created.
+    """
+    global _event_processor
+    _event_processor = None
+
+
+def reset_all() -> None:
+    """Reset all global singletons.
+
+    Used for testing to ensure fresh instances are created.
+    """
+    reset_gateway()
+    reset_event_processor()
