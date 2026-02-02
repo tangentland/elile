@@ -1461,7 +1461,7 @@ Six report types (Summary, Audit, Investigation, Case File, Disclosure, Portfoli
 
 ## Phase 9: Monitoring & Vigilance (P1 - High)
 
-**Status**: 🟡 In Progress (1/12 tasks complete)
+**Status**: 🟡 In Progress (2/12 tasks complete)
 **Dependencies**: Phase 7
 
 Ongoing monitoring, vigilance levels (V0-V3), alert generation, change detection.
@@ -1494,6 +1494,36 @@ Ongoing monitoring, vigilance levels (V0-V3), alert generation, change detection
 - `src/elile/monitoring/types.py` - Types and data models
 - `src/elile/monitoring/scheduler.py` - MonitoringScheduler class
 - `tests/unit/test_monitoring_scheduler.py` - Unit tests
+
+---
+
+#### ✅ Task 9.2: Vigilance Level Manager
+**Priority**: P0
+**Status**: Complete
+**Completed**: 2026-02-02
+**Tag**: `phase9/task-9.2`
+**Dependencies**: Task 9.1
+
+**Deliverables**:
+- ✅ VigilanceManager for determining and updating vigilance levels
+- ✅ Role-based default vigilance levels (ROLE_DEFAULT_VIGILANCE mapping)
+- ✅ Risk-based escalation with configurable thresholds (V2: 50, V3: 75)
+- ✅ VigilanceDecision dataclass with full audit trail
+- ✅ VigilanceUpdate dataclass for tracking update results
+- ✅ Tenant-specific role mappings with RoleVigilanceMapping
+- ✅ Position change evaluation (evaluate_position_change)
+- ✅ Risk escalation evaluation (evaluate_for_escalation)
+- ✅ Downgrade validation with role/risk constraints
+- ✅ Lifecycle event creation helpers (position_change, promotion, upgrade, downgrade)
+- ✅ Decision history tracking
+- ✅ SchedulerProtocol for loose coupling with MonitoringScheduler
+- ✅ ManagerConfig for configurable behavior
+- ✅ 72 unit tests
+
+**Key Files**:
+- `src/elile/monitoring/vigilance_manager.py` - VigilanceManager class
+- `src/elile/monitoring/__init__.py` - Module exports
+- `tests/unit/test_vigilance_manager.py` - Unit tests
 
 ---
 

@@ -1,44 +1,45 @@
 ---
 Session Handoff for:
-Phase-09-Monitoring-Vigilance in `docs/plans/phase-09-monitoring-vigilance.md`
-Task 9.1 in `docs/tasks/task-9.1-monitoring-scheduler.md`
+Phase 9 in `docs/plans/phase-09-monitoring-vigilance.md`
+Task 9.2 in `docs/tasks/task-9.2-vigilance-level-manager.md`
 
 Completed:
-- MonitoringScheduler for vigilance-level based scheduling (V1/V2/V3)
-- Configurable intervals: V1 (365 days), V2 (30 days), V3 (15 days)
-- MonitoringConfig, MonitoringCheck, ProfileDelta, MonitoringAlert types
-- Alert threshold management by vigilance level (V1: critical only, V2: high+, V3: medium+)
-- Lifecycle event handling (termination, leave, promotion, transfer, rehire, vigilance changes)
-- MonitoringStore protocol with InMemoryMonitoringStore implementation
-- Pause/resume/terminate monitoring operations
-- 70 unit tests
+- Implemented VigilanceManager for determining and updating vigilance levels
+- Role-based default vigilance levels (ROLE_DEFAULT_VIGILANCE mapping)
+- Risk-based escalation with configurable thresholds (V2: 50, V3: 75)
+- VigilanceDecision and VigilanceUpdate dataclasses with audit trails
+- Tenant-specific role mappings with RoleVigilanceMapping
+- Position change and risk escalation evaluation methods
+- Downgrade validation with role/risk constraints
+- Lifecycle event creation helpers
+- SchedulerProtocol for loose coupling with MonitoringScheduler
+- 72 unit tests for VigilanceManager
 
-Key Files Created:
-- `src/elile/monitoring/__init__.py` - Module exports
-- `src/elile/monitoring/types.py` - Types and data models
-- `src/elile/monitoring/scheduler.py` - MonitoringScheduler class
-- `tests/unit/test_monitoring_scheduler.py` - Unit tests
+Key Files:
+- `src/elile/monitoring/vigilance_manager.py` - VigilanceManager class
+- `src/elile/monitoring/__init__.py` - Updated module exports
+- `tests/unit/test_vigilance_manager.py` - Unit tests
+- `implementation_plans/task-9.2-vigilance-level-manager.md` - Implementation plan
 
 Git State:
-- Branch: main
-- Latest tag: phase9/task-9.1 (to be created after commit)
-- Total tests: 2509
+- Branch: feature/task-9.2-vigilance-manager
+- Latest tag: (pending merge and tag)
+- Total tests: 2581
 
-Next Task: Task 9.2 - Vigilance Level Manager
-- Location: docs/tasks/task-9.2-vigilance-level-manager.md (may need to be created)
-- Dependencies: Task 2.3 (Vigilance Levels), Task 9.1 (complete)
-- Purpose: Manage vigilance level transitions, ensure proper configuration
-
-P0 Progress:
-- Completed: 63/76 P0 tasks (83%)
-- Remaining Phase 9 P0: Tasks 9.2, 9.3, 9.4
+Next Task: Task 9.3 - Delta Detector
+- Location: docs/tasks/task-9.3-v1-scheduler.md (note: actual next P0 is 9.6 Delta Detector)
+- The next P0 task is Task 9.6 (Delta Detector), not 9.3-9.5 which are V1/V2/V3 schedulers
+- Per phase-09-monitoring-vigilance.md, Tasks 9.3-9.5 are V1/V2/V3 schedulers
+- Task 9.6 (Delta Detector) is the next P0 task
+- Dependencies: 3.5 (Profile Delta)
 
 User Preferences:
-- Don't delete feature branches
+- DO NOT delete feature branches after merge
 
 Notes:
-- Delta detection currently returns empty list (placeholder)
-- Production implementation will integrate with screening orchestrator
-- Persistent storage backend needed (currently using InMemoryMonitoringStore)
-- Task file names in phase-09 document may not match actual task files (check docs/tasks/)
+- Phase 9 has complex task numbering - check docs/plans/phase-09-monitoring-vigilance.md for task list
+- Per P0-TASKS-SUMMARY.md, remaining Phase 9 P0 tasks are:
+  - 9.3 (listed as Delta Detector in P0 summary - maps to 9.6 in phase plan)
+  - 9.4 (listed as Alert Generator in P0 summary - maps to 9.8 in phase plan)
+- Verify task mapping before proceeding
 ---

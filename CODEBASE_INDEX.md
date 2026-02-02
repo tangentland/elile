@@ -22,7 +22,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 | `src/elile/risk/` | Risk analysis and scoring | `RiskScorer`, `FindingClassifier`, `SeverityCalculator`, `AnomalyDetector` |
 | `src/elile/screening/` | End-to-end screening workflow orchestration | `ScreeningOrchestrator`, `ScreeningRequest`, `ScreeningResult` |
 | `src/elile/reporting/` | Persona-specific report generation | `ReportGenerator`, `TemplateRegistry`, `ReportPersona`, `OutputFormat` |
-| `src/elile/monitoring/` | Ongoing employee vigilance and monitoring | `MonitoringScheduler`, `MonitoringConfig`, `MonitoringCheck`, `LifecycleEvent` |
+| `src/elile/monitoring/` | Ongoing employee vigilance and monitoring | `MonitoringScheduler`, `VigilanceManager`, `MonitoringConfig`, `MonitoringCheck`, `LifecycleEvent` |
 | `src/elile/utils/` | Shared utilities and base exceptions | `ElileError` |
 
 ## API Layer (`src/elile/api/`)
@@ -1916,9 +1916,10 @@ tests/
 | `src/elile/reporting/templates/__init__.py` | Templates package exports, re-exports from template_definitions | Task 8.2-8.3 |
 | `src/elile/reporting/templates/hr_summary.py` | HRSummaryBuilder, HRSummaryConfig, HRSummaryContent, RiskAssessmentDisplay, FindingIndicator, CategoryScore, CategoryStatus, RecommendedAction | Task 8.2 |
 | `src/elile/reporting/templates/compliance_audit.py` | ComplianceAuditBuilder, ComplianceAuditConfig, ComplianceAuditContent, ComplianceStatus, ConsentVerificationSection, ConsentRecord, DisclosureRecord, ComplianceRulesSection, AppliedRule, DataSourcesSection, DataSourceAccess, AuditTrailSection, AuditTrailEvent, DataHandlingSection, DataHandlingAttestation, DataHandlingStatus | Task 8.3 |
-| `src/elile/monitoring/__init__.py` | Monitoring module exports | Task 9.1 |
+| `src/elile/monitoring/__init__.py` | Monitoring module exports | Task 9.1-9.2 |
 | `src/elile/monitoring/types.py` | MonitoringConfig, MonitoringCheck, MonitoringStatus, CheckType, CheckStatus, LifecycleEvent, LifecycleEventType, ProfileDelta, DeltaSeverity, MonitoringAlert, AlertSeverity, ScheduleResult, MonitoringError | Task 9.1 |
 | `src/elile/monitoring/scheduler.py` | MonitoringScheduler, SchedulerConfig, MonitoringStore, InMemoryMonitoringStore, AUTO_ALERT_THRESHOLDS, HUMAN_REVIEW_THRESHOLDS, create_monitoring_scheduler | Task 9.1 |
+| `src/elile/monitoring/vigilance_manager.py` | VigilanceManager, ManagerConfig, VigilanceDecision, VigilanceUpdate, VigilanceChangeReason, EscalationAction, RoleVigilanceMapping, SchedulerProtocol, ROLE_DEFAULT_VIGILANCE, RISK_THRESHOLD_V2, RISK_THRESHOLD_V3, create_vigilance_manager | Task 9.2 |
 
 ## Architecture References
 
