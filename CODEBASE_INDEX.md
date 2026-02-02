@@ -8,7 +8,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 |--------|---------|----------------------|
 | `src/elile/api/` | FastAPI application and middleware | `create_app()`, `APIError`, middleware stack |
 | `src/elile/core/` | Core framework: context, audit, encryption, errors, logging | `RequestContext`, `AuditLogger`, `Encryptor`, `ErrorHandler`, `get_logger()` |
-| `src/elile/compliance/` | Locale-aware compliance engine | `ComplianceEngine`, `Locale`, `CheckType`, `Consent`, `ServiceConfigValidator`, `RetentionManager` |
+| `src/elile/compliance/` | Locale-aware compliance engine | `ComplianceEngine`, `Locale`, `CheckType`, `Consent`, `ServiceConfigValidator`, `RetentionManager`, `ErasureService` |
 | `src/elile/entity/` | Entity resolution, matching, tenant isolation | `EntityMatcher`, `EntityManager`, `TenantAwareEntityService` |
 | `src/elile/providers/` | Data provider abstraction and registry | `DataProvider`, `ProviderRegistry`, `ProviderResult` |
 | `src/elile/investigation/` | SAR (Search-Assess-Refine) loop orchestration | `SARStateMachine`, `SARConfig`, `QueryPlanner`, `SearchQuery` |
@@ -288,6 +288,67 @@ report = manager.generate_report(tenant_id=tenant_uuid)
 | `ANONYMIZE` | Remove PII, keep structure |
 | `ARCHIVE` | Move to cold storage |
 | `CRYPTO_SHRED` | Delete encryption keys |
+
+### GDPR Erasure (`src/elile/compliance/erasure/`)
+```python
+from elile.compliance.erasure import (
+    ErasureService, ErasureType, ErasureStatus,
+    LegalHoldException, get_erasure_service,
+)
+from elile.compliance.types import Locale
+
+# Get erasure service singleton
+service = get_erasure_service()
+
+# Submit erasure request
+operation = await service.submit_erasure_request(
+    subject_id=subject_uuid,
+    tenant_id=tenant_uuid,
+    locale=Locale.EU,
+    erasure_type=ErasureType.FULL_ERASURE,
+    reason="GDPR Article 17 request",
+)
+
+# Verify identity
+operation = await service.verify_identity(
+    operation.operation_id,
+    verification_method="email_confirmation",
+)
+
+# Process erasure (may raise LegalHoldException)
+try:
+    operation = await service.process_erasure_request(operation.operation_id)
+except LegalHoldException as e:
+    print(f"Blocked: {e.hold_reason}")
+
+# Generate confirmation report
+report = await service.generate_confirmation_report(operation.operation_id)
+```
+
+#### Erasure Types
+| Type | Description |
+|------|-------------|
+| `FULL_ERASURE` | Complete deletion of all personal data |
+| `ANONYMIZE` | Anonymize PII while preserving statistical data |
+| `EXPORT` | Export data before erasure (data portability) |
+| `SELECTIVE` | Delete only specific data types |
+
+#### Anonymization Methods
+| Method | Example |
+|--------|---------|
+| `REDACTION` | `[REDACTED]` |
+| `MASKING` | `***-**-6789` |
+| `GENERALIZATION` | `1985` (from date) |
+| `TOKENIZATION` | `tok_abc123def456` |
+| `PSEUDONYMIZATION` | Fake identifiers |
+| `HASHING` | SHA-256 hash |
+
+#### GDPR Deadlines
+| Locale | Deadline | Regulation |
+|--------|----------|------------|
+| EU | 30 days | GDPR |
+| UK | 30 days | UK GDPR |
+| Brazil | 15 days | LGPD |
 
 ## Entity Resolution (`src/elile/entity/`)
 
@@ -2137,6 +2198,10 @@ tests/
 | `src/elile/compliance/retention/types.py` | DataType, DeletionMethod, RetentionPolicy, RetentionRecord, ErasureRequest | Task 3.9 |
 | `src/elile/compliance/retention/policies.py` | Default policies, locale-specific policies, get_policy_for_data_type | Task 3.9 |
 | `src/elile/compliance/retention/manager.py` | RetentionManager, RetentionManagerConfig | Task 3.9 |
+| `src/elile/compliance/erasure/__init__.py` | Erasure module exports | Task 3.10 |
+| `src/elile/compliance/erasure/types.py` | ErasureType, ErasureStatus, ErasureOperation, ErasureConfirmationReport, LegalHoldException | Task 3.10 |
+| `src/elile/compliance/erasure/anonymizer.py` | DataAnonymizer, AnonymizationConfig, PII_FIELD_PATTERNS | Task 3.10 |
+| `src/elile/compliance/erasure/service.py` | ErasureService, ErasureServiceConfig, get_erasure_service | Task 3.10 |
 | `src/elile/entity/types.py` | MatchResult, SubjectIdentifiers, enums | Task 3.1 |
 | `src/elile/entity/matcher.py` | EntityMatcher class | Task 3.1 |
 | `src/elile/entity/deduplication.py` | EntityDeduplicator, MergeResult | Task 3.2 |
