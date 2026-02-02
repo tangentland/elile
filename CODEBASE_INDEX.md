@@ -2336,7 +2336,7 @@ tests/
 | `src/elile/screening/__init__.py` | Screening module exports | Task 7.1 |
 | `src/elile/screening/types.py` | ScreeningRequest, ScreeningResult, ScreeningStatus, ReportType, ScreeningPhaseResult, ScreeningCostSummary, GeneratedReport, ScreeningError | Task 7.1 |
 | `src/elile/screening/orchestrator.py` | ScreeningOrchestrator, OrchestratorConfig, create_screening_orchestrator | Task 7.1 |
-| `src/elile/screening/degree_handlers.py` | D1Handler, D2Handler, D3Handler, DegreeHandlerConfig, D1Result, D2Result, D3Result, create_d1_handler, create_d2_handler, create_d3_handler | Task 7.2-7.3 |
+| `src/elile/screening/degree_handlers.py` | D1Handler, D2Handler, D3Handler, DegreeHandlerConfig, D1Result, D2Result, D3Result, D3ReviewPoint, D3ReviewPointType, D3SourceCoverage, create_d1_handler, create_d2_handler, create_d3_handler | Task 7.2-7.3, 7.8 |
 | `src/elile/screening/tier_router.py` | TierRouter, TierRouterConfig, TierCapabilities, DataSourceSpec, DataSourceTier, RoutingResult, create_tier_router, create_default_data_sources | Task 7.4 |
 | `src/elile/screening/state_manager.py` | ScreeningStateManager, StateManagerConfig, ScreeningState, ScreeningPhase, ProgressEvent, ProgressEventType, StateStore, InMemoryStateStore, create_state_manager | Task 7.5 |
 | `src/elile/screening/result_compiler.py` | ResultCompiler, CompilerConfig, CompiledResult, FindingsSummary, CategorySummary, InvestigationSummary, SARSummary, ConnectionSummary, SummaryFormat, create_result_compiler | Task 7.6 |
