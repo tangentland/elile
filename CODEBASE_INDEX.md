@@ -2296,6 +2296,11 @@ tests/
 | `src/elile/providers/sanctions/matcher.py` | NameMatcher, FuzzyMatchConfig, Jaro-Winkler, phonetic matching | Task 4.11 |
 | `src/elile/providers/sanctions/provider.py` | SanctionsProvider, SanctionsProviderConfig, execute_check | Task 4.11 |
 | `src/elile/providers/sanctions/scheduler.py` | SanctionsUpdateScheduler, UpdateFrequency, ListUpdateConfig, ListUpdateResult | Task 4.11 |
+| `src/elile/providers/education/__init__.py` | Education provider exports | Task 4.12 |
+| `src/elile/providers/education/types.py` | DegreeType, InstitutionType, AccreditationType, VerificationStatus, Institution, ClaimedEducation, VerifiedEducation, EducationVerificationResult | Task 4.12 |
+| `src/elile/providers/education/matcher.py` | InstitutionMatcher, DegreeTypeMatcher, institution name fuzzy matching | Task 4.12 |
+| `src/elile/providers/education/diploma_mill.py` | DiplomaMilDetector, diploma mill database and detection | Task 4.12 |
+| `src/elile/providers/education/provider.py` | EducationProvider, EducationProviderConfig, execute_check, verify_education | Task 4.12 |
 | `src/elile/investigation/models.py` | SARPhase, CompletionReason, SARIterationState, SARTypeState, SARConfig, SARSummary | Task 5.1 |
 | `src/elile/investigation/sar_machine.py` | SARStateMachine, create_sar_machine, FOUNDATION_TYPES | Task 5.1 |
 | `src/elile/investigation/query_planner.py` | QueryPlanner, QueryPlanResult, SearchQuery, QueryType, INFO_TYPE_TO_CHECK_TYPES | Task 5.2 |

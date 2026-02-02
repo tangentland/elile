@@ -460,7 +460,9 @@ class SanctionsProvider(BaseDataProvider):
 
         return " ".join(parts)
 
-    def _normalize_screening_result(self, result: SanctionsScreeningResult) -> dict[str, Any]:
+    def _normalize_screening_result(
+        self, result: SanctionsScreeningResult
+    ) -> dict[str, Any]:
         """Normalize screening result to standard format."""
         return {
             "screening": {
@@ -488,9 +490,7 @@ class SanctionsProvider(BaseDataProvider):
                     "match_reasons": m.match_reasons,
                     "programs": m.entity.programs,
                     "nationality": m.entity.nationality,
-                    "listed_date": (
-                        m.entity.listed_date.isoformat() if m.entity.listed_date else None
-                    ),
+                    "listed_date": m.entity.listed_date.isoformat() if m.entity.listed_date else None,
                 }
                 for m in result.matches
             ],
