@@ -26,6 +26,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 | `src/elile/hris/` | HRIS integration gateway and event processing | `HRISGateway`, `HRISAdapter`, `HRISEvent`, `HRISEventProcessor`, `HRISResultPublisher`, `GatewayConfig` |
 | `src/elile/observability/` | OpenTelemetry tracing and Prometheus metrics | `TracingManager`, `MetricsManager`, `TracingConfig`, `MetricsConfig` |
 | `src/elile/security/` | Security hardening: headers, rate limiting, sanitization | `SecurityHeadersMiddleware`, `RateLimiterMiddleware`, `InputSanitizer`, `SecurityConfig` |
+| `src/elile/secrets/` | Secrets management: Vault integration, caching, rotation | `VaultSecretsManager`, `EnvironmentSecretsManager`, `SecretCache`, `SecretRotator` |
 | `src/elile/utils/` | Shared utilities and base exceptions | `ElileError` |
 
 ## API Layer (`src/elile/api/`)
