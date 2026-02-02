@@ -2310,6 +2310,9 @@ tests/
 | `src/elile/providers/osint/deduplicator.py` | OSINTDeduplicator, DeduplicationResult, create_deduplicator, SequenceMatcher-based similarity | Task 4.14 |
 | `src/elile/providers/osint/entity_extractor.py` | EntityExtractor (regex patterns for emails, phones, URLs, social handles), RelationshipExtractor, create_entity_extractor, create_relationship_extractor | Task 4.14 |
 | `src/elile/providers/osint/provider.py` | OSINTProvider, create_osint_provider, get_osint_provider, gather_intelligence, search_social_media, search_news | Task 4.14 |
+| `src/elile/providers/synthesis/__init__.py` | LLM Synthesis provider exports | Task 4.16 |
+| `src/elile/providers/synthesis/types.py` | SourceType, AttestationType, RelationshipType, ConfidenceFactor, PublicSource, LinkedInProfile, LinkedInRecommendation, NewsArticle, SECFiling, EmploymentAttestation, EducationAttestation, SynthesizedEmploymentVerification, SynthesizedEducationVerification, SynthesizedAdverseMedia, LLMSynthesisProviderConfig | Task 4.16 |
+| `src/elile/providers/synthesis/provider.py` | LLMSynthesisProvider, create_synthesis_provider, get_synthesis_provider, AttestationScorer, EmploymentAttestationAggregator, EducationAttestationAggregator | Task 4.16 |
 | `src/elile/investigation/models.py` | SARPhase, CompletionReason, SARIterationState, SARTypeState, SARConfig, SARSummary | Task 5.1 |
 | `src/elile/investigation/sar_machine.py` | SARStateMachine, create_sar_machine, FOUNDATION_TYPES | Task 5.1 |
 | `src/elile/investigation/query_planner.py` | QueryPlanner, QueryPlanResult, SearchQuery, QueryType, INFO_TYPE_TO_CHECK_TYPES | Task 5.2 |
