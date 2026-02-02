@@ -2301,6 +2301,10 @@ tests/
 | `src/elile/providers/education/matcher.py` | InstitutionMatcher, DegreeTypeMatcher, institution name fuzzy matching | Task 4.12 |
 | `src/elile/providers/education/diploma_mill.py` | DiplomaMilDetector, diploma mill database and detection | Task 4.12 |
 | `src/elile/providers/education/provider.py` | EducationProvider, EducationProviderConfig, execute_check, verify_education | Task 4.12 |
+| `src/elile/providers/darkweb/__init__.py` | Dark web provider exports | Task 4.13 |
+| `src/elile/providers/darkweb/types.py` | DarkWebSource, MentionType, SeverityLevel, ConfidenceLevel, CredentialType, BreachInfo, CredentialLeak, MarketplaceListing, ForumMention, ThreatIndicator, DarkWebSearchResult, DarkWebProviderConfig | Task 4.13 |
+| `src/elile/providers/darkweb/breach_database.py` | BreachDatabase, create_breach_database, KNOWN_BREACHES (LinkedIn, Yahoo, Equifax, etc.) | Task 4.13 |
+| `src/elile/providers/darkweb/provider.py` | DarkWebProvider, create_darkweb_provider, get_darkweb_provider, search_dark_web, check_credential_leaks | Task 4.13 |
 | `src/elile/investigation/models.py` | SARPhase, CompletionReason, SARIterationState, SARTypeState, SARConfig, SARSummary | Task 5.1 |
 | `src/elile/investigation/sar_machine.py` | SARStateMachine, create_sar_machine, FOUNDATION_TYPES | Task 5.1 |
 | `src/elile/investigation/query_planner.py` | QueryPlanner, QueryPlanResult, SearchQuery, QueryType, INFO_TYPE_TO_CHECK_TYPES | Task 5.2 |
