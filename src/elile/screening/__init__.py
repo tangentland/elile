@@ -34,26 +34,6 @@ Usage:
         print(f"Risk score: {result.risk_score}")
 """
 
-from elile.screening.types import (
-    GeneratedReport,
-    ReportType,
-    ScreeningComplianceError,
-    ScreeningCostSummary,
-    ScreeningError,
-    ScreeningExecutionError,
-    ScreeningPhaseResult,
-    ScreeningPriority,
-    ScreeningRequest,
-    ScreeningRequestCreate,
-    ScreeningResult,
-    ScreeningStatus,
-    ScreeningValidationError,
-)
-from elile.screening.orchestrator import (
-    OrchestratorConfig,
-    ScreeningOrchestrator,
-    create_screening_orchestrator,
-)
 from elile.screening.degree_handlers import (
     D1Handler,
     D1Result,
@@ -65,39 +45,6 @@ from elile.screening.degree_handlers import (
     create_d1_handler,
     create_d2_handler,
     create_d3_handler,
-)
-from elile.screening.tier_router import (
-    DataSourceSpec,
-    DataSourceTier,
-    TierCapabilities,
-    TierRouter,
-    TierRouterConfig,
-    RoutingResult,
-    create_tier_router,
-    create_default_data_sources,
-)
-from elile.screening.state_manager import (
-    InMemoryStateStore,
-    ProgressEvent,
-    ProgressEventType,
-    ScreeningPhase,
-    ScreeningState,
-    ScreeningStateManager,
-    StateManagerConfig,
-    StateStore,
-    create_state_manager,
-)
-from elile.screening.result_compiler import (
-    CategorySummary,
-    CompiledResult,
-    CompilerConfig,
-    ConnectionSummary,
-    FindingsSummary,
-    InvestigationSummary,
-    ResultCompiler,
-    SARSummary,
-    SummaryFormat,
-    create_result_compiler,
 )
 from elile.screening.index import (
     ConnectionStrength,
@@ -118,6 +65,73 @@ from elile.screening.index import (
     SubjectNotFoundError,
     create_index,
     get_cross_screening_index,
+)
+from elile.screening.orchestrator import (
+    OrchestratorConfig,
+    ScreeningOrchestrator,
+    create_screening_orchestrator,
+)
+from elile.screening.queue import (
+    DequeueResult,
+    InMemoryQueueStorage,
+    QueueConfig,
+    QueuedScreening,
+    QueueMetrics,
+    QueueStatus,
+    QueueStorage,
+    RedisQueueStorage,
+    ScreeningQueueManager,
+    WorkerStatus,
+    create_queue_manager,
+    create_queue_manager_async,
+)
+from elile.screening.result_compiler import (
+    CategorySummary,
+    CompiledResult,
+    CompilerConfig,
+    ConnectionSummary,
+    FindingsSummary,
+    InvestigationSummary,
+    ResultCompiler,
+    SARSummary,
+    SummaryFormat,
+    create_result_compiler,
+)
+from elile.screening.state_manager import (
+    InMemoryStateStore,
+    ProgressEvent,
+    ProgressEventType,
+    ScreeningPhase,
+    ScreeningState,
+    ScreeningStateManager,
+    StateManagerConfig,
+    StateStore,
+    create_state_manager,
+)
+from elile.screening.tier_router import (
+    DataSourceSpec,
+    DataSourceTier,
+    RoutingResult,
+    TierCapabilities,
+    TierRouter,
+    TierRouterConfig,
+    create_default_data_sources,
+    create_tier_router,
+)
+from elile.screening.types import (
+    GeneratedReport,
+    ReportType,
+    ScreeningComplianceError,
+    ScreeningCostSummary,
+    ScreeningError,
+    ScreeningExecutionError,
+    ScreeningPhaseResult,
+    ScreeningPriority,
+    ScreeningRequest,
+    ScreeningRequestCreate,
+    ScreeningResult,
+    ScreeningStatus,
+    ScreeningValidationError,
 )
 
 __all__ = [
@@ -201,4 +215,17 @@ __all__ = [
     "IndexingError",
     "ScreeningNotIndexedError",
     "SubjectNotFoundError",
+    # Queue Manager
+    "ScreeningQueueManager",
+    "QueueConfig",
+    "QueuedScreening",
+    "QueueMetrics",
+    "QueueStatus",
+    "WorkerStatus",
+    "DequeueResult",
+    "QueueStorage",
+    "InMemoryQueueStorage",
+    "RedisQueueStorage",
+    "create_queue_manager",
+    "create_queue_manager_async",
 ]
