@@ -14,7 +14,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 | `src/elile/investigation/` | SAR (Search-Assess-Refine) loop orchestration | `SARStateMachine`, `SARConfig`, `QueryPlanner`, `SearchQuery` |
 | `src/elile/agent/` | LangGraph workflow orchestration | `IterativeSearchState`, `ServiceTier`, `SearchDegree` |
 | `src/elile/config/` | Configuration and settings | `Settings`, `get_settings()`, `validate_configuration()` |
-| `src/elile/db/` | Database models, repositories, and configuration | `Entity`, `AuditEvent`, `Tenant`, `BaseRepository` |
+| `src/elile/db/` | Database models, repositories, and optimization | `Entity`, `AuditEvent`, `Tenant`, `BaseRepository`, `OptimizedEngine`, `SlowQueryLogger` |
 | `src/elile/db/repositories/` | Repository pattern for data access | `EntityRepository`, `ProfileRepository`, `CacheRepository` |
 | `src/elile/db/types/` | Custom SQLAlchemy types | `EncryptedString`, `EncryptedJSON` |
 | `src/elile/models/` | AI model adapters | `AnthropicAdapter`, `OpenAIAdapter`, `GeminiAdapter` |
@@ -157,6 +157,40 @@ class MyModel(Base):
     secret: Mapped[str] = mapped_column(EncryptedString())
     secret_data: Mapped[dict] = mapped_column(EncryptedJSON())
 ```
+
+### Database Optimization (`optimization.py`)
+```python
+from elile.db.optimization import (
+    OptimizedPoolConfig,
+    SlowQueryConfig,
+    SlowQueryLogger,
+    QueryOptimizer,
+    OptimizedEngine,
+    create_optimized_engine,
+    observe_query,
+)
+
+# Create optimized engine for environment
+engine = create_optimized_engine(
+    database_url="postgresql+asyncpg://...",
+    environment="production",  # or "development", "test"
+)
+
+# Query performance monitoring
+async with observe_query("select", "entities"):
+    result = await session.execute(query)
+
+# Slow query logging
+logger = SlowQueryLogger(SlowQueryConfig(threshold_ms=100.0))
+summary = logger.get_summary()  # Returns stats including p95
+```
+
+### Pool Configuration Presets
+| Preset | Pool Size | Overflow | Use Case |
+|--------|-----------|----------|----------|
+| `for_production()` | 20 | 10 | Production with query timeouts |
+| `for_development()` | 5 | 5 | Development with SQL logging |
+| `for_testing()` | 1 | 0 | Minimal resources for tests |
 
 ## Compliance Framework (`src/elile/compliance/`)
 
@@ -1947,6 +1981,7 @@ tests/
 | `src/elile/config/validation.py` | Configuration validation | Task 1.8 |
 | `src/elile/db/repositories/` | Repository pattern | Task 1.9 |
 | `src/elile/db/types/encrypted.py` | Encrypted SQLAlchemy types | Task 1.6 |
+| `src/elile/db/optimization.py` | Connection pooling, slow query logging, query optimization | Task 12.2 |
 | `src/elile/agent/state.py` | State definitions, enums, Pydantic models | - |
 | `src/elile/db/models/base.py` | SQLAlchemy base class, portable types | Task 1.1 |
 | `src/elile/compliance/types.py` | Locale, CheckType, RoleCategory enums | Task 2.1 |

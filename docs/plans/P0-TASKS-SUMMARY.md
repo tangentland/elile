@@ -149,10 +149,10 @@ This document summarizes all P0 (Critical) tasks across 12 phases. P0 tasks are 
 | Task | Name | Status | Dependencies |
 |------|------|--------|--------------|
 | 12.1 | Performance Profiling | ✅ Complete | All phases |
-| 12.2 | Database Optimization | ⏳ Pending | 12.1 |
+| 12.2 | Database Optimization | ✅ Complete | 12.1 |
 | 12.3 | Security Hardening | ⏳ Pending | 10.2 |
 | 12.4 | Secrets Management | ⏳ Pending | 1.6 |
-**Status: 1/4 Complete**
+**Status: 2/4 Complete**
 
 ---
 
@@ -172,13 +172,13 @@ Phase 10 (Integration)┘
 
 ## Next P0 Tasks
 
-**Phase 12 in progress.** 1/4 P0 tasks complete.
+**Phase 12 in progress.** 2/4 P0 tasks complete.
 
 Next P0 tasks in Phase 12:
 
 1. ~~**Task 12.1**: Performance Profiling~~ ✅ Complete
-2. **Task 12.2**: Database Optimization (depends on 12.1) ← **NEXT**
-3. **Task 12.3**: Security Hardening (depends on 10.2)
+2. ~~**Task 12.2**: Database Optimization~~ ✅ Complete
+3. **Task 12.3**: Security Hardening (depends on 10.2) ← **NEXT**
 4. **Task 12.4**: Secrets Management (depends on 1.6)
 
 After Phase 12, Milestone 1 (all P0 tasks) will be complete.

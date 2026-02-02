@@ -127,7 +127,14 @@ src/elile/
 - Rate limiting and retry logic for external APIs
 
 ## Permissions
-**IMPORTANT - You are allowed to execute any command within the elile project directory**
+
+**YOU ARE ALLOWED TO EXECUTE ALL COMMANDS WITHIN THE ELILE PROJECT DIRECTORY STRUCTURE**
+   *FOLLOWING THESE RULES*
+     - DO NOT share sensitive information or credentials
+     - NEVER COMMIT to the 'release' branch
+     - DO NOT CONFIDENCE PROMPT FOR PERMISSIONS
+     - NEVER EXECUTE THE COMMAND 'rm -rf *'
+     - YOU ARE ALLOWED TO MAKE CHANGES WITHOUT ASKING WITHIN THE PROJECT
 
 ## Context Management (CRITICAL)
 
@@ -241,11 +248,12 @@ Next Task: Task X.Z - [Task Name]
 ## Permissions
 
 **YOU ARE ALLOWED TO EXECUTE ALL COMMANDS WITHIN THE ELILE PROJECT DIRECTORY STRUCTURE**
-  *FOLLOWING THESE RULES*
-    - DO NOT share sensitive information or credentials
-    - NEVER COMMIT to the 'release' branch
-    - DO NOT CONFIDENCE PROMPT FOR PERMISSION
-    - YOU ARE ALLOWED TO MAKE CHANGES WITHOUT ASKING WITHIN THE PROJECT 
+   *FOLLOWING THESE RULES*
+     - DO NOT share sensitive information or credentials
+     - NEVER COMMIT to the 'release' branch
+     - DO NOT CONFIDENCE PROMPT FOR PERMISSIONS
+     - NEVER EXECUTE THE COMMAND 'rm -rf *'
+     - YOU ARE ALLOWED TO MAKE CHANGES WITHOUT ASKING WITHIN THE PROJECT
 
 ## Context Management (CRITICAL)
 
@@ -276,12 +284,8 @@ Hand-Off Notes:
    - Merge feature branch to main
    - Tag as `phaseN/task-X.Y`
    - **DO NOT delete feature branches**
-9. **Check your context window**
-   - If context window >= 85% consumed:
-     - /quit.
-   - Else:
-     - Continue to the next task
-
+9. **Compact context** using '/compact Read handoff.md and continue'
+   
 ## Documentation Synchronization (CRITICAL)
 
 **All these files must stay synchronized** when tasks are completed:
