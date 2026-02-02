@@ -29,8 +29,8 @@ This document outlines the complete implementation plan for building Elile, an e
 | 5 | Investigation Engine (SAR Loop) | P0 (Critical) | ✅ Complete | Phase 4 | [Phase 5: Investigation Engine](./phase-05-investigation-engine.md) |
 | 6 | Risk Analysis | P0 (Critical) | ✅ Complete (11/12 tasks) | Phase 5 | [Phase 6: Risk Analysis](./phase-06-risk-analysis.md) |
 | 7 | Screening Service | P0 (Critical) | 🟡 P0 Complete (7/11 tasks) | Phase 6 | [Phase 7: Screening Service](./phase-07-screening-service.md) |
-| 8 | Reporting System | P1 (High) | 🟡 In Progress (1/10 tasks) | Phase 7 | [Phase 8: Reporting System](./phase-08-reporting-system.md) |
-| 9 | Monitoring & Vigilance | P1 (High) | Not Started | Phase 7 | [Phase 9: Monitoring & Vigilance](./phase-09-monitoring-vigilance.md) |
+| 8 | Reporting System | P1 (High) | 🟡 P0 Complete (4/10 tasks) | Phase 7 | [Phase 8: Reporting System](./phase-08-reporting-system.md) |
+| 9 | Monitoring & Vigilance | P1 (High) | 🟡 In Progress (1/12 tasks) | Phase 7 | [Phase 9: Monitoring & Vigilance](./phase-09-monitoring-vigilance.md) |
 | 10 | Integration Layer | P1 (High) | Not Started | Phase 7 | [Phase 10: Integration Layer](./phase-10-integration-layer.md) |
 | 11 | User Interfaces | P2 (Medium) | Not Started | Phase 8, 9, 10 | [Phase 11: User Interfaces](./phase-11-user-interfaces.md) |
 | 12 | Production Readiness | P1 (High) | Not Started | All phases | [Phase 12: Production Readiness](./phase-12-production-readiness.md) |
@@ -78,10 +78,10 @@ Phase 1 (Core Infrastructure)
 | Phases 1-5 | 44 tasks | ✅ Complete |
 | Phase 6 | 12 tasks | ✅ 11/12 Complete (P2 task 6.12 deferred) |
 | Phase 7 | 11 tasks | 🟡 P0 Complete (7/11), P1 tasks remaining |
-| Phases 8-12 | 83 tasks | Planned |
-| **Total** | **150 tasks** | 42% complete (62 tasks) |
+| Phases 8-12 | 83 tasks | In Progress |
+| **Total** | **150 tasks** | 45% complete (68 tasks) |
 
-**Current Priority:** Phase 8 P0 tasks (Reporting System) for MVP Milestone
+**Current Priority:** Phase 9 P0 tasks (Monitoring & Vigilance) for MVP Milestone
 
 ### P0 Task Status (Milestone 1)
 | Phase | P0 Tasks | Complete | Status |
@@ -89,12 +89,12 @@ Phase 1 (Core Infrastructure)
 | Phase 1-5 | 44 | 44 | ✅ |
 | Phase 6 | 7 | 7 | ✅ |
 | Phase 7 | 7 | 7 | ✅ |
-| Phase 8 | 4 | 1 | **IN PROGRESS** |
-| Phase 9 | 4 | 0 | Pending |
+| Phase 8 | 4 | 4 | ✅ |
+| Phase 9 | 4 | 1 | **IN PROGRESS** |
 | Phase 10 | 4 | 0 | Pending |
 | Phase 11 | 2 | 0 | Pending |
 | Phase 12 | 4 | 0 | Pending |
-| **Total** | **76** | **59** | **78%** |
+| **Total** | **76** | **63** | **83%** |
 
 ---
 

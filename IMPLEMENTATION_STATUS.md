@@ -1461,10 +1461,39 @@ Six report types (Summary, Audit, Investigation, Case File, Disclosure, Portfoli
 
 ## Phase 9: Monitoring & Vigilance (P1 - High)
 
-**Status**: 🔴 Not Started
+**Status**: 🟡 In Progress (1/12 tasks complete)
 **Dependencies**: Phase 7
 
 Ongoing monitoring, vigilance levels (V0-V3), alert generation, change detection.
+
+### Completed Tasks
+
+#### ✅ Task 9.1: Monitoring Scheduler
+**Priority**: P0
+**Status**: Complete
+**Completed**: 2026-02-01
+**Tag**: `phase9/task-9.1`
+**Dependencies**: Phase 7
+
+**Deliverables**:
+- ✅ MonitoringScheduler for vigilance-level based scheduling (V1/V2/V3)
+- ✅ SchedulerConfig with configurable intervals
+- ✅ MonitoringConfig for per-subject monitoring configuration
+- ✅ MonitoringCheck for tracking check executions
+- ✅ ProfileDelta and DeltaSeverity for change detection
+- ✅ MonitoringAlert and AlertSeverity for alert generation
+- ✅ LifecycleEvent and LifecycleEventType for HRIS integration
+- ✅ Vigilance intervals: V1 (365 days), V2 (30 days), V3 (15 days)
+- ✅ Alert threshold management by vigilance level
+- ✅ Lifecycle event handling (termination, leave, promotion, transfer)
+- ✅ MonitoringStore protocol with InMemoryMonitoringStore implementation
+- ✅ 70 unit tests
+
+**Key Files**:
+- `src/elile/monitoring/__init__.py` - Module exports
+- `src/elile/monitoring/types.py` - Types and data models
+- `src/elile/monitoring/scheduler.py` - MonitoringScheduler class
+- `tests/unit/test_monitoring_scheduler.py` - Unit tests
 
 ---
 
@@ -1504,16 +1533,16 @@ Performance optimization, security hardening, compliance certification, document
 | Phase 6 | 7 | 7 | ✅ |
 | Phase 7 | 7 | 7 | ✅ |
 | Phase 8 | 4 | 4 | ✅ |
-| Phase 9 | 4 | 0 | Pending |
+| Phase 9 | 4 | 1 | In Progress |
 | Phase 10 | 4 | 0 | Pending |
 | Phase 11 | 2 | 0 | Pending |
 | Phase 12 | 4 | 0 | Pending |
-| **Total** | **76** | **62** | **82%** |
+| **Total** | **76** | **63** | **83%** |
 
 *Note: Milestone 1 = All P0 tasks across Phases 1-12*
 
 ### By Priority
-- **P0 (Critical)**: 62/76 tasks (82%)
+- **P0 (Critical)**: 63/76 tasks (83%)
 - **P1 (High)**: 4/45 tasks (8.9%)
 - **P2 (Medium)**: 0/10 tasks (0%)
 - **P3 (Low)**: 0/1 tasks (0%)
@@ -1527,9 +1556,10 @@ Performance optimization, security hardening, compliance certification, document
 - **Phase 6**: 11/12 tasks (91.7%)
 - **Phase 7**: 7/11 tasks (63.6%)
 - **Phase 8**: 4/10 tasks (40%)
-- **Phase 9-12**: 0/64 tasks (0%)
+- **Phase 9**: 1/12 tasks (8.3%)
+- **Phase 10-12**: 0/52 tasks (0%)
 
-### Total: 67/141 tasks (48%)
+### Total: 68/141 tasks (48%)
 
 ---
 
@@ -1537,9 +1567,9 @@ Performance optimization, security hardening, compliance certification, document
 
 | Category | Tests |
 |----------|-------|
-| Unit Tests | ~2250 |
+| Unit Tests | ~2320 |
 | Integration Tests | ~123 |
-| **Total** | **2439** |
+| **Total** | **2509** |
 
 All tests passing as of 2026-02-01.
 
@@ -1864,9 +1894,21 @@ Task 8.4 (Investigation Report - Security) complete:
 - EvolutionSignalsSection for tracking risk changes over time
 - 66 unit tests
 
-**Phase 8 P0 Complete!** Next P0 tasks are in Phase 9.
+**Phase 8 P0 Complete!**
 
-Next task: Task 9.1 - Monitoring Scheduler (P0)
+### Current: Phase 9 - Monitoring & Vigilance
+Phase 9 implements ongoing employee monitoring with vigilance levels.
+
+Task 9.1 (Monitoring Scheduler) complete:
+- MonitoringScheduler for vigilance-level based scheduling (V1/V2/V3)
+- Configurable intervals: V1 (annual), V2 (monthly), V3 (bi-monthly)
+- MonitoringConfig, MonitoringCheck, ProfileDelta types
+- Alert generation with threshold management by vigilance level
+- Lifecycle event handling (termination, leave, promotion, transfer)
+- MonitoringStore protocol with InMemoryMonitoringStore
+- 70 unit tests
+
+Next task: Task 9.2 - Vigilance Level Manager (P0)
 
 ---
 

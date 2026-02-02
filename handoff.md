@@ -1,36 +1,44 @@
 ---
 Session Handoff for:
-Phase-08-Reporting-System in `docs/plans/phase-08-reporting-system.md`
-Task 8.4 in `docs/tasks/task-8.4-investigation-report-security.md`
+Phase-09-Monitoring-Vigilance in `docs/plans/phase-09-monitoring-vigilance.md`
+Task 9.1 in `docs/tasks/task-9.1-monitoring-scheduler.md`
 
 Completed:
-- Implemented SecurityInvestigationBuilder for Security Team reports
-- ThreatAssessmentSection with ThreatFactor for insider threat scoring
-- ConnectionNetworkSection with NetworkNode, NetworkEdge, RiskPath
-- DetailedFindingsSection with DetailedFinding and FindingsByCategory
-- EvolutionSignalsSection with EvolutionSignal for tracking changes
-- Threat level calculation (minimal/low/moderate/elevated/high/critical)
-- Evolution trend detection (improving/stable/volatile/deteriorating)
-- 66 unit tests covering all sections
+- MonitoringScheduler for vigilance-level based scheduling (V1/V2/V3)
+- Configurable intervals: V1 (365 days), V2 (30 days), V3 (15 days)
+- MonitoringConfig, MonitoringCheck, ProfileDelta, MonitoringAlert types
+- Alert threshold management by vigilance level (V1: critical only, V2: high+, V3: medium+)
+- Lifecycle event handling (termination, leave, promotion, transfer, rehire, vigilance changes)
+- MonitoringStore protocol with InMemoryMonitoringStore implementation
+- Pause/resume/terminate monitoring operations
+- 70 unit tests
+
+Key Files Created:
+- `src/elile/monitoring/__init__.py` - Module exports
+- `src/elile/monitoring/types.py` - Types and data models
+- `src/elile/monitoring/scheduler.py` - MonitoringScheduler class
+- `tests/unit/test_monitoring_scheduler.py` - Unit tests
 
 Git State:
 - Branch: main
-- Latest tag: phase8/task-8.4
-- Total tests: 2439
+- Latest tag: phase9/task-9.1 (to be created after commit)
+- Total tests: 2509
 
-**Phase 8 P0 Complete!**
+Next Task: Task 9.2 - Vigilance Level Manager
+- Location: docs/tasks/task-9.2-vigilance-level-manager.md (may need to be created)
+- Dependencies: Task 2.3 (Vigilance Levels), Task 9.1 (complete)
+- Purpose: Manage vigilance level transitions, ensure proper configuration
 
-Next Task: Task 9.1 - Monitoring Scheduler
-- Location: docs/tasks/task-9.1-monitoring-scheduler.md
-- Dependencies: Task 7.1
-- Note: First P0 task in Phase 9
+P0 Progress:
+- Completed: 63/76 P0 tasks (83%)
+- Remaining Phase 9 P0: Tasks 9.2, 9.3, 9.4
 
 User Preferences:
-- DO NOT delete feature branches
+- Don't delete feature branches
 
 Notes:
-- templates.py was renamed to template_definitions.py in Task 8.2 to avoid conflict with templates/ package
-- Known circular import issue documented in security_investigation.py docstring
-- Direct `python -c` imports may fail due to circular imports; tests work correctly
-- Phase 8 P0 tasks (8.1-8.4) are complete; Tasks 8.5-8.10 are P1
+- Delta detection currently returns empty list (placeholder)
+- Production implementation will integrate with screening orchestrator
+- Persistent storage backend needed (currently using InMemoryMonitoringStore)
+- Task file names in phase-09 document may not match actual task files (check docs/tasks/)
 ---
