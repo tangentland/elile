@@ -1,6 +1,6 @@
 # Task 12.12: CI/CD Deployment Pipeline
 
-**Priority**: P1
+**Priority**: P2
 **Phase**: 12 - Production Readiness
 **Estimated Effort**: 3 days
 **Dependencies**: Task 12.5 (Load Testing)

@@ -1,6 +1,6 @@
 # Task 12.13: Feature Flag System
 
-**Priority**: P1
+**Priority**: P2
 **Phase**: 12 - Production Readiness
 **Estimated Effort**: 2 days
 **Dependencies**: Task 1.3 (API Framework)

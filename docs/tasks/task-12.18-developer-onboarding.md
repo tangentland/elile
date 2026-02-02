@@ -1,6 +1,6 @@
 # Task 12.18: Developer Onboarding Documentation
 
-**Priority**: P1
+**Priority**: P2
 **Phase**: 12 - Production Readiness
 **Estimated Effort**: 3 days
 **Dependencies**: All architecture docs

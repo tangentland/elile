@@ -1,6 +1,6 @@
 # Task 12.11: API Documentation System
 
-**Priority**: P1
+**Priority**: P2
 **Phase**: 12 - Production Readiness
 **Estimated Effort**: 3 days
 **Dependencies**: Task 10.1 (API Framework)

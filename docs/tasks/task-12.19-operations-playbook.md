@@ -1,6 +1,6 @@
 # Task 12.19: Operations Playbook
 
-**Priority**: P1
+**Priority**: P2
 **Phase**: 12 - Production Readiness
 **Estimated Effort**: 4 days
 **Dependencies**: Task 12.9 (Monitoring), Task 12.17 (Incident Response)

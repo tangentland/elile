@@ -1,6 +1,6 @@
 # Task 12.14: A/B Testing Framework
 
-**Priority**: P1
+**Priority**: P2
 **Phase**: 12 - Production Readiness
 **Estimated Effort**: 3 days
 **Dependencies**: Task 12.13 (Feature Flags)

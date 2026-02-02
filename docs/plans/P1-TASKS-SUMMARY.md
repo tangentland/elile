@@ -4,9 +4,9 @@
 
 This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks are essential features for production use but are not on the critical MVP path.
 
-**Total P1 Tasks**: 72 tasks
+**Total P1 Tasks**: 57 tasks
 **Completed**: 17 tasks
-**Remaining**: 55 tasks
+**Remaining**: 40 tasks
 
 ## Task Status by Phase
 
@@ -57,15 +57,14 @@ This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks
 | 5.16 | Investigation Resume/Pause | ✅ Complete | 5.9 |
 **Status: 6/6 Complete**
 
-### Phase 6 - Risk Analysis (5 P1 tasks)
+### Phase 6 - Risk Analysis (4 P1 tasks)
 | Task | Name | Status | Dependencies |
 |------|------|--------|--------------|
 | 6.8 | Temporal Risk Tracker | ✅ Complete | 6.7 |
 | 6.9 | Risk Trends | ✅ Complete | 6.8 |
 | 6.10 | Risk Thresholds | ✅ Complete | 6.7 |
 | 6.11 | Risk Explanations | ✅ Complete | 6.7 |
-| 6.12 | Risk Dashboard | ⏳ Pending (P2) | 6.7-6.11 |
-**Status: 4/4 P1 Complete** *(Task 6.12 is P2, not P1)*
+**Status: 4/4 Complete** *(Task 6.12 is P2, not P1)*
 
 ### Phase 7 - Screening Service (4 P1 tasks)
 | Task | Name | Status | Dependencies |
@@ -125,26 +124,6 @@ This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks
 | 11.12 | Graph Visualization Core | ⏳ Pending | 10.3, 10.4, 5.9, 6.6 |
 **Status: 0/10 Complete**
 
-### Phase 12 - Production Readiness (15 P1 tasks)
-| Task | Name | Status | Dependencies |
-|------|------|--------|--------------|
-| 12.5 | Load Testing Suite | ⏳ Pending | 12.1 |
-| 12.6 | Stress Testing | ⏳ Pending | 12.5 |
-| 12.7 | Database Backup Strategy | ⏳ Pending | 12.2 |
-| 12.8 | Disaster Recovery Plan | ⏳ Pending | 12.7 |
-| 12.9 | Monitoring & Alerting | ⏳ Pending | 1.11 |
-| 12.10 | Log Aggregation | ⏳ Pending | 1.11 |
-| 12.11 | API Documentation | ⏳ Pending | 10.1-10.4 |
-| 12.12 | CI/CD Deployment | ⏳ Pending | All phases |
-| 12.13 | Feature Flags System | ⏳ Pending | 1.8 |
-| 12.14 | A/B Testing Framework | ⏳ Pending | 12.13 |
-| 12.15 | SOC 2 Compliance Documentation | ⏳ Pending | 1.2, 12.16 |
-| 12.16 | Security Audit Trail | ⏳ Pending | 1.2 |
-| 12.17 | Incident Response Runbook | ⏳ Pending | 12.9 |
-| 12.18 | Developer Onboarding Guide | ⏳ Pending | 12.11 |
-| 12.19 | Operations Playbook | ⏳ Pending | 12.8, 12.17 |
-**Status: 0/15 Complete**
-
 ---
 
 ## Summary
@@ -162,12 +141,12 @@ This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks
 | 9 | 8 | 0 | 8 |
 | 10 | 3 | 0 | 3 |
 | 11 | 10 | 0 | 10 |
-| 12 | 15 | 0 | 15 |
-| **Total** | **72** | **17** | **55** |
+| **Total** | **57** | **17** | **40** |
 
 *Notes:*
 - *Task 6.12 (Risk Dashboard) is P2, not P1*
 - *External HRIS adapters (10.6, 10.7, 10.8) are P2*
+- *Phase 12 tasks 12.5-12.19 are now P2*
 
 ## Execution Strategy
 
@@ -182,7 +161,7 @@ Current status:
 3. Phase 4 P1 tasks: Not started
 4. Phase 5 P1 tasks: ✅ Complete
 5. Phase 6 P1 tasks: ✅ Complete
-6. Phase 7-12 P1 tasks: Not started
+6. Phase 7-11 P1 tasks: Not started
 
 ## Next P1 Tasks
 
@@ -196,4 +175,4 @@ After P0 complete, the next P1 tasks are:
 
 ---
 
-*Last Updated: 2026-02-01*
+*Last Updated: 2026-02-02*

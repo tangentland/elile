@@ -24,19 +24,19 @@ Phase 12 hardens the system for production deployment with security improvements
 | 12.2 | Database Optimization | P0 | ✅ Complete | 1.1 | [task-12.2-database-optimization.md](../tasks/task-12.2-database-optimization.md) |
 | 12.3 | Security Hardening | P0 | ✅ Complete | 1.6 | [task-12.3-security-hardening.md](../tasks/task-12.3-security-hardening.md) |
 | 12.4 | Secrets Management | P0 | ✅ Complete | 12.3 | [task-12.4-secrets-management.md](../tasks/task-12.4-secrets-management.md) |
-| 12.5 | Load Testing | P1 | ⏳ Pending | All phases | [task-12.5-load-testing.md](../tasks/task-12.5-load-testing.md) |
-| 12.6 | Stress Testing | P1 | ⏳ Pending | 12.5 | [task-12.6-stress-testing.md](../tasks/task-12.6-stress-testing.md) |
-| 12.7 | Backup Strategy | P0 | ⏳ Pending | 1.1 | [task-12.7-backup-strategy.md](../tasks/task-12.7-backup-strategy.md) |
-| 12.8 | Disaster Recovery | P0 | ⏳ Pending | 12.7 | [task-12.8-disaster-recovery.md](../tasks/task-12.8-disaster-recovery.md) |
-| 12.9 | Monitoring & Alerting | P1 | ⏳ Pending | 12.1 | [task-12.9-monitoring-alerting.md](../tasks/task-12.9-monitoring-alerting.md) |
-| 12.10 | Log Aggregation | P1 | ⏳ Pending | 12.1 | [task-12.10-log-aggregation.md](../tasks/task-12.10-log-aggregation.md) |
-| 12.11 | API Documentation | P0 | ⏳ Pending | Phase 11 | [task-12.11-api-documentation.md](../tasks/task-12.11-api-documentation.md) |
-| 12.12 | CI/CD Deployment | P0 | ⏳ Pending | All phases | [task-12.12-cicd-deployment.md](../tasks/task-12.12-cicd-deployment.md) |
+| 12.5 | Load Testing | P2 | ⏳ Pending | All phases | [task-12.5-load-testing.md](../tasks/task-12.5-load-testing.md) |
+| 12.6 | Stress Testing | P2 | ⏳ Pending | 12.5 | [task-12.6-stress-testing.md](../tasks/task-12.6-stress-testing.md) |
+| 12.7 | Backup Strategy | P2 | ⏳ Pending | 1.1 | [task-12.7-backup-strategy.md](../tasks/task-12.7-backup-strategy.md) |
+| 12.8 | Disaster Recovery | P2 | ⏳ Pending | 12.7 | [task-12.8-disaster-recovery.md](../tasks/task-12.8-disaster-recovery.md) |
+| 12.9 | Monitoring & Alerting | P2 | ⏳ Pending | 12.1 | [task-12.9-monitoring-alerting.md](../tasks/task-12.9-monitoring-alerting.md) |
+| 12.10 | Log Aggregation | P2 | ⏳ Pending | 12.1 | [task-12.10-log-aggregation.md](../tasks/task-12.10-log-aggregation.md) |
+| 12.11 | API Documentation | P2 | ⏳ Pending | Phase 11 | [task-12.11-api-documentation.md](../tasks/task-12.11-api-documentation.md) |
+| 12.12 | CI/CD Deployment | P2 | ⏳ Pending | All phases | [task-12.12-cicd-deployment.md](../tasks/task-12.12-cicd-deployment.md) |
 | 12.13 | Feature Flags | P2 | ⏳ Pending | 12.12 | [task-12.13-feature-flags.md](../tasks/task-12.13-feature-flags.md) |
 | 12.14 | A/B Testing | P2 | ⏳ Pending | 12.13 | [task-12.14-ab-testing.md](../tasks/task-12.14-ab-testing.md) |
-| 12.15 | SOC2 Compliance | P1 | ⏳ Pending | 12.3 | [task-12.15-soc2-compliance.md](../tasks/task-12.15-soc2-compliance.md) |
-| 12.16 | Security Audit Trail | P1 | ⏳ Pending | 12.3 | [task-12.16-security-audit-trail.md](../tasks/task-12.16-security-audit-trail.md) |
-| 12.17 | Incident Response | P1 | ⏳ Pending | 12.9 | [task-12.17-incident-response.md](../tasks/task-12.17-incident-response.md) |
+| 12.15 | SOC2 Compliance | P2 | ⏳ Pending | 12.3 | [task-12.15-soc2-compliance.md](../tasks/task-12.15-soc2-compliance.md) |
+| 12.16 | Security Audit Trail | P2 | ⏳ Pending | 12.3 | [task-12.16-security-audit-trail.md](../tasks/task-12.16-security-audit-trail.md) |
+| 12.17 | Incident Response | P2 | ⏳ Pending | 12.9 | [task-12.17-incident-response.md](../tasks/task-12.17-incident-response.md) |
 | 12.18 | Developer Onboarding | P2 | ⏳ Pending | All phases | [task-12.18-developer-onboarding.md](../tasks/task-12.18-developer-onboarding.md) |
 | 12.19 | Operations Playbook | P2 | ⏳ Pending | 12.17 | [task-12.19-operations-playbook.md](../tasks/task-12.19-operations-playbook.md) |
 

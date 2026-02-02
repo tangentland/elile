@@ -21,15 +21,15 @@ Phase 11 implements API endpoints for all 5 user-facing portals: Screening Porta
 |-----|-----------|----------|--------|--------------|---------------|
 | 11.1 | Authentication System (JWT) | P0 | Not Started | 1.5 | [task-11.1-authentication.md](../tasks/task-11.1-authentication.md) |
 | 11.2 | Authorization (RBAC + ABAC) | P0 | Not Started | 11.1, 1.4 | [task-11.2-authorization.md](../tasks/task-11.2-authorization.md) |
-| 11.3 | Screening Portal API (HR) | P0 | Not Started | Phase 7, 11.2 | [task-11.3-screening-portal-api.md](../tasks/task-11.3-screening-portal-api.md) |
+| 11.3 | Screening Portal API (HR) | P1 | Not Started | Phase 7, 11.2 | [task-11.3-screening-portal-api.md](../tasks/task-11.3-screening-portal-api.md) |
 | 11.4 | Review Dashboard API (Analyst) | P1 | Not Started | Phase 7, 11.2 | [task-11.4-review-dashboard-api.md](../tasks/task-11.4-review-dashboard-api.md) |
 | 11.5 | Monitoring Console API (Security) | P1 | Not Started | Phase 9, 11.2 | [task-11.5-monitoring-console-api.md](../tasks/task-11.5-monitoring-console-api.md) |
 | 11.6 | Subject Portal API (Candidate) | P1 | Not Started | Phase 7, 11.2 | [task-11.6-subject-portal-api.md](../tasks/task-11.6-subject-portal-api.md) |
 | 11.7 | Admin Console API | P1 | Not Started | 11.2 | [task-11.7-admin-console-api.md](../tasks/task-11.7-admin-console-api.md) |
-| 11.8 | Executive Dashboard API | P2 | Not Started | Phase 8, 11.2 | [task-11.8-executive-dashboard-api.md](../tasks/task-11.8-executive-dashboard-api.md) |
+| 11.8 | Executive Dashboard API | P1 | Not Started | Phase 8, 11.2 | [task-11.8-executive-dashboard-api.md](../tasks/task-11.8-executive-dashboard-api.md) |
 | 11.9 | WebSocket Real-time Updates | P1 | Not Started | 1.5, Phase 9 | [task-11.9-websocket-updates.md](../tasks/task-11.9-websocket-updates.md) |
 | 11.10 | Rate Limiting (Per-user) | P1 | Not Started | 11.1, 1.10 | [task-11.10-rate-limiting.md](../tasks/task-11.10-rate-limiting.md) |
-| 11.11 | Session Management | P0 | Not Started | 11.1 | [task-11.11-session-management.md](../tasks/task-11.11-session-management.md) |
+| 11.11 | Session Management | P1 | Not Started | 11.1 | [task-11.11-session-management.md](../tasks/task-11.11-session-management.md) |
 | 11.12 | Graph Visualization Core | P1 | Not Started | 10.3, 10.4, 5.9, 6.6 | [task-11.12-graph-visualization-core.md](../tasks/task-11.12-graph-visualization-core.md) |
 
 ## Key API Endpoints
