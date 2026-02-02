@@ -1704,10 +1704,34 @@ API endpoints, HRIS gateway, webhooks, consent management.
 
 ## Phase 11: User Interfaces (P2 - Medium)
 
-**Status**: 🔴 Not Started
+**Status**: 🟡 In Progress (1/11 tasks complete)
 **Dependencies**: Phase 8, 9, 10
 
 Five portals (HR Dashboard, Compliance Portal, Security Console, Investigation Workbench, Executive Dashboard).
+
+### Completed Tasks
+
+#### ✅ Task 11.1: HR Dashboard API
+**Priority**: P0
+**Status**: Complete
+**Completed**: 2026-02-02
+**Tag**: `phase11/task-11.1`
+**Dependencies**: Task 8.2, 10.3
+
+**Deliverables**:
+- ✅ GET /v1/dashboard/hr/portfolio - Portfolio overview and metrics
+- ✅ GET /v1/dashboard/hr/screenings - List screenings with filters
+- ✅ GET /v1/dashboard/hr/alerts - Recent alerts
+- ✅ GET /v1/dashboard/hr/risk-distribution - Risk level distribution
+- ✅ Risk distribution by level with percentages
+- ✅ Pagination support for all list endpoints
+- ✅ Tenant data isolation
+- ✅ 24 integration tests
+
+**Key Files**:
+- `src/elile/api/routers/v1/dashboard.py` - HR Dashboard API endpoints
+- `src/elile/api/schemas/dashboard.py` - Dashboard schemas
+- `tests/integration/test_hr_dashboard_api.py` - Integration tests
 
 ---
 
@@ -1731,14 +1755,14 @@ Performance optimization, security hardening, compliance certification, document
 | Phase 8 | 4 | 4 | ✅ |
 | Phase 9 | 4 | 4 | ✅ |
 | Phase 10 | 4 | 4 | ✅ |
-| Phase 11 | 2 | 0 | Pending |
+| Phase 11 | 2 | 1 | 🟡 |
 | Phase 12 | 4 | 0 | Pending |
-| **Total** | **76** | **70** | **92%** |
+| **Total** | **76** | **71** | **93%** |
 
 *Note: Milestone 1 = All P0 tasks across Phases 1-12*
 
 ### By Priority
-- **P0 (Critical)**: 70/76 tasks (92%)
+- **P0 (Critical)**: 71/76 tasks (93%)
 - **P1 (High)**: 4/45 tasks (8.9%)
 - **P2 (Medium)**: 0/10 tasks (0%)
 - **P3 (Low)**: 0/1 tasks (0%)
@@ -1753,9 +1777,11 @@ Performance optimization, security hardening, compliance certification, document
 - **Phase 7**: 7/11 tasks (63.6%)
 - **Phase 8**: 4/10 tasks (40%)
 - **Phase 9**: 4/12 tasks (33%)
-- **Phase 10-12**: 4/52 tasks (7.7%)
+- **Phase 10**: 4/10 tasks (40%)
+- **Phase 11**: 1/11 tasks (9.1%)
+- **Phase 12**: 0/19 tasks (0%)
 
-### Total: 75/141 tasks (53%)
+### Total: 76/141 tasks (54%)
 
 ---
 
@@ -1764,10 +1790,10 @@ Performance optimization, security hardening, compliance certification, document
 | Category | Tests |
 |----------|-------|
 | Unit Tests | ~2701 |
-| Integration Tests | ~123 |
-| **Total** | **2824** |
+| Integration Tests | ~147 |
+| **Total** | **2848** |
 
-All tests passing as of 2026-02-01.
+All tests passing as of 2026-02-02.
 
 ---
 

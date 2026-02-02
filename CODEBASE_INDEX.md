@@ -1945,6 +1945,8 @@ tests/
 | `src/elile/api/schemas/hris_webhook.py` | WebhookResponse, WebhookTestResponse, WebhookConnectionStatus, WebhookErrorCode | Task 10.2 |
 | `src/elile/hris/event_processor.py` | HRISEventProcessor, ProcessorConfig, ProcessingResult, ProcessingStatus, ProcessingAction, EventStore, InMemoryEventStore, create_event_processor | Task 10.3 |
 | `src/elile/hris/result_publisher.py` | HRISResultPublisher, PublisherConfig, PublishResult, PublishStatus, PublishEventType, DeliveryRecord, create_result_publisher | Task 10.4 |
+| `src/elile/api/routers/v1/dashboard.py` | HR Dashboard API endpoints (portfolio, screenings, alerts, risk-distribution) | Task 11.1 |
+| `src/elile/api/schemas/dashboard.py` | HRPortfolioResponse, HRScreeningsListResponse, HRAlertsListResponse, RiskDistributionResponse, PortfolioMetrics, RiskDistribution, RiskDistributionItem, AlertSummary, ScreeningSummary | Task 11.1 |
 
 ## Architecture References
 
