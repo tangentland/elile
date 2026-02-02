@@ -4,6 +4,16 @@ This module provides scheduling and execution of periodic monitoring checks
 based on vigilance levels (V1/V2/V3) for ongoing employee surveillance.
 """
 
+from elile.monitoring.delta_detector import (
+    ConnectionChange,
+    DeltaDetector,
+    DeltaResult,
+    DeltaType,
+    DetectorConfig,
+    FindingChange,
+    RiskScoreChange,
+    create_delta_detector,
+)
 from elile.monitoring.scheduler import (
     MonitoringScheduler,
     SchedulerConfig,
@@ -35,6 +45,15 @@ from elile.monitoring.vigilance_manager import (
 )
 
 __all__ = [
+    # Delta Detector
+    "DeltaDetector",
+    "DetectorConfig",
+    "DeltaResult",
+    "DeltaType",
+    "FindingChange",
+    "ConnectionChange",
+    "RiskScoreChange",
+    "create_delta_detector",
     # Scheduler
     "MonitoringScheduler",
     "SchedulerConfig",

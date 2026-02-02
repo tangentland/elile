@@ -21,16 +21,16 @@ Phase 9 implements ongoing employee monitoring with vigilance levels (V1/V2/V3),
 |-----|-----------|----------|--------|--------------|---------------|
 | 9.1 | Monitoring Scheduler | P0 | ✅ Complete | Phase 7 | [task-9.1-monitoring-scheduler.md](../tasks/task-9.1-monitoring-scheduler.md) |
 | 9.2 | Vigilance Level Manager | P0 | ✅ Complete | 9.1 | [task-9.2-vigilance-level-manager.md](../tasks/task-9.2-vigilance-level-manager.md) |
-| 9.3 | V1 Scheduler (Annual Re-screen) | P0 | Not Started | 9.2 | [task-9.3-v1-scheduler.md](../tasks/task-9.3-v1-scheduler.md) |
-| 9.4 | V2 Scheduler (Monthly Delta) | P0 | Not Started | 9.2 | [task-9.4-v2-scheduler.md](../tasks/task-9.4-v2-scheduler.md) |
-| 9.5 | V3 Scheduler (Bi-monthly + Real-time) | P1 | Not Started | 9.2 | [task-9.5-v3-scheduler.md](../tasks/task-9.5-v3-scheduler.md) |
-| 9.6 | Delta Detector | P0 | Not Started | 3.5 | [task-9.6-delta-detector.md](../tasks/task-9.6-delta-detector.md) |
-| 9.7 | Change Significance Scorer | P0 | Not Started | 9.6 | [task-9.7-significance-scorer.md](../tasks/task-9.7-significance-scorer.md) |
-| 9.8 | Alert Generator | P0 | Not Started | 9.7 | [task-9.8-alert-generator.md](../tasks/task-9.8-alert-generator.md) |
-| 9.9 | Alert Routing Engine | P0 | Not Started | 9.8 | [task-9.9-alert-routing.md](../tasks/task-9.9-alert-routing.md) |
+| 9.3 | Delta Detector | P0 | ✅ Complete | 3.5, 9.1 | [task-9.3-delta-detector.md](../tasks/task-9.3-delta-detector.md) |
+| 9.4 | Alert Generator | P0 | Not Started | 9.3 | [task-9.4-alert-generator.md](../tasks/task-9.4-alert-generator.md) |
+| 9.5 | V1 Scheduler (Annual Re-screen) | P1 | Not Started | 9.2 | [task-9.5-v1-scheduler.md](../tasks/task-9.5-v1-scheduler.md) |
+| 9.6 | V2 Scheduler (Monthly Delta) | P1 | Not Started | 9.2 | [task-9.6-v2-scheduler.md](../tasks/task-9.6-v2-scheduler.md) |
+| 9.7 | V3 Scheduler (Bi-monthly + Real-time) | P1 | Not Started | 9.2 | [task-9.7-v3-scheduler.md](../tasks/task-9.7-v3-scheduler.md) |
+| 9.8 | Change Significance Scorer | P1 | Not Started | 9.3 | [task-9.8-significance-scorer.md](../tasks/task-9.8-significance-scorer.md) |
+| 9.9 | Alert Routing Engine | P1 | Not Started | 9.4 | [task-9.9-alert-routing.md](../tasks/task-9.9-alert-routing.md) |
 | 9.10 | Real-time Sanctions Monitor (V3) | P1 | Not Started | 4.7 | [task-9.10-realtime-sanctions.md](../tasks/task-9.10-realtime-sanctions.md) |
 | 9.11 | Continuous Adverse Media (V3) | P1 | Not Started | 4.12 | [task-9.11-continuous-media.md](../tasks/task-9.11-continuous-media.md) |
-| 9.12 | Alert Management API | P1 | Not Started | 9.8 | [task-9.12-alert-management.md](../tasks/task-9.12-alert-management.md) |
+| 9.12 | Alert Management API | P1 | Not Started | 9.4 | [task-9.12-alert-management.md](../tasks/task-9.12-alert-management.md) |
 
 ## Key Workflows
 
