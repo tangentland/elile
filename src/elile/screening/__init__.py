@@ -99,6 +99,26 @@ from elile.screening.result_compiler import (
     SummaryFormat,
     create_result_compiler,
 )
+from elile.screening.index import (
+    ConnectionStrength,
+    ConnectionType,
+    CrossScreeningIndex,
+    CrossScreeningIndexError,
+    CrossScreeningResult,
+    EntityReference,
+    IndexConfig,
+    IndexingError,
+    IndexStatistics,
+    NetworkEdge,
+    NetworkGraph,
+    NetworkNode,
+    ScreeningEntity,
+    ScreeningNotIndexedError,
+    SubjectConnection,
+    SubjectNotFoundError,
+    create_index,
+    get_cross_screening_index,
+)
 
 __all__ = [
     # Orchestrator
@@ -162,4 +182,23 @@ __all__ = [
     "ScreeningValidationError",
     "ScreeningComplianceError",
     "ScreeningExecutionError",
+    # Cross-Screening Index
+    "CrossScreeningIndex",
+    "create_index",
+    "get_cross_screening_index",
+    "IndexConfig",
+    "IndexStatistics",
+    "ConnectionStrength",
+    "ConnectionType",
+    "CrossScreeningResult",
+    "EntityReference",
+    "NetworkEdge",
+    "NetworkGraph",
+    "NetworkNode",
+    "ScreeningEntity",
+    "SubjectConnection",
+    "CrossScreeningIndexError",
+    "IndexingError",
+    "ScreeningNotIndexedError",
+    "SubjectNotFoundError",
 ]

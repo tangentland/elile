@@ -537,6 +537,57 @@ Last Updated: 2026-02-02
 
 ---
 
+#### ✅ Task 3.10: GDPR Erasure Process
+**Priority**: P1
+**Status**: Complete
+**Completed**: 2026-02-02
+**Tag**: `phase3/task-3.10`
+**Dependencies**: Task 3.9 (Data Retention Manager)
+
+**Deliverables**:
+- ✅ ErasureService with full erasure workflow (submit, verify, process)
+- ✅ DataAnonymizer with 6 anonymization methods (redaction, masking, generalization, tokenization, pseudonymization, hashing)
+- ✅ Automatic PII field detection with regex patterns
+- ✅ Legal hold checking and blocking
+- ✅ Regulatory data type exemptions (audit logs, consent records, adverse actions)
+- ✅ Confirmation report generation with verification hashes
+- ✅ Support for GDPR (30 days), UK GDPR (30 days), and LGPD (15 days) deadlines
+- ✅ 95 unit tests
+
+**Key Files**:
+- `src/elile/compliance/erasure/__init__.py` - Module exports
+- `src/elile/compliance/erasure/types.py` - ErasureType, ErasureStatus, AnonymizationMethod, exceptions
+- `src/elile/compliance/erasure/anonymizer.py` - DataAnonymizer, AnonymizationConfig
+- `src/elile/compliance/erasure/service.py` - ErasureService, erasure workflow
+- `tests/unit/compliance/test_erasure_*.py` - Unit tests
+
+---
+
+#### ✅ Task 3.11: Cross-Screening Index Builder
+**Priority**: P1
+**Status**: Complete
+**Completed**: 2026-02-02
+**Tag**: `phase3/task-3.11`
+**Dependencies**: Task 3.1 (Entity Resolution)
+
+**Deliverables**:
+- ✅ CrossScreeningIndex for network analysis across screenings
+- ✅ Entity connection tracking with relationship strength scoring
+- ✅ BFS-based connection discovery up to configurable max degree
+- ✅ Network graph generation for visualization
+- ✅ Connection type mapping (employer, colleague, family, etc.)
+- ✅ Temporal relationship tracking
+- ✅ Real-time index updates with sub-1s query performance
+- ✅ 53 unit tests
+
+**Key Files**:
+- `src/elile/screening/index/__init__.py` - Module exports
+- `src/elile/screening/index/types.py` - ConnectionType, SubjectConnection, NetworkGraph
+- `src/elile/screening/index/index.py` - CrossScreeningIndex, IndexConfig
+- `tests/unit/screening/test_cross_screening_*.py` - Unit tests
+
+---
+
 ## Phase 4: Data Provider Integration (P0 - Critical)
 
 **Status**: ✅ Complete (6/6 tasks complete)
