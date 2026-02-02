@@ -25,6 +25,7 @@ SKIP_AUTH_PATHS = {
 SKIP_AUTH_PREFIXES = (
     "/docs",
     "/redoc",
+    "/v1/hris/webhooks",  # HRIS webhooks use signature validation, not API auth
 )
 
 

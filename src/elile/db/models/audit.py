@@ -60,6 +60,14 @@ class AuditEventType(str, Enum):
     API_REQUEST = "api.request"
     API_ERROR = "api.error"
 
+    # HRIS integration
+    HRIS_EVENT_RECEIVED = "hris.event_received"
+    HRIS_EVENT_PROCESSED = "hris.event_processed"
+    HRIS_UPDATE_SENT = "hris.update_sent"
+
+    # Security
+    SECURITY_ALERT = "security.alert"
+
 
 class AuditSeverity(str, Enum):
     """Severity levels for audit events."""
