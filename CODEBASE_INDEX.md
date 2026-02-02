@@ -2095,6 +2095,70 @@ print(f"Volume discount: {bulk.discount_percentage}%")
 | 500+ | 20% |
 | 1000+ | 25% |
 
+### Progress Tracker (`src/elile/screening/progress.py`)
+
+The ProgressTracker provides real-time progress visibility for screenings, including
+ETA estimation and stall detection.
+
+```python
+from elile.screening import (
+    ProgressTracker,
+    create_progress_tracker,
+    ScreeningProgress,
+    StallReason,
+)
+from elile.screening.state_manager import ScreeningPhase
+
+# Create tracker
+tracker = create_progress_tracker()
+
+# Initialize tracking for a screening
+progress = await tracker.initialize_progress(screening_id, tenant_id)
+print(f"Initial ETA: {progress.eta.remaining_human_readable}")
+
+# Start a phase
+await tracker.start_phase(screening_id, ScreeningPhase.VALIDATION)
+
+# Update progress
+await tracker.update_progress(
+    screening_id,
+    phase=ScreeningPhase.INVESTIGATION,
+    step="Running SAR loop",
+    progress_percent=50.0,
+)
+
+# Complete a phase
+await tracker.complete_phase(screening_id, ScreeningPhase.INVESTIGATION)
+
+# Subscribe to notifications
+def on_progress(notification):
+    print(f"{notification.notification_type}: {notification.message}")
+tracker.subscribe(on_progress)
+
+# Check for stalled screenings
+stalled = await tracker.check_for_stalls()
+```
+
+#### Progress Notification Types
+
+| Type | Description |
+|------|-------------|
+| `PROGRESS_UPDATE` | Regular progress update |
+| `PHASE_CHANGE` | Phase started or completed |
+| `ETA_UPDATE` | ETA changed significantly |
+| `STALL_DETECTED` | Screening appears stalled |
+| `STALL_RESOLVED` | Stall condition resolved |
+| `MILESTONE_REACHED` | Key progress milestone (25%, 50%, 75%, 100%) |
+
+#### Stall Reasons
+
+| Reason | Description |
+|--------|-------------|
+| `TIMEOUT` | No progress for configured timeout |
+| `PROVIDER_DELAY` | Waiting on external provider |
+| `RESOURCE_CONSTRAINT` | System resource limitation |
+| `MANUAL_INTERVENTION` | Needs manual review |
+
 ## Observability (`src/elile/observability/`)
 
 ### OpenTelemetry Tracing (`tracing.py`)
