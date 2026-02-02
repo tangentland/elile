@@ -5,8 +5,8 @@
 This document summarizes all P0 (Critical) tasks across 12 phases. P0 tasks are required for basic screening operations and form the critical path for MVP delivery.
 
 **Total P0 Tasks**: 76 tasks
-**Completed**: 61 tasks (Phases 1-7 P0, Phase 8.1-8.3)
-**Remaining**: 15 tasks
+**Completed**: 62 tasks (Phases 1-8 P0 Complete)
+**Remaining**: 14 tasks
 
 ## Task Status by Phase
 
@@ -113,10 +113,10 @@ This document summarizes all P0 (Critical) tasks across 12 phases. P0 tasks are 
 | 8.1 | Report Generator Framework | ✅ Complete | 7.6 |
 | 8.2 | Summary Report (HR) | ✅ Complete | 8.1 |
 | 8.3 | Audit Report (Compliance) | ✅ Complete | 8.1 |
-| 8.4 | Investigation Report (Security) | ⏳ Pending | 8.1, 6.6 |
-**Status: 3/4 Complete**
+| 8.4 | Investigation Report (Security) | ✅ Complete | 8.1, 6.6 |
+**Status: 4/4 Complete**
 
-*Note: Task 8.6 (Disclosure Report) is P1, not P0. Task 8.4 is the remaining P0 task.*
+*Note: Tasks 8.5-8.10 are P1. Phase 8 P0 is complete.*
 
 ### Phase 9 - Monitoring & Vigilance (4 P0 tasks)
 | Task | Name | Status | Dependencies |
@@ -172,11 +172,14 @@ Phase 10 (Integration)┘
 
 ## Next P0 Tasks
 
-Tasks 8.1, 8.2, and 8.3 are complete. The next P0 tasks are:
+**Phase 8 P0 Complete!** All 4 Phase 8 P0 tasks (8.1-8.4) are done.
 
-1. **Task 8.4**: Investigation Report - Security (depends on 8.1, 6.6) ← **NEXT**
+Next P0 tasks are in Phase 9:
 
-*Note: Tasks 8.5-8.10 are all P1. After Task 8.4, Phase 8 P0 is complete.*
+1. **Task 9.1**: Monitoring Scheduler (depends on 7.1) ← **NEXT**
+2. **Task 9.2**: Vigilance Level Manager (depends on 2.3, 9.1)
+3. **Task 9.3**: Delta Detector (depends on 3.5, 9.1)
+4. **Task 9.4**: Alert Generator (depends on 9.3)
 
 ---
 
