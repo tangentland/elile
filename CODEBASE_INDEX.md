@@ -1878,6 +1878,79 @@ result = compiler.to_screening_result(compiled, screening_id=screening_id)
 | `InvestigationSummary` | SAR loop stats, iterations, confidence metrics |
 | `ConnectionSummary` | D2/D3 entity counts, risk connections, PEP/sanctions |
 
+### Cross-Screening Index (`src/elile/screening/index/`)
+
+The CrossScreeningIndex enables network analysis across multiple screening operations,
+discovering connections between subjects and building relationship graphs.
+
+```python
+from elile.screening.index import (
+    CrossScreeningIndex,
+    get_cross_screening_index,
+    ScreeningEntity,
+    ConnectionType,
+    SubjectConnection,
+)
+
+# Get singleton index
+index = get_cross_screening_index()
+
+# Index a screening's connections
+entities = [
+    ScreeningEntity(
+        screening_id=screening_id,
+        entity_id=colleague_id,
+        subject_id=subject_id,
+        entity_type="person",
+        name="Jane Smith",
+        role="colleague",
+    )
+]
+await index.index_screening_connections(
+    screening_id=screening_id,
+    subject_id=subject_id,
+    entities=entities,
+)
+
+# Find connected subjects (network discovery)
+result = await index.find_connected_subjects(
+    subject_id=subject_id,
+    max_degree=2,  # Direct and second-degree connections
+    connection_types=[ConnectionType.COLLEAGUE, ConnectionType.EMPLOYER],
+)
+for conn in result.connections:
+    print(f"{conn.target_subject_id}: {conn.connection_type.value}")
+
+# Build network graph for visualization
+graph = await index.get_network_graph(subject_id, max_depth=2)
+print(f"Nodes: {graph.node_count}, Edges: {graph.edge_count}")
+
+# Calculate relationship strength
+strength = await index.calculate_relationship_strength(subject_a, subject_b)
+```
+
+#### Connection Types
+
+| Type | Description |
+|------|-------------|
+| `EMPLOYER` | Shared employer relationship |
+| `COLLEAGUE` | Worked at same organization |
+| `BUSINESS_PARTNER` | Business partnership |
+| `DIRECTOR` | Shared directorship |
+| `ADDRESS` | Shared address/residence |
+| `FAMILY` | Family relationship |
+| `ASSOCIATE` | General association |
+| `NETWORK_NEIGHBOR` | Connected through network graph |
+
+#### Connection Strength
+
+| Strength | Confidence Range | Description |
+|----------|------------------|-------------|
+| `WEAK` | < 0.5 | Low confidence or indirect |
+| `MODERATE` | 0.5 - 0.69 | Medium confidence |
+| `STRONG` | 0.7 - 0.89 | High confidence, direct evidence |
+| `VERIFIED` | >= 0.9 | Confirmed through multiple sources |
+
 ## Observability (`src/elile/observability/`)
 
 ### OpenTelemetry Tracing (`tracing.py`)
