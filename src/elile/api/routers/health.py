@@ -4,7 +4,7 @@ import time
 from datetime import UTC, datetime
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,6 +15,7 @@ from elile.api.schemas.health import (
     HealthStatus,
 )
 from elile.db.dependencies import get_db
+from elile.observability import get_metrics
 
 router = APIRouter(tags=["health"])
 
@@ -144,6 +145,7 @@ async def _check_redis() -> ComponentHealth:
     """
     try:
         from elile.config.settings import get_settings
+
         settings = get_settings()
 
         if not settings.REDIS_URL:
@@ -189,3 +191,21 @@ def _aggregate_health(components: list[ComponentHealth | None]) -> HealthStatus:
         return HealthStatus.DEGRADED
 
     return HealthStatus.HEALTHY
+
+
+@router.get(
+    "/metrics",
+    summary="Prometheus metrics",
+    description="Returns Prometheus metrics for scraping. No authentication required.",
+)
+async def metrics_endpoint() -> Response:
+    """Prometheus metrics endpoint.
+
+    Returns metrics in Prometheus text format for scraping by
+    Prometheus or compatible monitoring systems.
+    """
+    metrics_data = get_metrics()
+    return Response(
+        content=metrics_data,
+        media_type="text/plain; charset=utf-8",
+    )
