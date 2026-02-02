@@ -34,6 +34,18 @@ Usage:
         print(f"Risk score: {result.risk_score}")
 """
 
+from elile.screening.cost_estimator import (
+    BulkCostEstimate,
+    CostBreakdown,
+    CostCategory,
+    CostComparison,
+    CostEstimate,
+    CostEstimator,
+    EstimatorConfig,
+    create_cost_estimator,
+    get_cost_estimator,
+    reset_cost_estimator,
+)
 from elile.screening.degree_handlers import (
     D1Handler,
     D1Result,
@@ -228,4 +240,15 @@ __all__ = [
     "RedisQueueStorage",
     "create_queue_manager",
     "create_queue_manager_async",
+    # Cost Estimator
+    "CostEstimator",
+    "CostEstimate",
+    "CostBreakdown",
+    "CostCategory",
+    "CostComparison",
+    "BulkCostEstimate",
+    "EstimatorConfig",
+    "create_cost_estimator",
+    "get_cost_estimator",
+    "reset_cost_estimator",
 ]
