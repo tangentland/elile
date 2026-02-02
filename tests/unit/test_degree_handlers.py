@@ -3,9 +3,7 @@
 Tests D1, D2, and D3 investigation handlers.
 """
 
-from datetime import date
-from unittest.mock import AsyncMock, MagicMock, patch
-from uuid import UUID
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from uuid_utils import uuid7
@@ -13,7 +11,6 @@ from uuid_utils import uuid7
 from elile.agent.state import (
     InformationType,
     KnowledgeBase,
-    SearchDegree,
     ServiceTier,
 )
 from elile.compliance.types import Locale, RoleCategory
@@ -22,24 +19,18 @@ from elile.investigation.phases.network import (
     DiscoveredEntity,
     EntityRelation,
     EntityType,
-    RiskConnection,
-    RiskLevel,
 )
 from elile.investigation.sar_orchestrator import InvestigationResult, TypeCycleResult
 from elile.risk.connection_analyzer import ConnectionAnalysisResult
 from elile.screening.degree_handlers import (
-    D1Handler,
     D1Result,
-    D2Handler,
     D2Result,
-    D3Handler,
     D3Result,
     DegreeHandlerConfig,
     create_d1_handler,
     create_d2_handler,
     create_d3_handler,
 )
-
 
 # =============================================================================
 # Fixtures
@@ -253,7 +244,7 @@ class TestD1Handler:
 
     def test_extract_entities_from_knowledge_base(self, config):
         """Test entity extraction from knowledge base."""
-        from elile.agent.state import EmployerRecord, PersonEntity, OrgEntity
+        from elile.agent.state import EmployerRecord, PersonEntity
 
         handler = create_d1_handler(config=config)
 
@@ -399,8 +390,12 @@ class TestD2Handler:
         """Test relationship scoring."""
         handler = create_d2_handler(config=config)
 
-        assert handler._get_relationship_score("employer") > handler._get_relationship_score("social")
-        assert handler._get_relationship_score("business_partner") > handler._get_relationship_score("educational")
+        assert handler._get_relationship_score("employer") > handler._get_relationship_score(
+            "social"
+        )
+        assert handler._get_relationship_score(
+            "business_partner"
+        ) > handler._get_relationship_score("educational")
 
     def test_build_connections(self, discovered_entities, config):
         """Test connection building."""
@@ -507,7 +502,7 @@ class TestD3Handler:
         assert len(connections) == len(d3_entities)
         assert all(c.strength == ConnectionStrength.WEAK for c in connections)
 
-    def test_d3_result_to_dict(self, d2_result, config):
+    def test_d3_result_to_dict(self, d2_result, config):  # noqa: ARG002
         """Test D3 result serialization."""
         result = D3Result(
             d2_result=d2_result,
@@ -749,3 +744,350 @@ class TestDegreeHandlerEdgeCases:
 
         assert len(prioritized) == 1
         assert prioritized[0] == entity
+
+
+# =============================================================================
+# Task 7.8 Enhanced Feature Tests
+# =============================================================================
+
+
+class TestD3ReviewPoints:
+    """Tests for D3 review point creation (Task 7.8)."""
+
+    def test_d3_review_point_types(self):
+        """Test D3ReviewPointType enum values."""
+        from elile.screening.degree_handlers import D3ReviewPointType
+
+        assert D3ReviewPointType.HIGH_RISK_ENTITY.value == "high_risk_entity"
+        assert D3ReviewPointType.SANCTIONS_HIT.value == "sanctions_hit"
+        assert D3ReviewPointType.PEP_CONNECTION.value == "pep_connection"
+        assert D3ReviewPointType.NETWORK_CLUSTER.value == "network_cluster"
+        assert D3ReviewPointType.ADVERSE_MEDIA.value == "adverse_media"
+
+    def test_d3_review_point_creation(self):
+        """Test creating a D3ReviewPoint."""
+        from elile.screening.degree_handlers import D3ReviewPoint, D3ReviewPointType
+
+        review = D3ReviewPoint(
+            review_type=D3ReviewPointType.HIGH_RISK_ENTITY,
+            entity_name="Test Entity",
+            description="Test description",
+            severity="high",
+        )
+
+        assert review.review_type == D3ReviewPointType.HIGH_RISK_ENTITY
+        assert review.entity_name == "Test Entity"
+        assert review.severity == "high"
+        assert review.reviewed is False
+        assert review.review_id is not None
+
+    def test_d3_review_point_to_dict(self):
+        """Test D3ReviewPoint serialization."""
+        from elile.screening.degree_handlers import D3ReviewPoint, D3ReviewPointType
+
+        review = D3ReviewPoint(
+            review_type=D3ReviewPointType.SANCTIONS_HIT,
+            entity_name="Sanctioned Entity",
+            description="Potential sanctions match",
+            severity="critical",
+        )
+
+        review_dict = review.to_dict()
+
+        assert "review_id" in review_dict
+        assert review_dict["review_type"] == "sanctions_hit"
+        assert review_dict["entity_name"] == "Sanctioned Entity"
+        assert review_dict["severity"] == "critical"
+        assert review_dict["reviewed"] is False
+
+
+class TestD3SourceCoverage:
+    """Tests for D3 source coverage tracking (Task 7.8)."""
+
+    def test_source_coverage_creation(self):
+        """Test D3SourceCoverage creation."""
+        from elile.screening.degree_handlers import D3SourceCoverage
+
+        coverage = D3SourceCoverage(total_sources_queried=10)
+
+        assert coverage.total_sources_queried == 10
+        assert coverage.coverage_score == 0.0
+        assert len(coverage.sanctions_sources_used) == 0
+
+    def test_source_coverage_categorization(self, config):
+        """Test provider categorization into source types."""
+        from elile.screening.degree_handlers import D3SourceCoverage
+
+        coverage = D3SourceCoverage()
+
+        # Create a D3Handler and use its categorization method
+        handler = create_d3_handler(config=config)
+        providers = [
+            "identity_verify_inc",
+            "ofac_sanctions",
+            "adverse_media_search",
+            "linkedin_social",
+        ]
+        handler._categorize_providers(providers, coverage)
+
+        assert "identity_verify_inc" in coverage.identity_sources_used
+        assert "ofac_sanctions" in coverage.sanctions_sources_used
+        assert "adverse_media_search" in coverage.adverse_media_sources_used
+        assert "linkedin_social" in coverage.social_media_sources_used
+
+    def test_coverage_score_calculation(self):
+        """Test coverage score calculation."""
+        from elile.screening.degree_handlers import D3SourceCoverage
+
+        coverage = D3SourceCoverage(total_sources_queried=5)
+        coverage.identity_sources_used = ["id1"]
+        coverage.sanctions_sources_used = ["sanctions1"]
+        coverage.adverse_media_sources_used = ["adverse1"]
+
+        score = coverage.calculate_coverage_score()
+
+        assert 0.0 < score <= 1.0
+        assert coverage.coverage_score == score
+
+    def test_source_coverage_to_dict(self):
+        """Test D3SourceCoverage serialization."""
+        from elile.screening.degree_handlers import D3SourceCoverage
+
+        coverage = D3SourceCoverage(
+            total_sources_queried=10,
+            sources_with_hits=5,
+        )
+        coverage.sanctions_sources_used = ["ofac", "un"]
+
+        coverage_dict = coverage.to_dict()
+
+        assert coverage_dict["total_sources_queried"] == 10
+        assert coverage_dict["sources_with_hits"] == 5
+        assert coverage_dict["sanctions_sources"] == ["ofac", "un"]
+
+
+class TestD3EnhancedConfig:
+    """Tests for D3 enhanced configuration options (Task 7.8)."""
+
+    def test_enhanced_config_defaults(self):
+        """Test default values for D3 enhanced config."""
+        config = DegreeHandlerConfig()
+
+        assert config.d3_enable_review_points is True
+        assert config.d3_review_risk_threshold == 0.7
+        assert config.d3_review_on_sanctions_hit is True
+        assert config.d3_review_on_pep_connection is True
+        assert config.d3_checkpoint_interval == 5
+        assert config.d3_extended_sources is True
+
+    def test_enhanced_config_custom(self):
+        """Test custom values for D3 enhanced config."""
+        config = DegreeHandlerConfig(
+            d3_enable_review_points=False,
+            d3_review_risk_threshold=0.5,
+            d3_checkpoint_interval=10,
+        )
+
+        assert config.d3_enable_review_points is False
+        assert config.d3_review_risk_threshold == 0.5
+        assert config.d3_checkpoint_interval == 10
+
+
+class TestD3ResultEnhanced:
+    """Tests for D3Result enhanced fields (Task 7.8)."""
+
+    def test_d3_result_review_fields(self):
+        """Test D3Result review point fields."""
+        result = D3Result()
+
+        assert result.review_points == []
+        assert result.pending_reviews == 0
+        assert result.reviews_completed == 0
+        assert result.has_pending_reviews is False
+
+    def test_d3_result_with_review_points(self):
+        """Test D3Result with review points."""
+        from elile.screening.degree_handlers import D3ReviewPoint, D3ReviewPointType
+
+        result = D3Result()
+        result.review_points = [
+            D3ReviewPoint(review_type=D3ReviewPointType.SANCTIONS_HIT),
+            D3ReviewPoint(review_type=D3ReviewPointType.PEP_CONNECTION),
+            D3ReviewPoint(review_type=D3ReviewPointType.SANCTIONS_HIT),
+        ]
+        result.pending_reviews = 3
+
+        assert result.has_pending_reviews is True
+        assert result.review_summary == {"sanctions_hit": 2, "pep_connection": 1}
+
+    def test_d3_result_source_coverage(self):
+        """Test D3Result source coverage field."""
+        from elile.screening.degree_handlers import D3SourceCoverage
+
+        result = D3Result()
+        result.source_coverage = D3SourceCoverage(total_sources_queried=10)
+
+        assert result.source_coverage.total_sources_queried == 10
+
+    def test_d3_result_checkpoint_fields(self):
+        """Test D3Result checkpoint reference fields."""
+        result = D3Result()
+
+        assert result.checkpoint_ids == []
+        assert result.last_checkpoint_id is None
+        assert result.investigation_id is None
+
+    def test_d3_result_enhanced_to_dict(self):
+        """Test D3Result enhanced serialization."""
+        from elile.screening.degree_handlers import (
+            D3ReviewPoint,
+            D3ReviewPointType,
+            D3SourceCoverage,
+        )
+
+        result = D3Result()
+        result.review_points = [D3ReviewPoint(review_type=D3ReviewPointType.HIGH_RISK_ENTITY)]
+        result.pending_reviews = 1
+        result.source_coverage = D3SourceCoverage(total_sources_queried=5)
+
+        result_dict = result.to_dict()
+
+        assert len(result_dict["review_points"]) == 1
+        assert result_dict["pending_reviews"] == 1
+        assert result_dict["source_coverage"]["total_sources_queried"] == 5
+        assert "review_summary" in result_dict
+
+
+class TestD3HandlerEnhanced:
+    """Tests for D3Handler enhanced methods (Task 7.8)."""
+
+    @pytest.mark.asyncio
+    async def test_execute_d3_with_enhanced_features(self, d2_result, config):
+        """Test D3 execution includes enhanced features."""
+        config.d3_enable_review_points = True
+        config.d3_extended_sources = True
+        handler = create_d3_handler(config=config)
+
+        result = await handler.execute_d3(
+            d2_result=d2_result,
+            locale=Locale.US,
+            tier=ServiceTier.ENHANCED,
+            role_category=RoleCategory.EXECUTIVE,
+            available_providers=["sanctions_check", "pep_lookup"],
+        )
+
+        # Should have source coverage initialized
+        assert result.source_coverage is not None
+        # Should have investigation ID
+        assert result.investigation_id is not None
+
+    @pytest.mark.asyncio
+    async def test_execute_d3_without_review_points(self, d2_result, config):
+        """Test D3 execution with review points disabled."""
+        config.d3_enable_review_points = False
+        handler = create_d3_handler(config=config)
+
+        result = await handler.execute_d3(
+            d2_result=d2_result,
+            locale=Locale.US,
+            tier=ServiceTier.ENHANCED,
+            role_category=RoleCategory.EXECUTIVE,
+            available_providers=[],
+        )
+
+        assert result.review_points == []
+        assert result.pending_reviews == 0
+
+    def test_check_network_review_points_high_risk(self, config):
+        """Test network-level review points for high risk."""
+        config.d3_review_risk_threshold = 0.5
+        handler = create_d3_handler(config=config)
+
+        result = D3Result()
+        result.total_network_risk = 0.8  # Above threshold
+
+        reviews = handler._check_network_review_points(result)
+
+        assert len(reviews) >= 1
+        assert any(r.review_type.value == "network_cluster" for r in reviews)
+
+    def test_check_network_review_points_depth_threshold(self, config):
+        """Test network-level review point for depth threshold."""
+        config.d3_max_depth = 2
+        handler = create_d3_handler(config=config)
+
+        result = D3Result()
+        result.network_depth = 2  # At max depth
+
+        reviews = handler._check_network_review_points(result)
+
+        assert any(r.review_type.value == "depth_threshold" for r in reviews)
+
+    def test_mark_review_complete(self, config):
+        """Test marking a review point as complete."""
+        from elile.screening.degree_handlers import D3ReviewPoint, D3ReviewPointType
+
+        handler = create_d3_handler(config=config)
+        result = D3Result()
+        review = D3ReviewPoint(review_type=D3ReviewPointType.HIGH_RISK_ENTITY)
+        result.review_points = [review]
+        result.pending_reviews = 1
+
+        success = handler.mark_review_complete(
+            result=result,
+            review_id=review.review_id,
+            reviewer_notes="Investigated and cleared",
+            decision="continue",
+        )
+
+        assert success is True
+        assert review.reviewed is True
+        assert review.reviewer_notes == "Investigated and cleared"
+        assert review.decision == "continue"
+        assert result.pending_reviews == 0
+        assert result.reviews_completed == 1
+
+    def test_mark_review_complete_not_found(self, config):
+        """Test marking a non-existent review point."""
+        handler = create_d3_handler(config=config)
+        result = D3Result()
+
+        success = handler.mark_review_complete(
+            result=result,
+            review_id=uuid7(),
+            reviewer_notes="",
+            decision="continue",
+        )
+
+        assert success is False
+
+    def test_get_pending_reviews(self, config):
+        """Test getting pending review points."""
+        from elile.screening.degree_handlers import D3ReviewPoint, D3ReviewPointType
+
+        handler = create_d3_handler(config=config)
+        result = D3Result()
+
+        reviewed = D3ReviewPoint(review_type=D3ReviewPointType.HIGH_RISK_ENTITY)
+        reviewed.reviewed = True
+
+        pending = D3ReviewPoint(review_type=D3ReviewPointType.SANCTIONS_HIT)
+
+        result.review_points = [reviewed, pending]
+
+        pending_reviews = handler.get_pending_reviews(result)
+
+        assert len(pending_reviews) == 1
+        assert pending_reviews[0].review_id == pending.review_id
+
+    def test_create_d3_handler_with_checkpoint_manager(self, config):
+        """Test D3Handler creation with checkpoint manager."""
+        from elile.investigation.checkpoint import create_checkpoint_manager
+
+        checkpoint_manager = create_checkpoint_manager()
+        handler = create_d3_handler(
+            checkpoint_manager=checkpoint_manager,
+            config=config,
+        )
+
+        assert handler.checkpoint_manager is checkpoint_manager
