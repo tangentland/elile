@@ -7,6 +7,7 @@ persona-appropriate structured content.
 Available Builders:
 - HRSummaryBuilder: HR Manager summary report with risk overview and recommendations
 - ComplianceAuditBuilder: Compliance Officer audit report with full audit trail
+- SecurityInvestigationBuilder: Security Team investigation report with threat assessment
 
 This package also re-exports core template classes from template_definitions
 for convenience.
@@ -47,6 +48,26 @@ from elile.reporting.templates.hr_summary import (
     RiskAssessmentDisplay,
     create_hr_summary_builder,
 )
+from elile.reporting.templates.security_investigation import (
+    ConnectionNetworkSection,
+    DetailedFinding,
+    DetailedFindingsSection,
+    EvolutionSignal,
+    EvolutionSignalsSection,
+    EvolutionTrend,
+    FindingsByCategory,
+    NetworkEdge,
+    NetworkNode,
+    RiskPath,
+    SecurityInvestigationBuilder,
+    SecurityInvestigationConfig,
+    SecurityInvestigationContent,
+    SignalType,
+    ThreatAssessmentSection,
+    ThreatFactor,
+    ThreatLevel,
+    create_security_investigation_builder,
+)
 
 __all__ = [
     # Core template classes (re-exported from template_definitions)
@@ -83,4 +104,24 @@ __all__ = [
     "DataHandlingSection",
     "DataHandlingAttestation",
     "DataHandlingStatus",
+    # Security Investigation Builder
+    "SecurityInvestigationBuilder",
+    "SecurityInvestigationConfig",
+    "create_security_investigation_builder",
+    # Security Investigation data models
+    "SecurityInvestigationContent",
+    "ThreatLevel",
+    "EvolutionTrend",
+    "SignalType",
+    "ThreatFactor",
+    "ThreatAssessmentSection",
+    "NetworkNode",
+    "NetworkEdge",
+    "RiskPath",
+    "ConnectionNetworkSection",
+    "DetailedFinding",
+    "FindingsByCategory",
+    "DetailedFindingsSection",
+    "EvolutionSignal",
+    "EvolutionSignalsSection",
 ]
