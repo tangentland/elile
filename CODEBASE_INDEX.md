@@ -2305,6 +2305,11 @@ tests/
 | `src/elile/providers/darkweb/types.py` | DarkWebSource, MentionType, SeverityLevel, ConfidenceLevel, CredentialType, BreachInfo, CredentialLeak, MarketplaceListing, ForumMention, ThreatIndicator, DarkWebSearchResult, DarkWebProviderConfig | Task 4.13 |
 | `src/elile/providers/darkweb/breach_database.py` | BreachDatabase, create_breach_database, KNOWN_BREACHES (LinkedIn, Yahoo, Equifax, etc.) | Task 4.13 |
 | `src/elile/providers/darkweb/provider.py` | DarkWebProvider, create_darkweb_provider, get_darkweb_provider, search_dark_web, check_credential_leaks | Task 4.13 |
+| `src/elile/providers/osint/__init__.py` | OSINT aggregator provider exports | Task 4.14 |
+| `src/elile/providers/osint/types.py` | OSINTSource (50+ sources), SourceReliability, DataFreshness, SentimentType, EntityType, RelationshipType, SocialMediaProfile, NewsMention, PublicRecord, ProfessionalInfo, ExtractedEntity, ExtractedRelationship, OSINTSearchResult, OSINTProviderConfig | Task 4.14 |
+| `src/elile/providers/osint/deduplicator.py` | OSINTDeduplicator, DeduplicationResult, create_deduplicator, SequenceMatcher-based similarity | Task 4.14 |
+| `src/elile/providers/osint/entity_extractor.py` | EntityExtractor (regex patterns for emails, phones, URLs, social handles), RelationshipExtractor, create_entity_extractor, create_relationship_extractor | Task 4.14 |
+| `src/elile/providers/osint/provider.py` | OSINTProvider, create_osint_provider, get_osint_provider, gather_intelligence, search_social_media, search_news | Task 4.14 |
 | `src/elile/investigation/models.py` | SARPhase, CompletionReason, SARIterationState, SARTypeState, SARConfig, SARSummary | Task 5.1 |
 | `src/elile/investigation/sar_machine.py` | SARStateMachine, create_sar_machine, FOUNDATION_TYPES | Task 5.1 |
 | `src/elile/investigation/query_planner.py` | QueryPlanner, QueryPlanResult, SearchQuery, QueryType, INFO_TYPE_TO_CHECK_TYPES | Task 5.2 |
