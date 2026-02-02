@@ -21,7 +21,7 @@ Phase 8 implements all 6 persona-specific report types, PDF generation, locale-b
 |-----|-----------|----------|--------|--------------|---------------|
 | 8.1 | Report Generator Framework | P0 | Complete | Phase 7 | [task-8.1-report-generator-framework.md](../tasks/task-8.1-report-generator-framework.md) |
 | 8.2 | Summary Report (HR Manager) | P0 | Complete | 8.1 | [task-8.2-summary-report-hr.md](../tasks/task-8.2-summary-report-hr.md) |
-| 8.3 | Audit Report (Compliance) | P0 | Not Started | 8.1 | [task-8.3-audit-report-compliance.md](../tasks/task-8.3-audit-report-compliance.md) |
+| 8.3 | Audit Report (Compliance) | P0 | Complete | 8.1 | [task-8.3-audit-report-compliance.md](../tasks/task-8.3-audit-report-compliance.md) |
 | 8.4 | Investigation Report (Security) | P1 | Not Started | 8.1, 6.7 | [task-8.4-investigation-report-security.md](../tasks/task-8.4-investigation-report-security.md) |
 | 8.5 | Case File Report | P1 | Not Started | 8.1 | [task-8.5-case-file-report.md](../tasks/task-8.5-case-file-report.md) |
 | 8.6 | Disclosure Report (Subject) | P0 | Not Started | 8.1 | [task-8.6-disclosure-report.md](../tasks/task-8.6-disclosure-report.md) |
