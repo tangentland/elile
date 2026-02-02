@@ -21,6 +21,13 @@ from elile.observability import (
     get_metrics_manager,
     get_tracing_manager,
 )
+from elile.security import (
+    InMemoryRateLimitStore,
+    RateLimiterMiddleware,
+    SecurityHeadersMiddleware,
+    create_default_security_config,
+)
+from elile.security.headers import HTTPSRedirectMiddleware, TrustedHostMiddleware
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -163,12 +170,16 @@ def _configure_middleware(app: FastAPI, settings: Settings) -> None:
 
     Middleware order (outermost to innermost execution):
     1. ObservabilityMiddleware - Records metrics and traces
-    2. RequestLoggingMiddleware - Logs all requests
-    3. ErrorHandlingMiddleware - Converts exceptions to HTTP responses
-    4. CORSMiddleware - Handles CORS (if configured)
-    5. AuthenticationMiddleware - Validates Bearer token
-    6. TenantValidationMiddleware - Validates X-Tenant-ID
-    7. RequestContextMiddleware - Sets ContextVar for request context
+    2. SecurityHeadersMiddleware - Adds security headers
+    3. HTTPSRedirectMiddleware - Redirects HTTP to HTTPS (production)
+    4. TrustedHostMiddleware - Validates Host header (production)
+    5. RateLimiterMiddleware - Rate limiting
+    6. RequestLoggingMiddleware - Logs all requests
+    7. ErrorHandlingMiddleware - Converts exceptions to HTTP responses
+    8. CORSMiddleware - Handles CORS (if configured)
+    9. AuthenticationMiddleware - Validates Bearer token
+    10. TenantValidationMiddleware - Validates X-Tenant-ID
+    11. RequestContextMiddleware - Sets ContextVar for request context
 
     Note: Middleware is added in reverse order because Starlette
     processes them from last-added to first-added.
@@ -177,6 +188,9 @@ def _configure_middleware(app: FastAPI, settings: Settings) -> None:
         app: FastAPI application
         settings: Application settings
     """
+    # Get security configuration for the environment
+    security_config = create_default_security_config(settings.ENVIRONMENT)
+
     # Add middleware in reverse order (last added = outermost)
 
     # Innermost: Request context (needs tenant and actor from upstream)
@@ -201,8 +215,40 @@ def _configure_middleware(app: FastAPI, settings: Settings) -> None:
     # Error handling (catches exceptions from all inner middleware)
     app.add_middleware(ErrorHandlingMiddleware)
 
+    # Rate limiting (if enabled)
+    if security_config.rate_limit.enabled:
+        app.add_middleware(
+            RateLimiterMiddleware,
+            store=InMemoryRateLimitStore(),
+            config=security_config.rate_limit,
+        )
+
     # Request logging
     app.add_middleware(RequestLoggingMiddleware)
+
+    # Trusted hosts validation (if enabled - typically in production)
+    if security_config.trusted_hosts.enabled:
+        app.add_middleware(
+            TrustedHostMiddleware,
+            allowed_hosts=security_config.trusted_hosts.allowed_hosts,
+            redirect_to_primary=security_config.trusted_hosts.redirect_to_primary,
+            primary_host=security_config.trusted_hosts.primary_host,
+        )
+
+    # HTTPS redirect (if enabled - typically in production)
+    if security_config.https.enforce_https:
+        app.add_middleware(
+            HTTPSRedirectMiddleware,
+            behind_proxy=security_config.https.behind_proxy,
+            exempt_paths=security_config.https.exempt_paths,
+        )
+
+    # Security headers (always enabled unless explicitly disabled)
+    if security_config.enable_security_middleware:
+        app.add_middleware(
+            SecurityHeadersMiddleware,
+            config=security_config.headers,
+        )
 
     # Outermost: Observability (metrics and tracing)
     app.add_middleware(ObservabilityMiddleware)

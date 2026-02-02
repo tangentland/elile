@@ -25,6 +25,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 | `src/elile/monitoring/` | Ongoing employee vigilance and monitoring | `MonitoringScheduler`, `VigilanceManager`, `MonitoringConfig`, `MonitoringCheck`, `LifecycleEvent` |
 | `src/elile/hris/` | HRIS integration gateway and event processing | `HRISGateway`, `HRISAdapter`, `HRISEvent`, `HRISEventProcessor`, `HRISResultPublisher`, `GatewayConfig` |
 | `src/elile/observability/` | OpenTelemetry tracing and Prometheus metrics | `TracingManager`, `MetricsManager`, `TracingConfig`, `MetricsConfig` |
+| `src/elile/security/` | Security hardening: headers, rate limiting, sanitization | `SecurityHeadersMiddleware`, `RateLimiterMiddleware`, `InputSanitizer`, `SecurityConfig` |
 | `src/elile/utils/` | Shared utilities and base exceptions | `ElileError` |
 
 ## API Layer (`src/elile/api/`)
@@ -37,12 +38,16 @@ app = create_app()  # Configures all middleware and routers
 
 ### Middleware Stack (outer to inner)
 1. `ObservabilityMiddleware` - Metrics and tracing for requests
-2. `RequestLoggingMiddleware` - Audit all requests
-3. `ErrorHandlingMiddleware` - Exception → HTTP response
-4. `CORSMiddleware` - Cross-origin requests
-5. `AuthenticationMiddleware` - Bearer token validation
-6. `TenantValidationMiddleware` - X-Tenant-ID validation
-7. `RequestContextMiddleware` - Set ContextVars
+2. `SecurityHeadersMiddleware` - Security headers (CSP, HSTS, X-Frame-Options)
+3. `HTTPSRedirectMiddleware` - Redirect HTTP to HTTPS (production)
+4. `TrustedHostMiddleware` - Validate Host header (production)
+5. `RateLimiterMiddleware` - Rate limiting with sliding window
+6. `RequestLoggingMiddleware` - Audit all requests
+7. `ErrorHandlingMiddleware` - Exception → HTTP response
+8. `CORSMiddleware` - Cross-origin requests
+9. `AuthenticationMiddleware` - Bearer token validation
+10. `TenantValidationMiddleware` - X-Tenant-ID validation
+11. `RequestContextMiddleware` - Set ContextVars
 
 ### Health & Observability Endpoints
 | Endpoint | Purpose | Auth Required |
@@ -1826,6 +1831,92 @@ async def query_provider(): ...
 @trace_sar_loop(info_type="criminal", iteration=1)
 async def run_sar_iteration(): ...
 ```
+
+## Security Hardening (`src/elile/security/`)
+
+### Security Headers Middleware (`headers.py`)
+```python
+from elile.security import SecurityHeadersMiddleware, SecurityHeadersConfig
+
+# Add security headers to all responses
+config = SecurityHeadersConfig(
+    x_frame_options="DENY",
+    strict_transport_security=True,
+    hsts_max_age=31536000,
+)
+app.add_middleware(SecurityHeadersMiddleware, config=config)
+```
+
+**Security Headers Applied:**
+| Header | Default Value | Purpose |
+|--------|---------------|---------|
+| `X-Frame-Options` | `DENY` | Clickjacking protection |
+| `X-Content-Type-Options` | `nosniff` | MIME type sniffing prevention |
+| `X-XSS-Protection` | `1; mode=block` | XSS filter for older browsers |
+| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains` | HSTS |
+| `Content-Security-Policy` | `default-src 'self'; ...` | Content loading restrictions |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` | Referrer leakage prevention |
+| `Permissions-Policy` | `geolocation=(), camera=(), ...` | Feature restrictions |
+| `Cross-Origin-*-Policy` | `same-origin` / `require-corp` | Cross-origin isolation |
+
+### Rate Limiting (`rate_limiter.py`)
+```python
+from elile.security import RateLimiterMiddleware, RateLimitConfig, InMemoryRateLimitStore
+
+# Configure rate limiting
+config = RateLimitConfig(
+    enabled=True,
+    requests_per_minute=60,
+    per_endpoint_limits={"/v1/screenings": 30},
+    exempt_paths=frozenset({"/health", "/metrics"}),
+)
+store = InMemoryRateLimitStore()
+app.add_middleware(RateLimiterMiddleware, store=store, config=config)
+```
+
+### Input Sanitization (`sanitization.py`)
+```python
+from elile.security import InputSanitizer, SQLSafetyChecker, sanitize_string
+
+sanitizer = InputSanitizer()
+safe_name = sanitizer.sanitize_name("John<script>alert()</script>")  # "John"
+safe_email = sanitizer.sanitize_email("USER@EXAMPLE.COM")  # "user@example.com"
+
+# SQL injection detection
+checker = SQLSafetyChecker()
+if not checker.is_safe(user_input):
+    raise ValueError("Potential SQL injection detected")
+```
+
+### Environment-Specific Configuration (`config.py`)
+```python
+from elile.security import create_default_security_config
+
+# Get environment-appropriate security settings
+config = create_default_security_config("production")  # or "staging", "development", "test"
+```
+
+| Environment | HSTS | Rate Limit | Trusted Hosts | HTTPS Redirect |
+|-------------|------|------------|---------------|----------------|
+| `production` | 1 year + preload | 60 rpm | Enabled | Enabled |
+| `staging` | 1 day | 120 rpm | Enabled | Enabled |
+| `development` | Disabled | 1000 rpm | Disabled | Disabled |
+| `test` | Disabled | Disabled | Disabled | Disabled |
+
+### Key Classes
+| Class | Purpose |
+|-------|---------|
+| `SecurityConfig` | Master security configuration |
+| `SecurityHeadersConfig` | Security headers settings |
+| `RateLimitConfig` | Rate limiting settings |
+| `TrustedHostsConfig` | Host validation settings |
+| `SecurityHeadersMiddleware` | Adds security headers to responses |
+| `RateLimiterMiddleware` | Enforces rate limits |
+| `TrustedHostMiddleware` | Validates Host header |
+| `HTTPSRedirectMiddleware` | Redirects HTTP to HTTPS |
+| `InputSanitizer` | Comprehensive input sanitization |
+| `HTMLSanitizer` | XSS prevention for HTML content |
+| `SQLSafetyChecker` | SQL injection pattern detection |
 
 ## Key Enums
 
