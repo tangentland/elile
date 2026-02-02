@@ -24,6 +24,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 | `src/elile/reporting/` | Persona-specific report generation | `ReportGenerator`, `TemplateRegistry`, `ReportPersona`, `OutputFormat` |
 | `src/elile/monitoring/` | Ongoing employee vigilance and monitoring | `MonitoringScheduler`, `VigilanceManager`, `MonitoringConfig`, `MonitoringCheck`, `LifecycleEvent` |
 | `src/elile/hris/` | HRIS integration gateway and event processing | `HRISGateway`, `HRISAdapter`, `HRISEvent`, `HRISEventProcessor`, `HRISResultPublisher`, `GatewayConfig` |
+| `src/elile/observability/` | OpenTelemetry tracing and Prometheus metrics | `TracingManager`, `MetricsManager`, `TracingConfig`, `MetricsConfig` |
 | `src/elile/utils/` | Shared utilities and base exceptions | `ElileError` |
 
 ## API Layer (`src/elile/api/`)
@@ -35,19 +36,21 @@ app = create_app()  # Configures all middleware and routers
 ```
 
 ### Middleware Stack (outer to inner)
-1. `RequestLoggingMiddleware` - Audit all requests
-2. `ErrorHandlingMiddleware` - Exception → HTTP response
-3. `CORSMiddleware` - Cross-origin requests
-4. `AuthenticationMiddleware` - Bearer token validation
-5. `TenantValidationMiddleware` - X-Tenant-ID validation
-6. `RequestContextMiddleware` - Set ContextVars
+1. `ObservabilityMiddleware` - Metrics and tracing for requests
+2. `RequestLoggingMiddleware` - Audit all requests
+3. `ErrorHandlingMiddleware` - Exception → HTTP response
+4. `CORSMiddleware` - Cross-origin requests
+5. `AuthenticationMiddleware` - Bearer token validation
+6. `TenantValidationMiddleware` - X-Tenant-ID validation
+7. `RequestContextMiddleware` - Set ContextVars
 
-### Health Endpoints
+### Health & Observability Endpoints
 | Endpoint | Purpose | Auth Required |
 |----------|---------|---------------|
 | `GET /health` | Basic liveness | No |
 | `GET /health/db` | Database connectivity | No |
 | `GET /health/ready` | Full readiness | No |
+| `GET /metrics` | Prometheus metrics | No |
 
 ### Screening API (`/v1/screenings/`)
 | Endpoint | Purpose | Auth Required |
@@ -1721,6 +1724,74 @@ result = compiler.to_screening_result(compiled, screening_id=screening_id)
 | `CategorySummary` | Per-category finding counts, key findings, corroboration |
 | `InvestigationSummary` | SAR loop stats, iterations, confidence metrics |
 | `ConnectionSummary` | D2/D3 entity counts, risk connections, PEP/sanctions |
+
+## Observability (`src/elile/observability/`)
+
+### OpenTelemetry Tracing (`tracing.py`)
+```python
+from elile.observability import TracingManager, TracingConfig, traced_async
+
+# Initialize tracing
+config = TracingConfig(
+    service_name="elile",
+    otlp_endpoint="http://localhost:4317",
+)
+manager = TracingManager(config)
+manager.initialize()
+manager.instrument_fastapi(app)
+
+# Use tracing decorator
+@traced_async("screening.execute")
+async def execute_screening():
+    add_span_attributes(screening_id=str(screening.id))
+    ...
+```
+
+### Prometheus Metrics (`metrics.py`)
+```python
+from elile.observability import (
+    observe_screening_duration,
+    record_provider_query,
+    observe_risk_score,
+)
+
+# Record screening duration
+with observe_screening_duration(tier="standard", degree="d1") as ctx:
+    result = await execute_screening()
+    ctx["status"] = "success"
+
+# Record provider queries
+record_provider_query(
+    provider_id="sterling",
+    check_type="criminal_national",
+    status="success",
+    duration_seconds=1.5,
+)
+```
+
+### Key Metrics
+| Metric | Type | Labels | Purpose |
+|--------|------|--------|---------|
+| `elile_screening_duration_seconds` | Histogram | tier, degree, status | Screening execution time |
+| `elile_screenings_total` | Counter | tier, degree, status, locale | Total screenings processed |
+| `elile_provider_query_duration_seconds` | Histogram | provider_id, check_type, status | Provider query latency |
+| `elile_sar_confidence_score` | Histogram | info_type | SAR loop confidence scores |
+| `elile_risk_score` | Histogram | role_category | Risk score distribution |
+| `elile_http_request_duration_seconds` | Histogram | method, endpoint, status_code | HTTP request latency |
+
+### Specialized Tracing Decorators
+```python
+from elile.observability import trace_screening, trace_provider_query, trace_sar_loop
+
+@trace_screening(screening_id=screening_id, tier="standard", degree="d1")
+async def execute_screening(): ...
+
+@trace_provider_query(provider_id="sterling", check_type="criminal")
+async def query_provider(): ...
+
+@trace_sar_loop(info_type="criminal", iteration=1)
+async def run_sar_iteration(): ...
+```
 
 ## Key Enums
 

@@ -1,7 +1,7 @@
 """FastAPI application factory."""
 
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,12 +9,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from elile.api.middleware import (
     AuthenticationMiddleware,
     ErrorHandlingMiddleware,
+    ObservabilityMiddleware,
     RequestContextMiddleware,
     RequestLoggingMiddleware,
     TenantValidationMiddleware,
 )
 from elile.api.routers import health_router, v1_router
 from elile.config.settings import Settings, get_settings
+from elile.observability import (
+    TracingManager,
+    get_metrics_manager,
+    get_tracing_manager,
+)
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -83,14 +89,49 @@ async def _lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """
     # Startup
     import logging
+
     logger = logging.getLogger("elile.api")
     logger.info("Starting Elile API...")
+
+    # Initialize observability (tracing and metrics)
+    tracing_manager: TracingManager | None = None
+    try:
+        tracing_manager = get_tracing_manager()
+        tracing_manager.initialize()
+        tracing_manager.instrument_fastapi(app)
+        tracing_manager.instrument_httpx()
+        logger.info("OpenTelemetry tracing initialized")
+
+        metrics_manager = get_metrics_manager()
+        metrics_manager.initialize(
+            service_name="elile",
+            service_version="0.1.0",
+            environment=(
+                app.state.settings.ENVIRONMENT if hasattr(app.state, "settings") else "development"
+            ),
+        )
+        logger.info("Prometheus metrics initialized")
+    except Exception as e:
+        logger.warning(f"Observability initialization error: {e}")
 
     # Initialize database connection pool
     try:
         from elile.db.config import init_db
+
         await init_db()
         logger.info("Database connection pool initialized")
+
+        # Instrument SQLAlchemy if tracing is enabled
+        if tracing_manager and tracing_manager.config.enabled:
+            try:
+                from elile.db.config import get_engine
+
+                engine = get_engine()
+                if engine:
+                    tracing_manager.instrument_sqlalchemy(engine)
+                    logger.info("SQLAlchemy tracing instrumented")
+            except Exception as e:
+                logger.warning(f"SQLAlchemy instrumentation skipped: {e}")
     except Exception as e:
         logger.warning(f"Database initialization skipped: {e}")
 
@@ -102,22 +143,32 @@ async def _lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # Close database connections
     try:
         from elile.db.config import close_db
+
         await close_db()
         logger.info("Database connections closed")
     except Exception as e:
         logger.warning(f"Database shutdown error: {e}")
+
+    # Shutdown tracing
+    if tracing_manager:
+        try:
+            tracing_manager.shutdown()
+            logger.info("OpenTelemetry tracing shutdown")
+        except Exception as e:
+            logger.warning(f"Tracing shutdown error: {e}")
 
 
 def _configure_middleware(app: FastAPI, settings: Settings) -> None:
     """Configure middleware stack.
 
     Middleware order (outermost to innermost execution):
-    1. RequestLoggingMiddleware - Logs all requests
-    2. ErrorHandlingMiddleware - Converts exceptions to HTTP responses
-    3. CORSMiddleware - Handles CORS (if configured)
-    4. AuthenticationMiddleware - Validates Bearer token
-    5. TenantValidationMiddleware - Validates X-Tenant-ID
-    6. RequestContextMiddleware - Sets ContextVar for request context
+    1. ObservabilityMiddleware - Records metrics and traces
+    2. RequestLoggingMiddleware - Logs all requests
+    3. ErrorHandlingMiddleware - Converts exceptions to HTTP responses
+    4. CORSMiddleware - Handles CORS (if configured)
+    5. AuthenticationMiddleware - Validates Bearer token
+    6. TenantValidationMiddleware - Validates X-Tenant-ID
+    7. RequestContextMiddleware - Sets ContextVar for request context
 
     Note: Middleware is added in reverse order because Starlette
     processes them from last-added to first-added.
@@ -150,8 +201,11 @@ def _configure_middleware(app: FastAPI, settings: Settings) -> None:
     # Error handling (catches exceptions from all inner middleware)
     app.add_middleware(ErrorHandlingMiddleware)
 
-    # Outermost: Request logging
+    # Request logging
     app.add_middleware(RequestLoggingMiddleware)
+
+    # Outermost: Observability (metrics and tracing)
+    app.add_middleware(ObservabilityMiddleware)
 
 
 def _configure_routers(app: FastAPI) -> None:
