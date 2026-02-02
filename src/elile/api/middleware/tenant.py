@@ -65,7 +65,13 @@ class TenantValidationMiddleware(BaseHTTPMiddleware):
 
     def _should_skip_validation(self, path: str) -> bool:
         """Check if path should skip tenant validation."""
-        return path in SKIP_TENANT_PATHS or path.startswith(("/docs", "/redoc"))
+        # Skip for docs, health checks, and other exempt paths
+        if path in SKIP_TENANT_PATHS or path.startswith(("/docs", "/redoc")):
+            return True
+        # HRIS webhooks get tenant_id from URL path and handle their own validation
+        if path.startswith("/v1/hris/webhooks"):
+            return True
+        return False
 
     async def _validate_tenant(self, tenant_id: UUID) -> None:
         """Validate tenant exists and is active.

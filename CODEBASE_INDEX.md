@@ -67,6 +67,22 @@ app = create_app()  # Configures all middleware and routers
 - Date of birth must be in YYYY-MM-DD format
 - Subject full_name is required
 
+### HRIS Webhook API (`/v1/hris/webhooks/`)
+| Endpoint | Purpose | Auth Required |
+|----------|---------|---------------|
+| `POST /v1/hris/webhooks/{tenant_id}` | Receive HRIS webhook | Signature |
+| `POST /v1/hris/webhooks/{tenant_id}/test` | Test webhook connectivity | No |
+| `GET /v1/hris/webhooks/{tenant_id}/status` | Check connection status | No |
+
+**Key schemas:**
+- `WebhookResponse` - Confirmation of webhook receipt (event_id, timestamp, status)
+- `WebhookTestResponse` - Test endpoint response (platform, connection status)
+- `WebhookConnectionStatus` - Detailed connection status
+
+**Authentication:**
+- HRIS webhooks bypass Bearer token auth and use webhook signature validation
+- Signature validated via HRISGateway.validate_inbound_event()
+
 ## Core Framework (`src/elile/core/`)
 
 ### Request Context
@@ -1925,6 +1941,8 @@ tests/
 | `src/elile/monitoring/alert_generator.py` | AlertGenerator, AlertConfig, AlertStatus, GeneratedAlert, EscalationTrigger, NotificationChannel, NotificationChannelType, NotificationResult, MockEmailChannel, MockWebhookChannel, MockSMSChannel, AUTO_ALERT_THRESHOLDS, create_alert_generator | Task 9.4 |
 | `src/elile/hris/__init__.py` | HRIS module exports | Task 10.1 |
 | `src/elile/hris/gateway.py` | HRISGateway, GatewayConfig, HRISAdapter, BaseHRISAdapter, MockHRISAdapter, HRISEvent, HRISEventType, HRISPlatform, HRISConnection, HRISConnectionStatus, ScreeningUpdate, AlertUpdate, EmployeeInfo, WebhookValidationResult, create_hris_gateway | Task 10.1 |
+| `src/elile/api/routers/v1/hris_webhook.py` | HRIS webhook receiver endpoints (POST /{tenant_id}, /test, GET /status) | Task 10.2 |
+| `src/elile/api/schemas/hris_webhook.py` | WebhookResponse, WebhookTestResponse, WebhookConnectionStatus, WebhookErrorCode | Task 10.2 |
 
 ## Architecture References
 
