@@ -23,6 +23,16 @@ Example:
         subject=SubjectIdentifiers(full_name="John Smith"),
         locale=Locale.US,
     )
+
+    # Set up scheduled updates
+    from elile.providers.sanctions import (
+        SanctionsUpdateScheduler,
+        create_update_scheduler,
+    )
+
+    scheduler = create_update_scheduler()
+    scheduler.register_update_handler(SanctionsList.OFAC_SDN, my_handler)
+    await scheduler.start()
 """
 
 from .matcher import NameMatcher, create_name_matcher
@@ -31,6 +41,15 @@ from .provider import (
     SanctionsProviderConfig,
     create_sanctions_provider,
     get_sanctions_provider,
+)
+from .scheduler import (
+    ListUpdateConfig,
+    ListUpdateResult,
+    SanctionsUpdateScheduler,
+    UpdateFrequency,
+    UpdateSchedulerConfig,
+    create_update_scheduler,
+    get_update_scheduler,
 )
 from .types import (
     EntityType,
@@ -57,6 +76,14 @@ __all__ = [
     # Matcher
     "NameMatcher",
     "create_name_matcher",
+    # Scheduler
+    "SanctionsUpdateScheduler",
+    "UpdateSchedulerConfig",
+    "ListUpdateConfig",
+    "ListUpdateResult",
+    "UpdateFrequency",
+    "create_update_scheduler",
+    "get_update_scheduler",
     # Types
     "EntityType",
     "FuzzyMatchConfig",

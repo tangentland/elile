@@ -200,10 +200,7 @@ class SanctionsScreeningResult(BaseModel):
 
     def get_strong_matches(self) -> list[SanctionsMatch]:
         """Get matches with strong or exact match type."""
-        return [
-            m for m in self.matches
-            if m.match_type in (MatchType.EXACT, MatchType.STRONG)
-        ]
+        return [m for m in self.matches if m.match_type in (MatchType.EXACT, MatchType.STRONG)]
 
     def get_matches_by_list(self, list_source: SanctionsList) -> list[SanctionsMatch]:
         """Get matches from a specific list."""

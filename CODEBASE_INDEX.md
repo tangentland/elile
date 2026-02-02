@@ -2291,6 +2291,11 @@ tests/
 | `src/elile/providers/cache.py` | ProviderCacheService, CacheEntry, CacheFreshnessConfig | Task 4.4 |
 | `src/elile/providers/cost.py` | ProviderCostService, BudgetConfig, CostRecord, CostSummary | Task 4.5 |
 | `src/elile/providers/router.py` | RequestRouter, RoutedRequest, RoutedResult, RoutingConfig | Task 4.6 |
+| `src/elile/providers/sanctions/__init__.py` | Sanctions provider exports | Task 4.11 |
+| `src/elile/providers/sanctions/types.py` | SanctionsList, MatchType, EntityType, SanctionedEntity, SanctionsMatch, SanctionsScreeningResult | Task 4.11 |
+| `src/elile/providers/sanctions/matcher.py` | NameMatcher, FuzzyMatchConfig, Jaro-Winkler, phonetic matching | Task 4.11 |
+| `src/elile/providers/sanctions/provider.py` | SanctionsProvider, SanctionsProviderConfig, execute_check | Task 4.11 |
+| `src/elile/providers/sanctions/scheduler.py` | SanctionsUpdateScheduler, UpdateFrequency, ListUpdateConfig, ListUpdateResult | Task 4.11 |
 | `src/elile/investigation/models.py` | SARPhase, CompletionReason, SARIterationState, SARTypeState, SARConfig, SARSummary | Task 5.1 |
 | `src/elile/investigation/sar_machine.py` | SARStateMachine, create_sar_machine, FOUNDATION_TYPES | Task 5.1 |
 | `src/elile/investigation/query_planner.py` | QueryPlanner, QueryPlanResult, SearchQuery, QueryType, INFO_TYPE_TO_CHECK_TYPES | Task 5.2 |
