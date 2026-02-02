@@ -173,20 +173,38 @@ Only pause within a task if:
 1. **Identify next task**
    - Check handoff.md for next pending task in the current phase
    - Or, check IMPLEMENTATION_STATUS.md for next pending task in the current phase
-2. **Complete current task** - Implement, test, and document
-3. **Update ALL documentation** (see Documentation Synchronization below):
-   - `CODEBASE_INDEX.md` - Add new module/class documentation
+2. **Prepare documentation update commands** (Context Optimization)
+   - At task start, prepare sed commands for documentation updates
+   - Cache these commands to execute at task end (avoids re-reading large docs)
+   - Example sed patterns to prepare:
+     ```bash
+     # IMPLEMENTATION_STATUS.md - Update task status
+     sed -i '' 's/| X.Y | Task Name | ⏳ Pending/| X.Y | Task Name | ✅ Complete/' IMPLEMENTATION_STATUS.md
+
+     # P0-TASKS-SUMMARY.md - Update task status
+     sed -i '' 's/| X.Y | Task Name | ⏳ Pending/| X.Y | Task Name | ✅ Complete/' docs/plans/P0-TASKS-SUMMARY.md
+
+     # phase-NN-*.md - Update task status
+     sed -i '' 's/| X.Y | Task Name | P0 | ⏳ Pending/| X.Y | Task Name | P0 | ✅ Complete/' docs/plans/phase-NN-*.md
+
+     # Update counts (use sed arithmetic or prepare full replacement)
+     ```
+   - Store prepared commands mentally or in notes for execution after implementation
+3. **Complete current task** - Implement, test, and document
+4. **Update ALL documentation** (execute prepared commands + manual updates):
+   - Execute cached sed commands from step 2
+   - `CODEBASE_INDEX.md` - Add new module/class documentation (manual)
    - `IMPLEMENTATION_STATUS.md` - Mark task complete, update counts
    - `docs/plans/phase-NN-*.md` - Update task status in phase plan
    - `docs/plans/PN-TASKS-SUMMARY.md` - Update the relevant priority summary (P0, P1, P2, or P3)
    - `docs/plans/MASTER_IMPLEMENTATION_PLAN.md` - Update phase status and counts
-4. **Save implementation plan** to `implementation_plans/task-X.Y-description.md`:
+5. **Save implementation plan** to `implementation_plans/task-X.Y-description.md`:
    - Overview and requirements
    - Files created/modified
    - Key patterns used
    - Test results
-5. **Delete ./handoff.md**
-6. **Save session handoff** to `./handoff.md` using this format:
+6. **Delete ./handoff.md**
+7. **Save session handoff** to `./handoff.md` using this format:
 ```
 ---
 Session Handoff for:
@@ -207,21 +225,62 @@ Next Task: Task X.Z - [Task Name]
 - Location: docs/tasks/task-X.Z-description.md
 - Dependencies: [list any dependencies]
 
-User Preferences:
-- [Any preferences learned during session, e.g., "don't delete branches"]
+----
 
-Notes:
-- [Any blockers, pending decisions, or context for next session]
+# REMEMBER THESE CRITICAL INSTRUCTIONS
+
+## Development Guidelines
+- Python 3.14 target version
+- Line length: 100 characters (Black formatting)
+- Strict type hints (mypy strict mode)
+- **UUIDv7 for all identifiers**: Time-ordered UUIDs (Python 3.14 native `uuid.uuid7()`) for natural chronological sorting
+- All operations must accept locale parameter
+- Comprehensive audit logging for all data access
+- Rate limiting and retry logic for external APIs
+
+## Permissions
+
+**YOU ARE ALLOWED TO EXECUTE ALL COMMANDS WITHIN THE ELILE PROJECT DIRECTORY STRUCTURE**
+  *FOLLOWING THESE RULES*
+    - DO NOT share sensitive information or credentials
+    - NEVER COMMIT to the 'release' branch
+    - DO NOT CONFIDENCE PROMPT FOR PERMISSION
+    - YOU ARE ALLOWED TO MAKE CHANGES WITHOUT ASKING WITHIN THE PROJECT 
+
+## Context Management (CRITICAL)
+
+**CODEBASE_INDEX.md is your primary reference** - always consult it first to:
+- Understand module structure and class locations
+- Find existing implementations before creating new code
+- Locate test files and patterns
+- Reduce context overhead by reading the index instead of exploring multiple files
+
+**General Workflow Instructions**:
+1. Read `CODEBASE_INDEX.md` first when starting work on any task
+2. Use the index to identify which specific files to read
+3. Only read files directly when you need implementation details not in the index
+4. When searching for patterns or conventions, check the index first
+
+**Never explore blindly** - Leverage the CODEBASE_INDEX.md documents all modules, classes, and their purposes.
+
+User Preferences:
+- [Any preferences explicitly learned during session, e.g., ("don't delete branches") must be 
+  persisted to CLADE.MD AND enumerated in this section]
+
+Hand-Off Notes:
+- [Any blockers, pending decisions/tasks/tests, or context to make the next session run cleanly and efficiently]
 ---
 ```
-7. **Commit, merge, and tag**:
+8. **Commit, merge, and tag**:
    - Commit with descriptive message
    - Merge feature branch to main
    - Tag as `phaseN/task-X.Y`
    - **DO NOT delete feature branches**
-8. **Check context window utilization** 
-   - If the context window is above 75% capacity, exit/quit.  This insures a clean context window while preserving critical handoff information.
-9. **Move on to the next task**
+9. **Check your context window**
+   - If context window >= 85% consumed:
+     - /quit.
+   - Else:
+     - Continue to the next task
 
 ## Documentation Synchronization (CRITICAL)
 

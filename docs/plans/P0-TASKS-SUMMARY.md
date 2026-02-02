@@ -5,8 +5,8 @@
 This document summarizes all P0 (Critical) tasks across 12 phases. P0 tasks are required for basic screening operations and form the critical path for MVP delivery.
 
 **Total P0 Tasks**: 76 tasks
-**Completed**: 66 tasks (Phase 9 P0 complete)
-**Remaining**: 10 tasks
+**Completed**: 67 tasks (Phase 9 P0 complete)
+**Remaining**: 9 tasks
 
 ## Task Status by Phase
 
@@ -130,11 +130,11 @@ This document summarizes all P0 (Critical) tasks across 12 phases. P0 tasks are 
 ### Phase 10 - Integration Layer (4 P0 tasks)
 | Task | Name | Status | Dependencies |
 |------|------|--------|--------------|
-| 10.1 | HRIS Integration Gateway (Core) | ⏳ Pending | 1.5 |
+| 10.1 | HRIS Integration Gateway (Core) | ✅ Complete | 1.5 |
 | 10.2 | Webhook Receiver | ⏳ Pending | 10.1 |
 | 10.3 | Event Processor | ⏳ Pending | 10.2, Phase 7 |
 | 10.4 | Result Publisher | ⏳ Pending | 10.1 |
-**Status: 0/4 Complete**
+\*\*Status: 1/4 Complete\*\*
 
 *Note: External HRIS adapters (Workday, SAP, ADP) are P2 - deferred to post-MVP.*
 
@@ -177,7 +177,6 @@ Phase 10 (Integration)┘
 Next P0 tasks in Phase 10:
 
 1. **Task 10.1**: HRIS Integration Gateway (Core) (depends on 1.5) ← **NEXT**
-2. **Task 9.4**: Alert Generator (depends on 9.3)
 
 After Phase 9, continue with Phase 10 (Integration Layer).
 
