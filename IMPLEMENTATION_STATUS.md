@@ -380,7 +380,7 @@ Last Updated: 2026-02-02
 
 ## Phase 3: Entity Management (P0 - Critical)
 
-**Status**: ✅ Complete (5/5 tasks complete)
+**Status**: ✅ Complete (6/6 tasks complete)
 **Dependencies**: Phase 1
 
 ### Completed Tasks
@@ -505,6 +505,35 @@ Last Updated: 2026-02-02
 - `src/elile/entity/tenant.py` - TenantAwareEntityService, EntityAccessControl, TenantScopedQuery
 - `src/elile/db/models/entity.py` - Entity model with tenant_id, data_origin fields
 - `tests/unit/test_entity_tenant_isolation.py` - Unit tests
+
+---
+
+#### ✅ Task 3.9: Data Retention Manager
+**Priority**: P1
+**Status**: Complete
+**Completed**: 2026-02-02
+**Tag**: `phase3/task-3.9`
+**Dependencies**: Task 2.1 (Compliance Types)
+
+**Deliverables**:
+- ✅ DataType enum with 14 data types (screening, audit, consent, etc.)
+- ✅ DeletionMethod enum (SOFT_DELETE, HARD_DELETE, ANONYMIZE, ARCHIVE, CRYPTO_SHRED)
+- ✅ RetentionPolicy model with locale-aware retention periods
+- ✅ RetentionRecord dataclass for tracking data lifecycle
+- ✅ ErasureRequest model for GDPR Article 17 requests
+- ✅ RetentionManager class with full lifecycle management
+- ✅ Legal hold support for litigation
+- ✅ Locale-specific policies (US FCRA 7-year, EU GDPR 14-day raw data)
+- ✅ Background retention processing loop
+- ✅ Compliance reporting
+- ✅ 77 unit tests
+
+**Key Files**:
+- `src/elile/compliance/retention/__init__.py` - Module exports
+- `src/elile/compliance/retention/types.py` - DataType, DeletionMethod, RetentionPolicy, RetentionRecord
+- `src/elile/compliance/retention/policies.py` - Default and locale-specific policies
+- `src/elile/compliance/retention/manager.py` - RetentionManager, RetentionManagerConfig
+- `tests/unit/test_retention_*.py` - Unit tests (types, policies, manager)
 
 ---
 
@@ -1915,14 +1944,14 @@ Performance optimization, security hardening, compliance certification, document
 
 ### By Priority
 - **P0 (Critical)**: 76/76 tasks (100%) ✅
-- **P1 (High)**: 4/30 tasks (13.3%)
+- **P1 (High)**: 5/30 tasks (16.7%)
 - **P2 (Medium)**: 0/25 tasks (0%)
 - **P3 (Low)**: 0/1 tasks (0%)
 
 ### By Phase
 - **Phase 1**: 12/12 tasks (100%) ✅
 - **Phase 2**: 5/5 tasks (100%) ✅
-- **Phase 3**: 5/5 tasks (100%) ✅
+- **Phase 3**: 6/6 tasks (100%) ✅
 - **Phase 4**: 6/6 tasks (100%) ✅
 - **Phase 5**: 16/16 tasks (100%) ✅
 - **Phase 6**: 11/12 tasks (91.7%)
@@ -1933,7 +1962,7 @@ Performance optimization, security hardening, compliance certification, document
 - **Phase 11**: 2/11 tasks (18.2%)
 - **Phase 12**: 4/19 tasks (21.1%)
 
-### Total: 78/141 tasks (55%)
+### Total: 79/141 tasks (56%)
 
 ---
 
@@ -1941,9 +1970,9 @@ Performance optimization, security hardening, compliance certification, document
 
 | Category | Tests |
 |----------|-------|
-| Unit Tests | ~2735 |
+| Unit Tests | ~3095 |
 | Integration Tests | ~262 |
-| **Total** | **2997** |
+| **Total** | **3357** |
 
 All tests passing as of 2026-02-02.
 
@@ -1963,11 +1992,12 @@ All 5 Phase 2 tasks implemented:
 - Service configuration validation
 
 ### Phase 3 Complete ✅
-All 5 Phase 3 tasks implemented:
+All 6 Phase 3 tasks implemented:
 - EntityMatcher with exact and fuzzy matching
 - Jaro-Winkler similarity algorithm
 - Tier-aware resolution decisions
 - EntityDeduplicator with merge operations
+- Data Retention Manager with GDPR/FCRA compliance
 - UUIDv7-based canonical entity selection
 - EntityManager for high-level entity operations
 - IdentifierManager with confidence tracking

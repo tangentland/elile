@@ -8,7 +8,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 |--------|---------|----------------------|
 | `src/elile/api/` | FastAPI application and middleware | `create_app()`, `APIError`, middleware stack |
 | `src/elile/core/` | Core framework: context, audit, encryption, errors, logging | `RequestContext`, `AuditLogger`, `Encryptor`, `ErrorHandler`, `get_logger()` |
-| `src/elile/compliance/` | Locale-aware compliance engine | `ComplianceEngine`, `Locale`, `CheckType`, `Consent`, `ServiceConfigValidator` |
+| `src/elile/compliance/` | Locale-aware compliance engine | `ComplianceEngine`, `Locale`, `CheckType`, `Consent`, `ServiceConfigValidator`, `RetentionManager` |
 | `src/elile/entity/` | Entity resolution, matching, tenant isolation | `EntityMatcher`, `EntityManager`, `TenantAwareEntityService` |
 | `src/elile/providers/` | Data provider abstraction and registry | `DataProvider`, `ProviderRegistry`, `ProviderResult` |
 | `src/elile/investigation/` | SAR (Search-Assess-Refine) loop orchestration | `SARStateMachine`, `SARConfig`, `QueryPlanner`, `SearchQuery` |
@@ -236,6 +236,58 @@ from elile.agent.state import ServiceConfiguration, ServiceTier, SearchDegree
 config = ServiceConfiguration(tier=ServiceTier.ENHANCED, degrees=SearchDegree.D3)
 result = validate_service_config(config, Locale.US)
 ```
+
+### Data Retention (`src/elile/compliance/retention/`)
+```python
+from elile.compliance import (
+    RetentionManager, DataType, get_retention_manager,
+    get_policy_for_data_type, ErasureRequest,
+)
+from elile.compliance.types import Locale
+
+# Get retention manager singleton
+manager = get_retention_manager()
+
+# Track data retention
+record = manager.track_data(
+    data_id=some_uuid,
+    data_type=DataType.SCREENING_RESULT,
+    tenant_id=tenant_uuid,
+    locale=Locale.US,
+)
+
+# Place legal hold
+manager.place_legal_hold(some_uuid, "Litigation hold - Case #123")
+
+# Submit erasure request (GDPR)
+request = await manager.submit_erasure_request(
+    subject_id=subject_uuid,
+    tenant_id=tenant_uuid,
+    locale=Locale.EU,
+    reason="GDPR Article 17 request",
+)
+
+# Generate compliance report
+report = manager.generate_report(tenant_id=tenant_uuid)
+```
+
+#### Data Types
+| Type | Retention | Erasable |
+|------|-----------|----------|
+| `SCREENING_RESULT` | 7 years | No (regulatory) |
+| `SCREENING_RAW_DATA` | 30 days (14 EU) | Yes |
+| `AUDIT_LOG` | 7 years | No (immutable) |
+| `CONSENT_RECORD` | 7 years | No (regulatory) |
+| `ENTITY_PROFILE` | 5 years | Yes (EU) |
+
+#### Deletion Methods
+| Method | Description |
+|--------|-------------|
+| `SOFT_DELETE` | Mark as deleted, retain for recovery |
+| `HARD_DELETE` | Permanent removal |
+| `ANONYMIZE` | Remove PII, keep structure |
+| `ARCHIVE` | Move to cold storage |
+| `CRYPTO_SHRED` | Delete encryption keys |
 
 ## Entity Resolution (`src/elile/entity/`)
 
@@ -2081,6 +2133,10 @@ tests/
 | `src/elile/compliance/engine.py` | ComplianceEngine | Task 2.3 |
 | `src/elile/compliance/consent.py` | Consent, ConsentManager | Task 2.4 |
 | `src/elile/compliance/validation.py` | ServiceConfigValidator | Task 2.5 |
+| `src/elile/compliance/retention/__init__.py` | Retention module exports | Task 3.9 |
+| `src/elile/compliance/retention/types.py` | DataType, DeletionMethod, RetentionPolicy, RetentionRecord, ErasureRequest | Task 3.9 |
+| `src/elile/compliance/retention/policies.py` | Default policies, locale-specific policies, get_policy_for_data_type | Task 3.9 |
+| `src/elile/compliance/retention/manager.py` | RetentionManager, RetentionManagerConfig | Task 3.9 |
 | `src/elile/entity/types.py` | MatchResult, SubjectIdentifiers, enums | Task 3.1 |
 | `src/elile/entity/matcher.py` | EntityMatcher class | Task 3.1 |
 | `src/elile/entity/deduplication.py` | EntityDeduplicator, MergeResult | Task 3.2 |

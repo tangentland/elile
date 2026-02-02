@@ -27,7 +27,7 @@ Phase 3 implements entity resolution (matching subjects to canonical entities), 
 | 3.6 | Cache Manager (Core) | P0 | Not Started | 1.1, 1.10 | [task-3.6-cache-manager.md](../tasks/task-3.6-cache-manager.md) |
 | 3.7 | Freshness Policy Engine | P0 | Not Started | 3.6 | [task-3.7-freshness-policies.md](../tasks/task-3.7-freshness-policies.md) |
 | 3.8 | Stale Data Handler (Tier-Aware) | P0 | Not Started | 3.7, 2.1 | [task-3.8-stale-data-handler.md](../tasks/task-3.8-stale-data-handler.md) |
-| 3.9 | Data Retention Manager | P1 | Not Started | 1.1, 2.5 | [task-3.9-data-retention.md](../tasks/task-3.9-data-retention.md) |
+| 3.9 | Data Retention Manager | P1 | ✅ Complete | 1.1, 2.5 | [task-3.9-data-retention.md](../tasks/task-3.9-data-retention.md) |
 | 3.10 | GDPR Erasure Process | P1 | Not Started | 1.1, 2.10 | [task-3.10-gdpr-erasure.md](../tasks/task-3.10-gdpr-erasure.md) |
 | 3.11 | Cross-Screening Index Builder | P1 | Not Started | 1.1 | [task-3.11-cross-screening-index.md](../tasks/task-3.11-cross-screening-index.md) |
 
