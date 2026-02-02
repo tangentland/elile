@@ -5,8 +5,8 @@
 This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks are essential features for production use but are not on the critical MVP path.
 
 **Total P1 Tasks**: 57 tasks
-**Completed**: 17 tasks
-**Remaining**: 40 tasks
+**Completed**: 18 tasks
+**Remaining**: 39 tasks
 
 ## Task Status by Phase
 
@@ -30,10 +30,10 @@ This document summarizes all P1 (High Priority) tasks across 12 phases. P1 tasks
 | Task | Name | Status | Dependencies |
 |------|------|--------|--------------|
 | 3.3 | Entity Merge/Split Capability | ✅ Complete | 3.1, 3.2 |
-| 3.9 | Data Retention Manager | ⏳ Pending | 3.6 |
+| 3.9 | Data Retention Manager | ✅ Complete | 3.6 |
 | 3.10 | GDPR Erasure Process | ⏳ Pending | 3.9, 2.10 |
 | 3.11 | Cross-Screening Index Builder | ⏳ Pending | 3.1 |
-**Status: 1/4 Complete**
+**Status: 2/4 Complete**
 
 ### Phase 4 - Data Providers (6 P1 tasks)
 | Task | Name | Status | Dependencies |
@@ -157,7 +157,7 @@ P1 tasks are executed **after** all P0 tasks (Phases 1-12) are complete.
 
 Current status:
 1. Phase 1-2 P1 tasks: ✅ Complete
-2. Phase 3 P1 tasks: 1/4 complete (3 remaining)
+2. Phase 3 P1 tasks: 2/4 complete (2 remaining)
 3. Phase 4 P1 tasks: Not started
 4. Phase 5 P1 tasks: ✅ Complete
 5. Phase 6 P1 tasks: ✅ Complete
@@ -168,9 +168,9 @@ Current status:
 **Note**: Complete all P0 tasks (Phases 8-12) before starting P1 tasks.
 
 After P0 complete, the next P1 tasks are:
-1. **Task 3.9**: Data Retention Manager
-2. **Task 3.10**: GDPR Erasure Process
-3. **Task 3.11**: Cross-Screening Index Builder
+1. **Task 3.10**: GDPR Erasure Process
+2. **Task 3.11**: Cross-Screening Index Builder
+3. **Task 4.7**: Provider Fallback Routing
 4. **Task 4.11**: Sanctions Provider
 
 ---

@@ -23,36 +23,53 @@ Usage:
         ...
 """
 
-from elile.compliance.validation import (
-    ServiceConfigValidator,
-    validate_or_raise,
-    validate_service_config,
-    ValidationError,
-    ValidationResult,
-)
 from elile.compliance.consent import (
     Consent,
     ConsentManager,
     ConsentResult,
     ConsentScope,
     ConsentVerificationMethod,
+    FCRADisclosure,
     create_consent,
     create_fcra_disclosure,
-    FCRADisclosure,
 )
 from elile.compliance.engine import ComplianceEngine, get_compliance_engine
+from elile.compliance.retention import (
+    DataType,
+    DeletionMethod,
+    ErasureRequest,
+    RetentionAction,
+    RetentionManager,
+    RetentionManagerConfig,
+    RetentionPolicy,
+    RetentionRecord,
+    RetentionReport,
+    RetentionStatus,
+    get_default_policies,
+    get_policies_for_locale,
+    get_policy_for_data_type,
+    get_retention_manager,
+    initialize_retention_manager,
+)
 from elile.compliance.rules import ComplianceRule, RuleRepository
 from elile.compliance.types import (
-    CheckRestriction,
-    CheckResult,
-    CheckType,
     ENHANCED_TIER_CHECKS,
     EXPLICIT_CONSENT_CHECKS,
     HIRING_RESTRICTED_CHECKS,
+    CheckRestriction,
+    CheckResult,
+    CheckType,
     Locale,
     LocaleConfig,
     RestrictionType,
     RoleCategory,
+)
+from elile.compliance.validation import (
+    ServiceConfigValidator,
+    ValidationError,
+    ValidationResult,
+    validate_or_raise,
+    validate_service_config,
 )
 
 __all__ = [
@@ -90,4 +107,20 @@ __all__ = [
     "ENHANCED_TIER_CHECKS",
     "EXPLICIT_CONSENT_CHECKS",
     "HIRING_RESTRICTED_CHECKS",
+    # Retention
+    "DataType",
+    "DeletionMethod",
+    "ErasureRequest",
+    "get_default_policies",
+    "get_policies_for_locale",
+    "get_policy_for_data_type",
+    "get_retention_manager",
+    "initialize_retention_manager",
+    "RetentionAction",
+    "RetentionManager",
+    "RetentionManagerConfig",
+    "RetentionPolicy",
+    "RetentionRecord",
+    "RetentionReport",
+    "RetentionStatus",
 ]
