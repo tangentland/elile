@@ -23,6 +23,7 @@ Quick reference for navigating the Elile codebase. Updated alongside code change
 | `src/elile/screening/` | End-to-end screening workflow orchestration | `ScreeningOrchestrator`, `ScreeningRequest`, `ScreeningResult` |
 | `src/elile/reporting/` | Persona-specific report generation | `ReportGenerator`, `TemplateRegistry`, `ReportPersona`, `OutputFormat` |
 | `src/elile/monitoring/` | Ongoing employee vigilance and monitoring | `MonitoringScheduler`, `VigilanceManager`, `MonitoringConfig`, `MonitoringCheck`, `LifecycleEvent` |
+| `src/elile/hris/` | HRIS integration gateway for bidirectional platform communication | `HRISGateway`, `HRISAdapter`, `HRISEvent`, `GatewayConfig` |
 | `src/elile/utils/` | Shared utilities and base exceptions | `ElileError` |
 
 ## API Layer (`src/elile/api/`)
@@ -1922,6 +1923,8 @@ tests/
 | `src/elile/monitoring/vigilance_manager.py` | VigilanceManager, ManagerConfig, VigilanceDecision, VigilanceUpdate, VigilanceChangeReason, EscalationAction, RoleVigilanceMapping, SchedulerProtocol, ROLE_DEFAULT_VIGILANCE, RISK_THRESHOLD_V2, RISK_THRESHOLD_V3, create_vigilance_manager | Task 9.2 |
 | `src/elile/monitoring/delta_detector.py` | DeltaDetector, DetectorConfig, DeltaResult, DeltaType, FindingChange, ConnectionChange, RiskScoreChange, create_delta_detector, severity_rank, severity_to_delta_severity | Task 9.3 |
 | `src/elile/monitoring/alert_generator.py` | AlertGenerator, AlertConfig, AlertStatus, GeneratedAlert, EscalationTrigger, NotificationChannel, NotificationChannelType, NotificationResult, MockEmailChannel, MockWebhookChannel, MockSMSChannel, AUTO_ALERT_THRESHOLDS, create_alert_generator | Task 9.4 |
+| `src/elile/hris/__init__.py` | HRIS module exports | Task 10.1 |
+| `src/elile/hris/gateway.py` | HRISGateway, GatewayConfig, HRISAdapter, BaseHRISAdapter, MockHRISAdapter, HRISEvent, HRISEventType, HRISPlatform, HRISConnection, HRISConnectionStatus, ScreeningUpdate, AlertUpdate, EmployeeInfo, WebhookValidationResult, create_hris_gateway | Task 10.1 |
 
 ## Architecture References
 
