@@ -2024,6 +2024,77 @@ Additional +20 bonus for Enhanced tier (premium service).
 | `OVERLOADED` | Near maximum capacity |
 | `OFFLINE` | System unavailable |
 
+### Cost Estimator (`src/elile/screening/cost_estimator.py`)
+
+The CostEstimator provides pre-execution cost estimates for screening operations,
+helping organizations budget and make informed tier selection decisions.
+
+```python
+from elile.screening import (
+    CostEstimator,
+    create_cost_estimator,
+    CostEstimate,
+)
+from elile.agent.state import SearchDegree, ServiceTier
+from elile.compliance.types import CheckType, Locale
+
+# Create estimator
+estimator = create_cost_estimator()
+
+# Get estimate before execution
+estimate = estimator.estimate_screening_cost(
+    tier=ServiceTier.ENHANCED,
+    degree=SearchDegree.D2,
+    check_types={CheckType.CRIMINAL_NATIONAL, CheckType.EMPLOYMENT_VERIFICATION},
+    locale=Locale.US,
+)
+print(f"Estimated cost: ${estimate.total_estimated}")
+print(f"Range: ${estimate.minimum_cost} - ${estimate.maximum_cost}")
+
+# Compare tiers
+comparison = estimator.get_tier_comparison(
+    degree=SearchDegree.D1,
+    check_types={CheckType.IDENTITY_BASIC, CheckType.CRIMINAL_NATIONAL},
+    locale=Locale.US,
+)
+
+# Bulk estimates with volume discounts
+bulk = estimator.estimate_bulk_cost([
+    (ServiceTier.STANDARD, SearchDegree.D1, {CheckType.IDENTITY_BASIC}, Locale.US)
+    for _ in range(100)
+])
+print(f"Volume discount: {bulk.discount_percentage}%")
+```
+
+#### Cost Categories
+
+| Category | Description |
+|----------|-------------|
+| `BASE_FEE` | Tier-based base fee (Standard: $25, Enhanced: $75) |
+| `DATA_PROVIDER` | Provider query costs |
+| `AI_ANALYSIS` | AI model analysis costs |
+| `STORAGE` | Data storage costs |
+| `REPORT_GENERATION` | Report generation costs |
+| `NETWORK_ANALYSIS` | D2/D3 connection analysis costs |
+
+#### Degree Multipliers
+
+| Degree | Multiplier | Description |
+|--------|------------|-------------|
+| D1 | 1.0x | Direct subject only |
+| D2 | 1.5x | First-degree connections |
+| D3 | 2.5x | Extended network analysis |
+
+#### Volume Discount Tiers
+
+| Count | Discount |
+|-------|----------|
+| 10+ | 5% |
+| 50+ | 10% |
+| 100+ | 15% |
+| 500+ | 20% |
+| 1000+ | 25% |
+
 ## Observability (`src/elile/observability/`)
 
 ### OpenTelemetry Tracing (`tracing.py`)
