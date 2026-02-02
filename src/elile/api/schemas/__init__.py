@@ -1,5 +1,16 @@
 """API schemas for request/response validation."""
 
+from .dashboard import (
+    AlertSummary,
+    HRAlertsListResponse,
+    HRPortfolioResponse,
+    HRScreeningsListResponse,
+    PortfolioMetrics,
+    RiskDistribution,
+    RiskDistributionItem,
+    RiskDistributionResponse,
+    ScreeningSummary,
+)
 from .errors import APIError, ErrorCode
 from .health import HealthDetailResponse, HealthResponse, HealthStatus
 from .screening import (
@@ -34,4 +45,14 @@ __all__ = [
     "CostSummaryResponse",
     "ReportResponse",
     "screening_response_from_result",
+    # Dashboard schemas
+    "AlertSummary",
+    "HRAlertsListResponse",
+    "HRPortfolioResponse",
+    "HRScreeningsListResponse",
+    "PortfolioMetrics",
+    "RiskDistribution",
+    "RiskDistributionItem",
+    "RiskDistributionResponse",
+    "ScreeningSummary",
 ]
