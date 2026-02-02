@@ -113,8 +113,10 @@ This document summarizes all P0 (Critical) tasks across 12 phases. P0 tasks are 
 | 8.1 | Report Generator Framework | ✅ Complete | 7.6 |
 | 8.2 | Summary Report (HR) | ✅ Complete | 8.1 |
 | 8.3 | Audit Report (Compliance) | ✅ Complete | 8.1 |
-| 8.6 | Disclosure Report (Subject) | ⏳ Pending | 8.1 |
+| 8.4 | Investigation Report (Security) | ⏳ Pending | 8.1, 6.6 |
 **Status: 3/4 Complete**
+
+*Note: Task 8.6 (Disclosure Report) is P1, not P0. Task 8.4 is the remaining P0 task.*
 
 ### Phase 9 - Monitoring & Vigilance (4 P0 tasks)
 | Task | Name | Status | Dependencies |
@@ -172,8 +174,9 @@ Phase 10 (Integration)┘
 
 Tasks 8.1, 8.2, and 8.3 are complete. The next P0 tasks are:
 
-1. **Task 8.6**: Disclosure Report - Subject (depends on 8.1) ← **NEXT**
-2. **Task 8.8**: Report Templates (depends on 8.1-8.7)
+1. **Task 8.4**: Investigation Report - Security (depends on 8.1, 6.6) ← **NEXT**
+
+*Note: Tasks 8.5-8.10 are all P1. After Task 8.4, Phase 8 P0 is complete.*
 
 ---
 

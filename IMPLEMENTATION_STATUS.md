@@ -1856,7 +1856,9 @@ Task 8.3 (Audit Report - Compliance Officer) complete:
 - Overall compliance status determination
 - 55 unit tests
 
-Next task: Task 8.6 - Disclosure Report (Subject) (P0)
+Next task: Task 8.4 - Investigation Report (Security) (P0)
+
+*Note: Task 8.6 (Disclosure Report) is P1, not P0. Task 8.4 is the final P0 task in Phase 8.*
 
 ---
 

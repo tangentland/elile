@@ -20,16 +20,17 @@ Git State:
 - Latest tag: phase8/task-8.3
 - Total tests: 2373
 
-Next Task: Task 8.6 - Disclosure Report (Subject)
-- Location: docs/tasks/task-8.6-disclosure-report.md
-- Dependencies: Task 8.1
-- Note: This is the next P0 task in Phase 8
+Next Task: Task 8.4 - Investigation Report (Security)
+- Location: docs/tasks/task-8.4-investigation-report-security.md
+- Dependencies: Task 8.1, Task 6.6
+- Note: This is the last P0 task in Phase 8
 
 User Preferences:
 - DO NOT delete feature branches
 
 Notes:
 - templates.py was renamed to template_definitions.py in Task 8.2 to avoid conflict with templates/ package
-- Task 8.4 (Investigation Report - Security) and Task 8.5 (Case File Report) are P1, not P0
-- After Task 8.6, Task 8.8 (Report Templates) depends on 8.1-8.7, so P1 tasks 8.4/8.5/8.7 may need completion first
+- Corrected P0 tasks for Phase 8: 8.1, 8.2, 8.3, 8.4 (not 8.6 as previously noted)
+- Task 8.6 (Disclosure Report) is P1, not P0
+- After Task 8.4, Phase 8 P0 is complete; next P0 tasks are in Phase 9
 ---
