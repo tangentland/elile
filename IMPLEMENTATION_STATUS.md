@@ -1289,7 +1289,7 @@ Risk scoring, anomaly detection, pattern recognition, connection analysis.
 
 ## Phase 7: Screening Service (P0 - Critical)
 
-**Status**: 🟡 In Progress (7/11 tasks complete)
+**Status**: 🟡 In Progress (9/11 tasks complete)
 **Dependencies**: Phase 6
 
 Pre-employment screening workflow, degree support (D1-D3), tier selection.
@@ -1451,7 +1451,63 @@ Pre-employment screening workflow, degree support (D1-D3), tier selection.
 
 ---
 
+#### ✅ Task 7.8: D3 Handler Enhancements
+**Priority**: P1
+**Status**: Complete
+**Completed**: 2026-02-02
+**Tag**: `phase7/task-7.8`
+**Dependencies**: Task 7.3
+
+**Deliverables**:
+- ✅ D3ReviewPoint and D3ReviewPointType for manual review checkpoints
+- ✅ D3SourceCoverage for extended source tracking across provider types
+- ✅ Automatic review point creation on sanctions/PEP hits
+- ✅ Automatic review point creation on risk threshold breaches
+- ✅ Network-level review points for clusters and depth thresholds
+- ✅ Integration with CheckpointManager for resume capability
+- ✅ New config options: d3_enable_review_points, d3_review_risk_threshold
+- ✅ mark_review_complete() method for marking reviews done
+- ✅ 22 new tests (55 total in test_degree_handlers.py)
+
+**Key Files**:
+- `src/elile/screening/degree_handlers.py` - Enhanced D3Handler
+- `tests/unit/test_degree_handlers.py` - Unit tests
+
+---
+
+#### ✅ Task 7.9: Screening Queue Manager
+**Priority**: P1
+**Status**: Complete
+**Completed**: 2026-02-02
+**Tag**: `phase7/task-7.9`
+**Dependencies**: Task 7.1, Task 1.10
+
+**Deliverables**:
+- ✅ ScreeningQueueManager for queue operations (enqueue/dequeue/complete/fail)
+- ✅ QueuedScreening dataclass for tracking queued screenings
+- ✅ Priority scoring with tier-based bonuses (URGENT=40, ENHANCED=20)
+- ✅ Per-tenant rate limiting via Redis RateLimiter (sliding window)
+- ✅ Load balancing across workers with heartbeat tracking
+- ✅ Queue metrics and status monitoring (healthy/degraded/overloaded)
+- ✅ InMemoryQueueStorage for testing
+- ✅ RedisQueueStorage for production (sorted sets)
+- ✅ Configurable concurrent limits per tier (standard/enhanced)
+- ✅ Automatic retry with configurable max_retries
+- ✅ Stale screening cleanup
+- ✅ Worker timeout detection
+- ✅ Factory functions for easy instantiation
+- ✅ 31 unit tests
+
+**Key Files**:
+- `src/elile/screening/queue.py` - Queue manager implementation
+- `tests/unit/screening/test_queue.py` - Unit tests
+
+---
+
 ### Pending Tasks
+
+- Task 7.10: Screening Cost Estimator (P1)
+- Task 7.11: Screening Progress Tracker (P1)
 
 ---
 
@@ -1995,7 +2051,7 @@ Performance optimization, security hardening, compliance certification, document
 
 ### By Priority
 - **P0 (Critical)**: 76/76 tasks (100%) ✅
-- **P1 (High)**: 27/57 tasks (47.4%)
+- **P1 (High)**: 29/57 tasks (50.9%)
 - **P2 (Medium)**: 0/25 tasks (0%)
 - **P3 (Low)**: 0/1 tasks (0%)
 
@@ -2006,14 +2062,14 @@ Performance optimization, security hardening, compliance certification, document
 - **Phase 4**: 6/6 tasks (100%) ✅
 - **Phase 5**: 16/16 tasks (100%) ✅
 - **Phase 6**: 11/12 tasks (91.7%)
-- **Phase 7**: 8/11 tasks (72.7%)
+- **Phase 7**: 9/11 tasks (81.8%)
 - **Phase 8**: 4/10 tasks (40%)
 - **Phase 9**: 4/12 tasks (33%)
 - **Phase 10**: 4/10 tasks (40%)
 - **Phase 11**: 2/11 tasks (18.2%)
 - **Phase 12**: 4/19 tasks (21.1%)
 
-### Total: 103/141 tasks (73.0%)
+### Total: 105/141 tasks (74.5%)
 
 ---
 

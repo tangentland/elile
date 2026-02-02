@@ -1951,6 +1951,79 @@ strength = await index.calculate_relationship_strength(subject_a, subject_b)
 | `STRONG` | 0.7 - 0.89 | High confidence, direct evidence |
 | `VERIFIED` | >= 0.9 | Confirmed through multiple sources |
 
+### Screening Queue Manager (`src/elile/screening/queue.py`)
+
+The ScreeningQueueManager implements priority-based queueing for screening execution with
+resource allocation, rate limiting, and load balancing across workers.
+
+```python
+from elile.screening import (
+    ScreeningQueueManager,
+    QueueConfig,
+    QueuedScreening,
+    create_queue_manager,
+)
+
+# Create queue manager (use_redis=False for in-memory testing)
+config = QueueConfig(
+    max_concurrent_standard=50,
+    max_concurrent_enhanced=20,
+    rate_limit_per_tenant=100,
+    rate_limit_window_seconds=3600,
+)
+manager = create_queue_manager(config=config, use_redis=False)
+
+# Enqueue a screening request
+queued, rate_limit_result = await manager.enqueue(request)
+if rate_limit_result and rate_limit_result.blocked:
+    print(f"Rate limited: {rate_limit_result.reason}")
+
+# Workers dequeue by priority
+result = await manager.dequeue(worker_id="worker-1")
+if result.success and result.screening:
+    # Process the screening
+    screening = result.screening
+    # ... execute screening ...
+    await manager.complete(screening.queue_id)
+
+# Get queue metrics
+metrics = await manager.get_metrics()
+print(f"Status: {metrics.status}, Pending: {metrics.total_pending}")
+```
+
+#### Priority Scoring
+
+| Priority | Base Score | Description |
+|----------|------------|-------------|
+| `URGENT` | 40 | Highest priority (compliance deadlines) |
+| `HIGH` | 30 | Important business need |
+| `NORMAL` | 10 | Standard processing |
+| `LOW` | 0 | Best-effort basis |
+
+Additional +20 bonus for Enhanced tier (premium service).
+
+#### Queue Configuration
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `max_concurrent_standard` | 50 | Concurrent Standard tier limit |
+| `max_concurrent_enhanced` | 20 | Concurrent Enhanced tier limit |
+| `rate_limit_per_tenant` | 100 | Max screenings per tenant per window |
+| `rate_limit_window_seconds` | 3600 | Rate limit window (1 hour) |
+| `max_retries` | 3 | Max retry attempts for failed screenings |
+| `stale_screening_hours` | 24 | Hours before stale cleanup |
+| `overload_threshold` | 0.9 | Capacity for OVERLOADED status |
+| `degraded_threshold` | 0.7 | Capacity for DEGRADED status |
+
+#### Queue Status
+
+| Status | Description |
+|--------|-------------|
+| `HEALTHY` | System operating normally |
+| `DEGRADED` | Some capacity constraints |
+| `OVERLOADED` | Near maximum capacity |
+| `OFFLINE` | System unavailable |
+
 ## Observability (`src/elile/observability/`)
 
 ### OpenTelemetry Tracing (`tracing.py`)
